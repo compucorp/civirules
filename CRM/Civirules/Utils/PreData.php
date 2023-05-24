@@ -96,7 +96,9 @@ class CRM_Civirules_Utils_PreData {
    */
   public static function customPre($op, $groupID, $entityID, $params, $eventID=1) {
     // We use api version 3 here as there is no api v4 for the CustomValue table.
-    $entity = civicrm_api3('CustomGroup', 'getvalue', ['id' => $groupID, 'return' => 'extends']);
+    $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
+    $custom_group = $config->getCustomGroupById($groupID);
+    $entity = $custom_group['extends'];
     $data = array();
     try {
       $data = civicrm_api3($entity, 'getsingle', array('id' => $entityID));
