@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## Version 2.38 (not yet released)
+## Version 2.37.1
+
+* Performance improvement by caching the custom groups in a cached php file container.
 
 ## Version 2.37
 
