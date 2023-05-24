@@ -47,7 +47,8 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
   }
 
   public static function custom($op, $groupID, $entityID, &$params) {
-    $custom_group = civicrm_api3('CustomGroup', 'getsingle', array('id' => $groupID));
+    $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
+    $custom_group = $config->getCustomGroupById($groupID);
     if ($custom_group['extends'] != 'Case') {
       return;
     }

@@ -64,7 +64,8 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
   }
 
   public static function custom($op, $groupID, $entityID, &$params) {
-    $custom_group = civicrm_api3('CustomGroup', 'getsingle', array('id' => $groupID));
+    $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
+    $custom_group = $config->getCustomGroupById($groupID);
     $get_called_class = get_called_class();
     $objectName = $get_called_class::getObjectName();
     $entity_extensions = self::getEntityExtensions();
