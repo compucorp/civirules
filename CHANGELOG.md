@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.37.2
+
+* Performance improvement by optimizing the customPreHook
+
 ## Version 2.37.1
 
 * Performance improvement by caching the custom groups in a cached php file container.
