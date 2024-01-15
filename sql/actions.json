@@ -25,6 +25,7 @@
   {"name":"add_related_contact_group","label":"Add Related Contact to a Group","class_name":"CRM_CivirulesActions_GroupContact_AddRelated"},
   {"name":"subscribe_contact_group","label":"Create Pending Group Subscription","class_name":"CRM_CivirulesActions_GroupContact_Subscribe"},
   {"name":"remove_contact_group","label":"Remove Contact from a Group","class_name":"CRM_CivirulesActions_GroupContact_Remove"},
+  {"name":"rebuild_smart_group","label":"Rebuild Smart Group","class_name":"CRM_CivirulesActions_GroupContact_RebuildSmartGroup"},
   {"name":"add_tag_contact","label":"Add Tag to Entity","class_name":"CRM_CivirulesActions_Tag_Add"},
   {"name":"remove_tag_contact","label":"Remove Tag from Entity","class_name":"CRM_CivirulesActions_Tag_Remove"},
   {"name":"activity_tag_add","label":"Add Tag to Activity","class_name":"CRM_CivirulesActions_Tag_ActivityTagAdd"},
