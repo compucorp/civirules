@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 2.52 (not yet released)
+## Version 2.52
 
 * Added action Rebuild Smart Group
 
