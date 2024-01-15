@@ -2,6 +2,8 @@
 
 ## Version 2.52 (not yet released)
 
+* Added action Rebuild Smart Group
+
 ## Version 2.51
 
 *  Fix preData custom field collection on CiviCRM 5.67+  See !224
