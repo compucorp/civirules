@@ -8,6 +8,12 @@
  */
  class CRM_CivirulesPostTrigger_Contribution extends CRM_Civirules_Trigger_Post {
 
+   protected function getAdditionalEntities() {
+     $entities = parent::getAdditionalEntities();
+     $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Participant', 'Participant', 'CRM_Event_DAO_Participant', 'Participant');
+     return $entities;
+   }
+
   /**
    * Override alter trigger data.
    *
@@ -26,9 +32,22 @@
       }
       if (CRM_Civirules_Utils_ContributionTrigger::getParticipantId()) {
         try {
-          $participant = civicrm_api3('Participant', 'getsingle', array('id' => CRM_Civirules_Utils_ContributionTrigger::getParticipantId()));
+          $participant = civicrm_api3('Participant', 'getsingle', ['id' => CRM_Civirules_Utils_ContributionTrigger::getParticipantId()]);
           $triggerData->setEntityData('Participant', $participant);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
+          // Do nothing
+        }
+      }
+      else {
+        $participantId = CRM_Core_DAO::singleValueQuery('SELECT participant_id from civicrm_participant_payment WHERE contribution_id = %1', [
+          1 => [$dataFromPostHook['id'], 'Integer'],
+        ]);
+        try {
+          $participant = civicrm_api3('Participant', 'getsingle', ['id' => $participantId]);
+          $triggerData->setEntityData('Participant', $participant);
+        }
+        catch (Exception $e) {
           // Do nothing
         }
       }
