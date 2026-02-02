@@ -14,7 +14,7 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+        $this->conditionParams = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
     }
   }
 

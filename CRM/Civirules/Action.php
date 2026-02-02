@@ -96,7 +96,7 @@ abstract class CRM_Civirules_Action {
   protected function getActionParameters() {
     $params = [];
     if (!empty($this->ruleAction['action_params'])) {
-      $params = unserialize($this->ruleAction['action_params']);
+      $params = is_array($this->ruleAction['action_params']) ? $this->ruleAction['action_params'] : unserialize($this->ruleAction['action_params']);
     }
     return $params;
   }

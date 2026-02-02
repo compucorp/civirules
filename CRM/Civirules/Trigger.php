@@ -75,7 +75,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function setTriggerParams(string $triggerParams) {
     try {
-      $triggerParams = unserialize($triggerParams);
+      $triggerParams = is_array($triggerParams) ? $triggerParams : unserialize($triggerParams);
       // If unserialize fails, FALSE is returned. We need an array
       $this->triggerParams = $triggerParams ?: [];
     }

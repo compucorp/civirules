@@ -73,7 +73,7 @@ class CRM_CivirulesCronTrigger_Form_NoCaseActivitySince extends CRM_CivirulesTri
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
     if (!empty($data['case_type'])) {
       $defaultValues['case_type'] = $data['case_type'];
     }

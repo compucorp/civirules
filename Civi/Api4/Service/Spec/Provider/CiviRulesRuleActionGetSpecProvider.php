@@ -92,7 +92,7 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
     if (!empty($row['action_id'])) {
       if (!empty($value)) {
         try {
-          $delayClass = unserialize($value);
+          $delayClass = is_array($value) ? $value : unserialize($value);
           $value = $delayClass->getDelayExplanation();
         } catch (\Throwable $e) {
           $value = '';

@@ -58,7 +58,7 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
     if (isset($data['event_id_custom_field'])) {
       $defaultValues['event_id_custom_field'] = $data['event_id_custom_field'];
     }

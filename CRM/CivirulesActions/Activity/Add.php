@@ -128,7 +128,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
       unset($params['activity_date_time']);
     } else {
       if (!empty($action_params['activity_date_time'])) {
-        $delayClass = unserialize($action_params['activity_date_time']);
+        $delayClass = is_array($action_params['activity_date_time']) ? $action_params['activity_date_time'] : unserialize($action_params['activity_date_time']);
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
           $activityDate = $delayClass->delayTo(new DateTime(), $triggerData);
           if ($activityDate instanceof DateTime) {
