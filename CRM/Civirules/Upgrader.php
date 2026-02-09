@@ -608,5 +608,10 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     return TRUE;
   }
 
+  public function upgrade_3001() {
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
+    return TRUE;
+  }
+
 }
 

@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* Added cron trigger for weekly group membership.
+
 # Version 3.31.0 (2025-12-23)
 
 * Make the Participant Role and Participant Status conditions work with the Event Participant Payment trigger

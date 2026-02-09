@@ -88,6 +88,7 @@
   {"name":"changed_case_custom_data","label":"Custom data on case changed","object_name":null,"op":null,"class_name":"CRM_CivirulesPostTrigger_CaseCustomDataChanged","cron":"0"},
   {"name":"birthday","label":"Individual has birthday","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_Birthday","cron":"1"},
   {"name":"groupmembership","label":"Daily trigger for group members","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_GroupMembership","cron":"1"},
+  {"name":"weeklygroupmembership","label":"Weekly trigger for group members","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_WeeklyGroupMembership","cron":"1"},
   {"name":"activitydate","label":"Activity Date reached","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_ActivityDate","cron":"1"},
   {"name":"caseactivity","label":"Daily trigger for case activity","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_CaseActivity","cron":"1"},
   {"name":"changed_contact_custom_data","label":"Custom Data on Contact (of any Type) Changed","object_name":null,"op":null,"class_name":"CRM_CivirulesPostTrigger_ContactCustomDataChanged","cron":"0"},
