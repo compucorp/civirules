@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* Added condition for there are upcoming events.
 * Added cron trigger for weekly group membership.
 
 # Version 3.31.0 (2025-12-23)

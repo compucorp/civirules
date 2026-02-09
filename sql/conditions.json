@@ -69,6 +69,7 @@
   {"name":"relationship_relationship_type","label":"Relationship is (not) one of Type(s)","class_name":"CRM_CivirulesConditions_Relationship_RelationshipType"},
   {"name":"field_value_comparison","label":"Field Value Comparison","class_name":"CRM_CivirulesConditions_FieldValueComparison"},
   {"name":"event_type","label":"Event Type is","class_name":"CRM_CivirulesConditions_Event_EventType"},
+  {"name":"upcoming_events","label":"There are upcoming events","class_name":"CRM_CivirulesConditions_Event_UpcomingEvents"},
   {"name":"participant_role","label":"Participant has role","class_name":"CRM_CivirulesConditions_Participant_ParticipantRole"},
   {"name":"participant_status","label":"Participant status is (not) one of","class_name":"CRM_CivirulesConditions_Participant_Status"},
   {"name":"activity_is_future_date","label":"Activity Date in the Future","class_name":"CRM_CivirulesConditions_Activity_ActivityIsFuture"},

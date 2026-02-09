@@ -542,6 +542,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/upcoming_events</path>
+    <page_callback>CRM_CivirulesConditions_Form_Event_UpcomingEvents</page_callback>
+    <title>Upcoming Events</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/participant_role</path>
     <page_callback>CRM_CivirulesConditions_Form_Participant_ParticipantRole</page_callback>
     <title>Participant Role</title>
