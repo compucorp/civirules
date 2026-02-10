@@ -37,7 +37,10 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
         }
         $triggerData->setEntityData('Event', $_eventCache[$data['event_id']]);
       } else {
-        $triggerData = new CRM_Civirules_TriggerData_Cron(NULL, 'Event', $data, NULL, $this);
+        if (!isset($_eventCache[$data['id']])) {
+          $_eventCache[$data['id']] = civicrm_api3('Event', 'getsingle', ['id' => $data['id']]);
+        }
+        $triggerData = new CRM_Civirules_TriggerData_Cron(NULL, 'Event', $_eventCache[$data['id']], NULL, $this);
       }
       return $triggerData;
     }
