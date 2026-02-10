@@ -124,10 +124,10 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
             AND `e`.`is_active` = 1
             AND `rule_log`.`id` IS NULL
             {$sqlEventTypeID}
-            AND `p`.`contact_id` NOT IN (
-              SELECT `rule_log2`.`contact_id`
+            AND `e`.`id` NOT IN (
+              SELECT `rule_log2`.`entity_id`
               FROM `civirule_rule_log` `rule_log2`
-              WHERE `rule_log2`.`rule_id` = %2 and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
+              WHERE `rule_log2`.`rule_id` = %2 AND DATE(`rule_log2`.`log_date`) = DATE(NOW())
             )";
     }
     $params[2] = [$this->ruleId, 'Integer'];
