@@ -80,7 +80,7 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
             INNER JOIN `civicrm_case` `c` ON `c`.`id` = `ca`.`case_id`
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_case_activity' AND `rule_log`.entity_id = ca.id AND `rule_log`.`rule_id` = %1
             LEFT JOIN `civirule_rule` `rule` ON `rule`.`id` = %1
-            WHERE `c`.`is_deleted` = 0 AND `a`.`is_deleted` = '0' AND `a`.`is_current_revision` = '1'
+            WHERE `c`.`is_deleted` = 0 AND `a`.`is_deleted` = '0'
             AND " . implode(" AND ", $clauses) . "
             AND `rule_log`.`id` IS NULL
             GROUP BY `ca`.`case_id`
