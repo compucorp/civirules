@@ -75,6 +75,7 @@ class CRM_CivirulesActions_Relationship_End extends CRM_Civirules_Action {
         ->addValue('is_active', FALSE)
         ->addWhere('relationship_type_id', '=', (int) $actionParams['relationship_type_id'])
         ->addClause('OR', ['contact_id_a', '=', $contactId], ['contact_id_b', '=', $contactId])
+        ->addWhere('is_current', '=', TRUE)
         ->execute();
     }
     catch (\Exception $ex) {
