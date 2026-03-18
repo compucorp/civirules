@@ -203,4 +203,20 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
     parent::alterTriggerData($triggerData);
   }
 
+  /**
+   * Trigger a rule for this trigger
+   *
+   * @param string $op
+   * @param string $objectName
+   * @param int $objectId
+   * @param object $objectRef
+   * @param string $eventID
+   */
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    $this->setTriggerData($this->getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID));
+    if ($this->getTriggerParams()['rule_afform_select'] !== $this->getTriggerData()->getEntityData('AfformSubmission')['afform_name']) {
+      parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+    }
+  }
+
 }
