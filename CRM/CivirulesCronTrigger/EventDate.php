@@ -121,7 +121,7 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       $daoName = 'CRM_Event_DAO_Event';
       $sql = "SELECT `e`.*
             FROM `civicrm_event` `e` 
-            LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_event' AND `rule_log`.entity_id = e.id
+            LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_event' AND `rule_log`.entity_id = e.id AND `rule_log`.`rule_id` = %2
             LEFT JOIN `civirule_rule` `rule` ON `rule`.`id` = %2
             WHERE {$dateExpression}
             AND `e`.`is_active` = 1
