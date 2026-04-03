@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# Version 3.33.0 (2026-04-03)
+
+* [!337](https://lab.civicrm.org/extensions/civirules/-/merge_requests/337) Ensure AfformSubmission triggerData entityData is complete.
+* [!335](https://lab.civicrm.org/extensions/civirules/-/merge_requests/335) Fix FormBuilder trigger firing on all submissions.
+* Fix minor issue with upcoming events.
+* [!333](https://lab.civicrm.org/extensions/civirules/-/merge_requests/333) Add composer publishing CI job.
+* [!336](https://lab.civicrm.org/extensions/civirules/-/merge_requests/336) Add help text to activity text matching conditions.
+* [!327](https://lab.civicrm.org/extensions/civirules/-/merge_requests/327) Validate string instead of array.
+* [!331](https://lab.civicrm.org/extensions/civirules/-/merge_requests/331) Fix memory leak in PreData::pre() and Activity trigger during bulk operations.
+* [!332](https://lab.civicrm.org/extensions/civirules/-/merge_requests/332) Fix Relationship End Action.
+* [!330](https://lab.civicrm.org/extensions/civirules/-/merge_requests/330) Fix passing null value to Field Value Comparison wih contains.
+* Update docs to reflect managed entity way of adding triggers/conditions/actions.
+* Cron trigger for event changed so it can run for events without participants.
+
 # Version 3.32.0 (2026-02-09)
 
 * Added condition for there are upcoming events.

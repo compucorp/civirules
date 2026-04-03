@@ -22,15 +22,15 @@
       <role>Maintainer</role>
     </author>
   </authors>
-  <releaseDate>2026-02-09</releaseDate>
-  <version>3.32.0</version>
+  <releaseDate>2026-04-03</releaseDate>
+  <version>3.33.0</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.82</ver>
+    <ver>6.9</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
-    <format>25.10.1</format>
+    <format>25.10.2</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
@@ -38,7 +38,7 @@
   </classloader>
   <mixins>
     <mixin>menu-xml@1.0.0</mixin>
-    <mixin>mgd-php@1.0.0</mixin>
+    <mixin>mgd-php@2.0.0</mixin>
     <mixin>entity-types-php@2.0.0</mixin>
     <mixin>smarty@1.0.3</mixin>
   </mixins>
