@@ -99,7 +99,7 @@ class CRM_Civirules_Utils_PreData {
         'entity_id' => $id,
         'entity_table' => ucfirst($entity),
       ]);
-    } catch (Exception $e ) {
+    } catch (Exception $e) {
       $customData = [];
     }
     if ( empty($customData['is_error']) && ! empty($customData['count']) ) {
