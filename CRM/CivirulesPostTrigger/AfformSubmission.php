@@ -1,6 +1,7 @@
 <?php
 
 use Civi\Api4\Afform;
+use Civi\Api4\AfformSubmission;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Post {
@@ -163,6 +164,12 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
    */
   public function alterTriggerData(CRM_Civirules_TriggerData_TriggerData &$triggerData) {
     $afformSubmission = $triggerData->getEntityData('AfformSubmission');
+    // Submission data isn't necessarily the complete record, so let's merge the db data in.
+    $dataInDatabase = AfformSubmission::get(FALSE)
+      ->addWhere('id', '=', $afformSubmission['id'])
+      ->execute()
+      ->first();
+    $triggerData->setEntityData('AfformSubmission', array_merge($dataInDatabase, $afformSubmission));
     $submissionData = json_decode($afformSubmission['data'], TRUE);
 
     foreach ($submissionData as $entityName => $data) {
