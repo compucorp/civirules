@@ -5,8 +5,16 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_CivirulesActions_Generic_Api {
+
+  /**
+   * Method to set the api action
+   *
+   * @return string
+   */
+  protected function getApiAction() {
+    return 'create';
+  }
 
   /**
    * Returns an array with parameters used for processing an action
@@ -171,18 +179,14 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
   }
 
   protected function getActionLabel($group) {
-    switch ($this->getApiAction()) {
-      case 'create':
-        return ts('Add contact to group(s): %1', [
-          1 => $group
-        ]);
-
-      case 'delete':
-        return ts('Remove contact from group(s): %1', [
-          1 => $group
-        ]);
-    }
-    return '';
+    // Label is the last word in the class name
+    $actionType = end(explode('_', get_class($this)));
+    $direction = $actionType === 'Add' ? 'to' : 'from';
+    return ts('%1 contact %2 group(s): %3', [
+      1 => $actionType,
+      2 => $direction,
+      3 => $group,
+    ]);
   }
 
 }
