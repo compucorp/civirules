@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# Version 3.34.0 (2026-04-13)
+
+* [!338](https://lab.civicrm.org/extensions/civirules/-/merge_requests/338) Remove related contact from group.
+* [!339](https://lab.civicrm.org/extensions/civirules/-/merge_requests/339) Partly revert MR 331 - prevent endless loops.
+
 # Version 3.33.0 (2026-04-03)
 
 * [!337](https://lab.civicrm.org/extensions/civirules/-/merge_requests/337) Ensure AfformSubmission triggerData entityData is complete.

@@ -22,8 +22,8 @@
       <role>Maintainer</role>
     </author>
   </authors>
-  <releaseDate>2026-04-03</releaseDate>
-  <version>3.33.0</version>
+  <releaseDate>2026-04-13</releaseDate>
+  <version>3.34.0</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>6.9</ver>
