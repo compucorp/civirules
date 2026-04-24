@@ -14,7 +14,7 @@
     <author>CiviCooP</author>
     <email>helpdesk@civicoop.org</email>
   </maintainer>
-  <releaseDate>2025-03-06</releaseDate>
+  <releaseDate>2026-04-24</releaseDate>
   <version>3.17.1</version>
   <develStage>stable</develStage>
   <compatibility>
@@ -28,6 +28,7 @@
     <psr0 prefix="CRM_" path="."/>
     <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
+  <comments>Patch 1</comments>
   <mixins>
     <mixin>menu-xml@1.0.0</mixin>
     <mixin>mgd-php@1.0.0</mixin>
