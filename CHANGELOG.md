@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Version 3.35.0 (2026-05-06)
+
+* Fix fatal error on add condition.
+
 # Version 3.34.0 (2026-04-13)
 
 * [!338](https://lab.civicrm.org/extensions/civirules/-/merge_requests/338) Remove related contact from group.
