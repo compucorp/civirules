@@ -25,6 +25,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
+      // Deprecated compatibility check - remove once all data migrated to array storage
       $conditionParams = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
       // convert from old format
       if (empty($data['compare_type'])) {

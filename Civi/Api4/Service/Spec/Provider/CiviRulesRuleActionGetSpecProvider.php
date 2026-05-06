@@ -92,6 +92,7 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
     if (!empty($row['action_id'])) {
       if (!empty($value)) {
         try {
+          // Deprecated compatibility check - remove once all data migrated to array storage
           $delayClass = is_array($value) ? $value : unserialize($value);
           $value = $delayClass->getDelayExplanation();
         } catch (\Throwable $e) {

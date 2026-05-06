@@ -38,6 +38,7 @@ class CRM_CivirulesPostTrigger_Form_Activity extends CRM_CivirulesTrigger_Form_F
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     if (isset($this->rule->trigger_params)) {
+      // Deprecated compatibility check - remove once all data migrated to array storage
       $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
       // Default to all record types. This creates backwards compatibility.
       $defaultValues['record_type'] = $data['record_type'] ?? 0;
