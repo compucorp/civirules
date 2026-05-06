@@ -25,7 +25,7 @@ abstract class CRM_Civirules_Trigger {
    *
    * @var array
    */
-  protected array $triggerParams;
+  protected array $triggerParams = [];
 
   /**
    * @var \CRM_Civirules_TriggerData_TriggerData
