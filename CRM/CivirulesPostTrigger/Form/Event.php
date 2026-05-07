@@ -47,7 +47,8 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    // Deprecated compatibility check - remove once all data migrated to array storage
+    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
     if ($data === false && $this->ruleId) {
       $defaultValues['contact_id'] = 0;
     } elseif (!empty($data['contact_id'])) {

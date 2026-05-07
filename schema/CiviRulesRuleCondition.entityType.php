@@ -58,6 +58,7 @@ return [
       'sql_type' => 'text',
       'input_type' => 'TextArea',
       'default' => NULL,
+      'serialize' => constant('CRM_Core_DAO::SERIALIZE_PHP'),
     ],
     'is_active' => [
       'title' => E::ts('Enabled'),

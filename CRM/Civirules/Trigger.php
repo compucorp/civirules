@@ -75,7 +75,8 @@ abstract class CRM_Civirules_Trigger {
    */
   public function setTriggerParams(string $triggerParams) {
     try {
-      $triggerParams = unserialize($triggerParams);
+      // Deprecated compatibility check - remove once all data migrated to array storage
+      $triggerParams = is_array($triggerParams) ? $triggerParams : unserialize($triggerParams);
       // If unserialize fails, FALSE is returned. We need an array
       $this->triggerParams = $triggerParams ?: [];
     }

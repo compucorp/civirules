@@ -34,7 +34,8 @@ class CRM_CivirulesCronTrigger_Form_GroupMembership extends CRM_CivirulesTrigger
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    // Deprecated compatibility check - remove once all data migrated to array storage
+    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
     if (!empty($data['group_id'])) {
       if (!is_array($data['group_id'])) {
         $data['group_id'] = [$data['group_id']];

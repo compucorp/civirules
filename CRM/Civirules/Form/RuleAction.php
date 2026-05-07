@@ -201,7 +201,8 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       }
 
       if (!empty($this->ruleAction->delay)) {
-        $delayClass = unserialize($this->ruleAction->delay);
+        // Deprecated compatibility check - remove once all data migrated to array storage
+        $delayClass = is_array($this->ruleAction->delay) ? $this->ruleAction->delay : unserialize($this->ruleAction->delay);
       }
       if (isset($delayClass)) {
         $defaults['delay_select'] = get_class($delayClass);

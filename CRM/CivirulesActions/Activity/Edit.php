@@ -101,7 +101,8 @@ class CRM_CivirulesActions_Activity_Edit extends CRM_CivirulesActions_Activity_A
       unset($params['activity_date_time']);
     } else {
       if (!empty($action_params['activity_date_time'])) {
-        $delayClass = unserialize($action_params['activity_date_time']);
+        // Deprecated compatibility check - remove once all data migrated to array storage
+        $delayClass = is_array($action_params['activity_date_time']) ? $action_params['activity_date_time'] : unserialize($action_params['activity_date_time']);
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
           $activityDate = $delayClass->delayTo(new DateTime(), $triggerData);
           if ($activityDate instanceof DateTime) {

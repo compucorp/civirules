@@ -101,7 +101,8 @@ class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_Civ
       $delay_class->setDefaultValues($defaultValues, 'activity_date_time', $this->rule);
     }
     if ($data['activity_date_time'] != 'null') {
-      $activityDateClass = unserialize($data['activity_date_time']);
+      // Deprecated compatibility check - remove once all data migrated to array storage
+      $activityDateClass = is_array($data['activity_date_time']) ? $data['activity_date_time'] : unserialize($data['activity_date_time']);
       if ($activityDateClass) {
         $defaultValues['activity_date_time'] = get_class($activityDateClass);
         foreach ($activityDateClass->getValues('activity_date_time', $this->rule) as $key => $val) {

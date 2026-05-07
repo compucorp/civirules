@@ -70,7 +70,8 @@ abstract class CRM_Civirules_Condition {
    */
   public function exportConditionParameters() {
     if (!empty($this->ruleCondition['condition_params'])) {
-      return unserialize($this->ruleCondition['condition_params']);
+      // Deprecated compatibility check - remove once all data migrated to array storage
+      return is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
     }
     return [];
   }

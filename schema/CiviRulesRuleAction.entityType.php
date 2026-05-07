@@ -52,6 +52,7 @@ return [
       'sql_type' => 'text',
       'input_type' => 'TextArea',
       'default' => NULL,
+      'serialize' => constant('CRM_Core_DAO::SERIALIZE_PHP'),
     ],
     'delay' => [
       'title' => E::ts('Delay'),

@@ -96,7 +96,8 @@ abstract class CRM_Civirules_Action {
   protected function getActionParameters() {
     $params = [];
     if (!empty($this->ruleAction['action_params'])) {
-      $params = unserialize($this->ruleAction['action_params']);
+      // Deprecated compatibility check - remove once all data migrated to array storage
+      $params = is_array($this->ruleAction['action_params']) ? $this->ruleAction['action_params'] : unserialize($this->ruleAction['action_params']);
     }
     return $params;
   }
