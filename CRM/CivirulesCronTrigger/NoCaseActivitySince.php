@@ -8,10 +8,14 @@ use CRM_Civirules_ExtensionUtil as E;
  */
 class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger_Cron {
 
-  /*
-   * @var CRM_Core_DAO|FALSE
+  /**
+   * @var \CRM_Case_DAO_CaseActivity $dao
    */
-  private ?CRM_Core_DAO $dao = NULL;
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'CaseActivity';
+  }
 
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule

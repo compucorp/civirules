@@ -11,7 +11,11 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
   /**
    * @var \CRM_Contribute_DAO_ContributionRecur $dao
    */
-  private $_dao = NULL;
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'ContributionRecur';
+  }
 
   public static function intervals() {
     return [
@@ -31,15 +35,15 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
    * @return CRM_Civirules_TriggerData_TriggerData|false
    */
   protected function getNextEntityTriggerData() {
-    if (!$this->_dao) {
+    if (!$this->dao) {
       if (!$this->queryForTriggerEntities()) {
         return FALSE;
       }
     }
-    if ($this->_dao->fetch()) {
+    if ($this->dao->fetch()) {
       $data = [];
-      CRM_Core_DAO::storeValues($this->_dao, $data);
-      return new CRM_Civirules_TriggerData_Cron($this->_dao->contact_id, 'ContributionRecur', $data, $data['contribution_recur_id'], $this);
+      CRM_Core_DAO::storeValues($this->dao, $data);
+      return new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'ContributionRecur', $data, $data['contribution_recur_id'], $this);
     }
     return FALSE;
   }
@@ -108,7 +112,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
                 WHERE `rule_log2`.`rule_id` = %3 AND DATE(`rule_log2`.`log_date`) = DATE(NOW()) and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
             )";
 
-    $this->_dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contribute_DAO_ContributionRecur');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contribute_DAO_ContributionRecur');
     return TRUE;
   }
 

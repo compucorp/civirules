@@ -7,7 +7,14 @@ use Civi\Api4\CaseContact;
  */
 class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
 
-  private $dao = FALSE;
+  /**
+   * @var \CRM_Case_DAO_Case $dao
+   */
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'Case';
+  }
 
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule

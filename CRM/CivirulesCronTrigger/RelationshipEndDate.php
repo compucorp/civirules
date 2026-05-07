@@ -2,7 +2,14 @@
 
 class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger_Cron {
 
-  private $dao = false;
+  /**
+   * @var \CRM_Contact_DAO_Relationship $dao
+   */
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'Relationship';
+  }
 
   /**
    * Returns an array of entities on which the triggerreacts

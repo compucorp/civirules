@@ -15,6 +15,10 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
    */
   private $dao = NULL;
 
+  public function getEntityName(): ?string {
+    return 'Membership';
+  }
+
   public static function intervals() {
     return [
       '-days' => ts('Day(s) before end date'),
