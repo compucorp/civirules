@@ -7,7 +7,14 @@
 
 class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
 
-  private $dao = false;
+  /**
+   * @var \CRM_Core_DAO_EntityTag $dao
+   */
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'EntityTag';
+  }
 
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule

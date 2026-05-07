@@ -8,7 +8,14 @@
 
 class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
 
-  private $dao = false;
+  /**
+   * @var \CRM_Contact_DAO_Contact $dao
+   */
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'Contact';
+  }
 
   /**
    * Returns an array of entities on which the t riggerreacts
@@ -16,7 +23,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
    * @return CRM_Civirules_TriggerData_EntityDefinition
    */
   protected function reactOnEntity() {
-    return new CRM_Civirules_TriggerData_EntityDefinition(ts('Person'), 'contact', 'CRM_Contact_DAO_Contact', 'Contact');
+    return new CRM_Civirules_TriggerData_EntityDefinition(ts('Person'), 'Contact', 'CRM_Contact_DAO_Contact', 'Contact');
   }
 
   /**
@@ -34,7 +41,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
     if ($this->dao->fetch()) {
       $data = array();
       CRM_Core_DAO::storeValues($this->dao, $data);
-      return new CRM_Civirules_TriggerData_Cron($this->dao->id, 'contact', $data, NULL, $this);
+      return new CRM_Civirules_TriggerData_Cron($this->dao->id, 'Contact', $data, NULL, $this);
     }
     return false;
   }

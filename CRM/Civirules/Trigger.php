@@ -50,6 +50,15 @@ abstract class CRM_Civirules_Trigger {
    */
   protected array $ruleConditions;
 
+  /**
+   * If this trigger is associated with an entity this will return the entity name (eg. Contact)
+   *
+   * @return string|null
+   */
+  public function getEntityName(): ?string {
+    return NULL;
+  }
+
   public function __construct($trigger = NULL) {
     if (isset($trigger)) {
       $this->triggerId = $trigger['id'] ?? NULL;

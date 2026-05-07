@@ -11,9 +11,9 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
 
   /**
-   * @var string
+   * @var string|null
    */
-  protected $objectName;
+  protected ?string $objectName = NULL;
 
   /**
    * @var string
@@ -31,9 +31,21 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
   }
 
   /**
+   * Get the entity (object) name
+   *
+   * @return string|null
+   */
+  public function getEntityName(): ?string {
+    return $this->getObjectName();
+  }
+
+  /**
    * Getter for object name
    *
-   * @return mixed
+   * @return string
+   *
+   * @deprecated Use getEntityName()
+   *
    */
   public function getObjectName() {
     return $this->objectName;

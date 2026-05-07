@@ -11,6 +11,10 @@ abstract class CRM_CivirulesCronTrigger_Activity extends CRM_Civirules_Trigger_C
    */
   protected $activityDAO = NULL;
 
+  public function getEntityName(): ?string {
+    return 'Activity';
+  }
+
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule
    *

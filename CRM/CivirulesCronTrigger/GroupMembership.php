@@ -11,9 +11,13 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesCronTrigger_GroupMembership extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var bool|CRM_Core_DAO
+   * @var \CRM_Contact_DAO_GroupContact $dao
    */
-  private $dao = FALSE;
+  private $dao = NULL;
+
+  public function getEntityName(): ?string {
+    return 'GroupContact';
+  }
 
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule
