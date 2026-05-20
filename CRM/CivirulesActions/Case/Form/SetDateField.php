@@ -13,18 +13,19 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('select', 'field', ts('Field'), $this->getFields(), true, array('class' => 'crm-select2'));
+    $this->add('select', 'field', ts('Field'), $this->getFields(), TRUE, ['class' => 'crm-select2']);
 
-    $delayList = array('' => ts(' - Set date to time of processing of action - ')) + CRM_Civirules_Delay_Factory::getOptionList();
+    $delayList = ['' => ts(' - Set date to time of processing of action - ')] + CRM_Civirules_Delay_Factory::getOptionList();
     $this->add('select', 'date', ts('Set date'), $delayList);
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->addElements($this, 'date', $this->rule);
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]
+    ]);
   }
 
   /**
@@ -40,14 +41,14 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
       $defaultValues['field'] = $data['field'];
     }
 
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaultValues, 'date', $this->rule);
     }
     // Deprecated compatibility check - remove once all data migrated to array storage
     $activityDateClass = is_array($data['date']) ? $data['date'] : unserialize($data['date']);
     if ($activityDateClass) {
       $defaultValues['date'] = get_class($activityDateClass);
-      foreach($activityDateClass->getValues('date', $this->rule) as $key => $val) {
+      foreach ($activityDateClass->getValues('date', $this->rule) as $key => $val) {
         $defaultValues[$key] = $val;
       }
     }
@@ -62,30 +63,31 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
    */
   public function addRules() {
     parent::addRules();
-    $this->addFormRule(array(
+    $this->addFormRule([
       'CRM_CivirulesActions_Case_Form_SetDateField',
       'validateDate'
-    ));
+    ]);
   }
 
   /**
    * Function to validate value of the delay
    *
    * @param array $fields
+   *
    * @return array|bool
    * @access public
    * @static
    */
   static function validateDate($fields) {
-    $errors = array();
+    $errors = [];
     if (!empty($fields['date'])) {
       $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
       $ruleAction = new CRM_Civirules_BAO_RuleAction();
       $ruleAction->id = $ruleActionId;
-      $ruleAction->find(true);
+      $ruleAction->find(TRUE);
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $ruleAction->rule_id;
-      $rule->find(true);
+      $rule->find(TRUE);
 
       $activityDateClass = CRM_Civirules_Delay_Factory::getDelayClassByName($fields['date']);
       $activityDateClass->validate($fields, $errors, 'date', $rule);
@@ -104,7 +106,7 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
    * @access public
    */
   public function postProcess() {
-    $data['date'] = false;
+    $data['date'] = FALSE;
     if (!empty($this->_submitValues['date'])) {
       $scheduledDateClass = CRM_Civirules_Delay_Factory::getDelayClassByName($this->_submitValues['date']);
       $scheduledDateClass->setValues($this->_submitValues, 'date', $this->rule);
@@ -117,3 +119,4 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
     parent::postProcess();
   }
 
+}
