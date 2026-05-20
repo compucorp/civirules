@@ -8,22 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesConditions_Membership_EndDateChanged extends CRM_CivirulesConditions_Generic_FieldChanged {
 
-  private $conditionParams = array();
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Method to check if the condition is valid
    *

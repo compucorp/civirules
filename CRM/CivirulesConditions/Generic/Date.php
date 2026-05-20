@@ -9,8 +9,6 @@
 
 class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
 
-  private $_conditionParams = array();
-
   public function getExtraDataInputUrl($ruleConditionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/generic/date', $ruleConditionId);
   }
@@ -19,24 +17,19 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * Method to set the Rule Condition data
    *
    * @param array $ruleCondition
-   * @access public
    */
-  public function setRuleConditionData($ruleCondition) {
+  public function setRuleConditionData(array $ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      // Deprecated compatibility check - remove once all data migrated to array storage
-      $conditionParams = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
       // convert from old format
       if (empty($data['compare_type'])) {
         if (!empty($data['use_trigger_date'])) { // old verion of way trigger date was saved
-          $conditionParams['compare_type'] = 'trigger';
+          $this->conditionParams['compare_type'] = 'trigger';
         } elseif (!empty($data['use_action_date'])) { // old verion of way action date was saved
-          $conditionParams['compare_type'] = 'action';
+          $this->conditionParams['compare_type'] = 'action';
         }
       }
       $this->ruleCondition['empty_field'] = empty($this->ruleCondition['empty_field']) ? 'false' : $this->ruleCondition['empty_field'];
-      $this->_conditionParams = $conditionParams;
     }
   }
 
@@ -50,8 +43,8 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     
-    if (!empty($this->_conditionParams['date_select'])) {
-      list($source_entity, $source_field_id) = $this->parseRawFieldId($this->_conditionParams['date_select']);
+    if (!empty($this->conditionParams['date_select'])) {
+      list($source_entity, $source_field_id) = $this->parseRawFieldId($this->conditionParams['date_select']);
     } else {
       $source_entity = 'Activity';
       $source_field_id = 'activity_date_time';
@@ -71,11 +64,11 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
 
       if ($activityDate) {
 
-        if ($this->_conditionParams['operator'] == 6) {
+        if ($this->conditionParams['operator'] == 6) {
 
           try {
-            $fromDate = new DateTime($this->_conditionParams['activity_from_date']);
-            $toDate = new DateTime($this->_conditionParams['activity_to_date']);
+            $fromDate = new DateTime($this->conditionParams['activity_from_date']);
+            $toDate = new DateTime($this->conditionParams['activity_to_date']);
           } catch (Exception $ex) {
             Civi::log()->error(ts('Could not parse either from date or to date from the condition params into a DateTime object in ') . __METHOD__ . ts(', condition returned as false'));
             return FALSE;
@@ -109,7 +102,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * @return bool
    */
   private function compareDate($compareDate, $activityDate) {
-    switch ($this->_conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 0:
         if ($activityDate == $compareDate) {
           return true;
@@ -162,16 +155,16 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     $actionDate = date('YmdHis');
 
 
-    if ($this->_conditionParams['compare_type']==='trigger') { // if use_trigger_date, compare with trigger date
+    if ($this->conditionParams['compare_type']==='trigger') { // if use_trigger_date, compare with trigger date
       $dateToUse = $triggerDate;
-    } elseif ($this->_conditionParams['use_action_date']==='action') { // if use_action_date, use date (only makes sense for actions with delays)
+    } elseif ($this->conditionParams['use_action_date']==='action') { // if use_action_date, use date (only makes sense for actions with delays)
       $dateToUse = $actionDate;
     } else { // field or fixed dated
       
-      if ($this->_conditionParams['compare_type']==='field') { // some field value
+      if ($this->conditionParams['compare_type']==='field') { // some field value
         try {
           
-          if (empty($this->_conditionParams['activity_compare_field']))
+          if (empty($this->conditionParams['activity_compare_field']))
             throw new Exception('No field set');
           
           list($source_entity, $source_field_id) = $this->parseRawFieldId($this->_conditionParams['activity_compare_field']);

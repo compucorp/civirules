@@ -8,21 +8,6 @@
 
 abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civirules_Condition {
 
-  protected $conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Returns an array with all possible options for the field, in
    * case the field is a select field, e.g. gender, or financial type

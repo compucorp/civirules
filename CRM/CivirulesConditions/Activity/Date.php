@@ -11,24 +11,8 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
 
-  private $_conditionParams = array();
-
   public function getExtraDataInputUrl($ruleConditionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/activity/date', $ruleConditionId);
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
   /**
@@ -51,10 +35,10 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
         return FALSE;
       }
       if ($activityDate) {
-        if ($this->_conditionParams['operator'] == 6) {
+        if ($this->conditionParams['operator'] == 6) {
           try {
-            $fromDate = new DateTime($this->_conditionParams['activity_from_date']);
-            $toDate = new DateTime($this->_conditionParams['activity_to_date']);
+            $fromDate = new DateTime($this->conditionParams['activity_from_date']);
+            $toDate = new DateTime($this->conditionParams['activity_to_date']);
           }
           catch (Exception $ex) {
             Civi::log()->error(ts('Could not parse either from date or to date from the condition params into a DateTime object in ') . __METHOD__ . ts(', condition returned as FALSE'));
@@ -83,7 +67,7 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
    * @return bool
    */
   private function compareDate($compareDate, $activityDate) {
-    switch ($this->_conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 0:
         if ($activityDate == $compareDate) {
           return TRUE;
@@ -126,7 +110,7 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
    */
   private function getCompareDate($triggerData) {
     // if use_trigger_date, compare with trigger date
-    if ($this->_conditionParams['use_trigger_date'] && !$this->_conditionParams['use_action_date'] && empty($this->_conditionParams['activity_compare_date'])) {
+    if ($this->conditionParams['use_trigger_date'] && !$this->conditionParams['use_action_date'] && empty($this->conditionParams['activity_compare_date'])) {
       $dateToUse = date('YmdHis');
       if ($triggerData->isDelayedExecution) {
         if (isset($triggerData->delayedSubmitDateTime)) {
@@ -134,12 +118,12 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
         }
       }
       // if use_action_date, use date (only makes sense for actions with delays)
-    } elseif ($this->_conditionParams['use_action_date'] && !$this->_conditionParams['use_trigger_date'] && empty($this->_conditionParams['activity_compare_date'])) {
+    } elseif ($this->conditionParams['use_action_date'] && !$this->conditionParams['use_trigger_date'] && empty($this->conditionParams['activity_compare_date'])) {
       $dateToUse = date('YmdHis');
     }
     else {
       // if compare date has been used
-      if (!empty($this->_conditionParams['activity_compare_date']) && !$this->_conditionParams['use_trigger_date'] && !$this->_conditionParams['use_action_date']) {
+      if (!empty($this->conditionParams['activity_compare_date']) && !$this->_conditionParams['use_trigger_date'] && !$this->_conditionParams['use_action_date']) {
         $dateToUse = $this->_conditionParams['activity_compare_date'];
       }
     }

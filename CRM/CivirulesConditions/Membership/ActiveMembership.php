@@ -4,18 +4,14 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesConditions_Membership_ActiveMembership extends CRM_Civirules_Condition {
 
-  protected $conditionParams = [];
-
   /**
    * Method to set the Rule Condition data
    *
    * @param array $ruleCondition
    */
-  public function setRuleConditionData($ruleCondition) {
+  public function setRuleConditionData(array $ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
       $this->conditionParams['membership_type_id'] = (array) $this->conditionParams['membership_type_id'];
     }
   }

@@ -5,24 +5,6 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesConditions_Membership_ContactHasMembership extends CRM_Civirules_Condition {
 
   /**
-   * @var array
-   */
-  private $conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
-  /**
    * This method returns true or false when an condition is valid or not
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData

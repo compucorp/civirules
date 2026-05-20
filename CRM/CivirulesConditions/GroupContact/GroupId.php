@@ -2,23 +2,6 @@
 
 class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-        // Deprecated compatibility check - remove once all data migrated to array storage
-        $this->conditionParams = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $groupContact = $triggerData->getEntityData('GroupContact');
     if (($groupContact['group_id'] ?? 0) == $this->conditionParams['group_id']) {

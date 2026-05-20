@@ -10,22 +10,6 @@
  */
 class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules_Condition {
 
-  private $_conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Returns condition data as an array and ready for export.
    * E.g. replace ids for names.
@@ -82,39 +66,39 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
     // count number of contributions of financial types for contact
     try {
       $apiParams = [
-        'financial_type_id' => ['IN' => $this->_conditionParams['financial_type']],
+        'financial_type_id' => ['IN' => $this->conditionParams['financial_type']],
         'contact_id' => $contactId,
         'contribution_status_id' => 'Completed',
       ];
       $count = (int) civicrm_api3('Contribution', 'getcount', $apiParams);
-      switch ($this->_conditionParams['operator']) {
+      switch ($this->conditionParams['operator']) {
         // equals
         case 0:
-          if ($count == $this->_conditionParams['number_contributions']) {
+          if ($count == $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // greater than
         case 1:
-          if ($count > $this->_conditionParams['number_contributions']) {
+          if ($count > $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // greater than or equal
         case 2:
-          if ($count >= $this->_conditionParams['number_contributions']) {
+          if ($count >= $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // less than
         case 3:
-          if ($count < $this->_conditionParams['number_contributions']) {
+          if ($count < $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // less than or equal
         case 4:
-          if ($count <= $this->_conditionParams['number_contributions']) {
+          if ($count <= $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
@@ -164,11 +148,11 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
     $operators = CRM_Civirules_Utils::getGenericComparisonOperatorOptions();
     $financialTypes = CRM_Civirules_Utils::getFinancialTypes();
     $finTypesTxt = [];
-    foreach ($this->_conditionParams['financial_type'] as $financialType) {
+    foreach ($this->conditionParams['financial_type'] as $financialType) {
       $finTypesTxt[] = $financialTypes[$financialType];
     }
     return ts('Number of contributions of financial type ') . implode(' or ', $finTypesTxt)
-      . ' ' .  $operators[$this->_conditionParams['operator']] . ' '
-      . $this->_conditionParams['number_contributions'];
+      . ' ' .  $operators[$this->conditionParams['operator']] . ' '
+      . $this->conditionParams['number_contributions'];
   }
 }

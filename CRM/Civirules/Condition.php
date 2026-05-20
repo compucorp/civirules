@@ -8,7 +8,9 @@
 
 abstract class CRM_Civirules_Condition {
 
-  protected $ruleCondition = [];
+  protected array $ruleCondition = [];
+
+  protected array $conditionParams = [];
 
   /**
    * Method to set RuleConditionData
@@ -16,10 +18,22 @@ abstract class CRM_Civirules_Condition {
    * @param array $ruleCondition
    */
   public function setRuleConditionData(array $ruleCondition) {
-    $this->ruleCondition = [];
-    if (is_array($ruleCondition)) {
-      $this->ruleCondition = $ruleCondition;
+    $this->ruleCondition = $ruleCondition;
+    $this->conditionParams = $this->getConditionParameters();
+  }
+
+  /**
+   * Convert parameters to an array of parameters
+   *
+   * @return array
+   */
+  protected function getConditionParameters(): array {
+    $params = [];
+    if (!empty($this->ruleCondition['condition_params'])) {
+      // Deprecated compatibility check - remove once all data migrated to array storage
+      $params = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
     }
+    return $params;
   }
 
   /**

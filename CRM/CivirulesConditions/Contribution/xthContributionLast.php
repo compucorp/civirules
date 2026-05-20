@@ -9,22 +9,6 @@
  */
 class CRM_CivirulesConditions_Contribution_xthContributionLast extends CRM_Civirules_Condition {
 
-  private $_conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Returns condition data as an array and ready for export.
    * E.g. replace ids for names.
@@ -81,40 +65,40 @@ class CRM_CivirulesConditions_Contribution_xthContributionLast extends CRM_Civir
     // count number of contributions of financial types for contact
     try {
       $apiParams = [
-        'financial_type_id' => ['IN' => $this->_conditionParams['financial_type']],
+        'financial_type_id' => ['IN' => $this->conditionParams['financial_type']],
         'contact_id' => $contactId,
-        'contribution_status_id' => ['IN' => $this->_conditionParams['contribution_status']],
-        'receive_date' => ['>=' => date('Y-m-d', strtotime("-{$this->_conditionParams['interval']} {$this->_conditionParams['interval_unit']}"))],
+        'contribution_status_id' => ['IN' => $this->conditionParams['contribution_status']],
+        'receive_date' => ['>=' => date('Y-m-d', strtotime("-{$this->conditionParams['interval']} {$this->conditionParams['interval_unit']}"))],
       ];
       $count = (int) civicrm_api3('Contribution', 'getcount', $apiParams);
-      switch ($this->_conditionParams['operator']) {
+      switch ($this->conditionParams['operator']) {
         // equals
         case 0:
-          if ($count == $this->_conditionParams['number_contributions']) {
+          if ($count == $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // greater than
         case 1:
-          if ($count > $this->_conditionParams['number_contributions']) {
+          if ($count > $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // greater than or equal
         case 2:
-          if ($count >= $this->_conditionParams['number_contributions']) {
+          if ($count >= $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // less than
         case 3:
-          if ($count < $this->_conditionParams['number_contributions']) {
+          if ($count < $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;
         // less than or equal
         case 4:
-          if ($count <= $this->_conditionParams['number_contributions']) {
+          if ($count <= $this->conditionParams['number_contributions']) {
             return TRUE;
           }
           break;

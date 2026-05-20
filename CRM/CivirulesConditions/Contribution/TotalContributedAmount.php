@@ -6,9 +6,8 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
    * Method to set the Rule Condition data
    *
    * @param array $ruleCondition
-   * @access public
    */
-  public function setRuleConditionData($ruleCondition) {
+  public function setRuleConditionData(array $ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
     // Backwards compatibility: if contribution status is not set, assume it is the completed status.
     if (!isset($this->conditionParams['contribution_status_id'])) {

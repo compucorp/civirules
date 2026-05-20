@@ -8,22 +8,6 @@
 
 class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
 
-  private $conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Returns condition data as an array and ready for export.
    * E.g. replace ids for names.

@@ -9,22 +9,6 @@
 
 class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condition {
 
-  private $_conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Method to determine if condition is valid
    *
@@ -42,7 +26,7 @@ class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condi
     $index = 2;
     $groupIds = [];
     // add group_ids
-    foreach ($this->_conditionParams['group_id'] as $groupId) {
+    foreach ($this->conditionParams['group_id'] as $groupId) {
       $index++;
       $groupIds[] = '%'.$index;
       $queryParams[$index] = [$groupId, 'Integer'];
@@ -51,7 +35,7 @@ class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condi
       $query .= ' AND group_id IN (' . implode(', ', $groupIds) . ')';
       $count = CRM_Core_DAO::singleValueQuery($query, $queryParams);
       // determine if valid taking operator into account (0 = has been in, 1 = never has been in)
-      switch ($this->_conditionParams['operator']) {
+      switch ($this->conditionParams['operator']) {
         case 0:
           if ($count > 0) {
             $return = TRUE;
@@ -139,11 +123,11 @@ class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condi
   public function userFriendlyConditionParams() {
     $text = '';
     $operatorLabels = ['has been in', 'has NEVER been in'];
-    if (isset($this->_conditionParams['operator'])) {
-      $text = $operatorLabels[$this->_conditionParams['operator']];
+    if (isset($this->conditionParams['operator'])) {
+      $text = $operatorLabels[$this->conditionParams['operator']];
     }
     $groupNames = [];
-    foreach ($this->_conditionParams['group_id'] as $groupId) {
+    foreach ($this->conditionParams['group_id'] as $groupId) {
       try {
         $groupNames[] = civicrm_api3('Group', 'getvalue', [
           'id' => $groupId,
@@ -157,7 +141,7 @@ class CRM_CivirulesConditions_Contact_HasBeenInGroup extends CRM_Civirules_Condi
       $text .= ': '.implode('; ', $groupNames);
     }
     else {
-      $text .= ': '.implode('; ', $this->_conditionParams['group_id']);
+      $text .= ': '.implode('; ', $this->conditionParams['group_id']);
 
     }
     return $text;
