@@ -8,8 +8,6 @@
 
 class CRM_CivirulesConditions_ActionLog_ScheduledReminder extends CRM_Civirules_Condition {
 
-  private $conditionParams = [];
-
   /**
    * Method to get additional data for the condition
    *
@@ -17,20 +15,6 @@ class CRM_CivirulesConditions_ActionLog_ScheduledReminder extends CRM_Civirules_
    */
   public function getExtraDataInputUrl($ruleConditionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/scheduledreminder', $ruleConditionId);
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
   /**

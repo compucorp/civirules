@@ -7,24 +7,8 @@
 
 class CRM_CivirulesConditions_Activity_Details extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
-
   public function getExtraDataInputUrl($ruleConditionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/activity_details', $ruleConditionId);
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
   /**

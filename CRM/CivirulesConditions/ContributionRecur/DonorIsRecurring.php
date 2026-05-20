@@ -11,28 +11,12 @@ use CRM_Civirules_ExtensionUtil as E;
  */
 class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
-
   /**
    * The (internal) name of the condition
    * @return string
    */
   protected function getConditionName() {
     return 'donor_has_recurring';
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
   /**

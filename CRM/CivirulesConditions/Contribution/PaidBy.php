@@ -2,21 +2,6 @@
 
 class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Condition {
 
-  private $_conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Method to determine if the condition is valid
    *
@@ -27,8 +12,8 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contribution = $triggerData->getEntityData('Contribution');
-    $paymentInstrumentIds = explode(',', $this->_conditionParams['payment_instrument_id']);
-    switch ($this->_conditionParams['operator']) {
+    $paymentInstrumentIds = explode(',', $this->conditionParams['payment_instrument_id']);
+    switch ($this->conditionParams['operator']) {
       case 0:
         if (in_array($contribution['payment_instrument_id'], $paymentInstrumentIds)) {
           $isConditionValid = TRUE;
@@ -109,14 +94,14 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
    */
   public function userFriendlyConditionParams() {
     $operator = null;
-    if ($this->_conditionParams['operator'] == 0) {
+    if ($this->conditionParams['operator'] == 0) {
       $operator = 'is one of';
     }
-    if ($this->_conditionParams['operator'] == 1) {
+    if ($this->conditionParams['operator'] == 1) {
       $operator = 'is not one of';
     }
     $paymentNames = [];
-    $paymentInstrumentIds = explode(',', $this->_conditionParams['payment_instrument_id']);
+    $paymentInstrumentIds = explode(',', $this->conditionParams['payment_instrument_id']);
     try {
       $apiParams = [
         'sequential' => 1,

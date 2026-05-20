@@ -9,24 +9,8 @@
 
 class CRM_CivirulesConditions_Activity_Campaign extends CRM_Civirules_Condition {
 
-  private $_conditionParams = array();
-
   public function getExtraDataInputUrl($ruleConditionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/condition/activity/campaign', $ruleConditionId);
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
   /**
@@ -96,14 +80,14 @@ class CRM_CivirulesConditions_Activity_Campaign extends CRM_Civirules_Condition 
     else {
       $campaignId = $activityData['campaign_id'];
     }
-    switch ($this->_conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 0:
-        if (in_array($campaignId, $this->_conditionParams['campaign_id'])) {
+        if (in_array($campaignId, $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
         break;
       case 1:
-        if (!in_array($campaignId, $this->_conditionParams['campaign_id'])) {
+        if (!in_array($campaignId, $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
         break;
@@ -120,14 +104,14 @@ class CRM_CivirulesConditions_Activity_Campaign extends CRM_Civirules_Condition 
    */
   public function userFriendlyConditionParams() {
     $friendlyText = "";
-    if ($this->_conditionParams['operator'] == 0) {
+    if ($this->conditionParams['operator'] == 0) {
       $friendlyText = 'Campaign is one of: ';
     }
-    if ($this->_conditionParams['operator'] == 1) {
+    if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Campaign is NOT one of: ';
     }
     $campaignTitles = array();
-    foreach ($this->_conditionParams['campaign_id'] as $campaignId) {
+    foreach ($this->conditionParams['campaign_id'] as $campaignId) {
       try {
         $campaignTitles[] = civicrm_api3('Campaign', 'getvalue', array(
           'id' => $campaignId,
@@ -141,7 +125,7 @@ class CRM_CivirulesConditions_Activity_Campaign extends CRM_Civirules_Condition 
       $friendlyText .= implode(", ", $campaignTitles);
     }
     else {
-      $friendlyText .= implode(', ' , $this->_conditionParams['campaign_id']);
+      $friendlyText .= implode(', ' , $this->conditionParams['campaign_id']);
     }
     return $friendlyText;
   }

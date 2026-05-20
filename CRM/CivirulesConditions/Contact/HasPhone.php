@@ -2,22 +2,6 @@
 
 class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * This method returns true or false when an condition is valid or not
    *

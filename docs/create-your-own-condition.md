@@ -320,28 +320,7 @@ public function requiredEntities() {
 }
 ```
 
-
-### Step 5 - Setting the Condition Params
-
-Storing the condition parameters in the database is done with the method `setRuleConditionData` like this:
-
-```php
-/**
- * Method to set the Rule Condition data
- *
- * @param array $ruleCondition
- * @access public
- */
-public function setRuleConditionData($ruleCondition) {
-  parent::setRuleConditionData($ruleCondition);
-  $this->conditionParams = array();
-  if (!empty($this->ruleCondition['condition_params'])) {
-    $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-  }
-}
-```
-
-### Step 6 - User Friendly Condition Parameters
+### Step 5 - User Friendly Condition Parameters
 
 To show the condition paramaters in a reasonably nice format as shown in this screenshot:
 
@@ -377,7 +356,7 @@ public function userFriendlyConditionParams() {
 }
 ```
 
-### Step 7 - Adding your Form
+### Step 6 - Adding your Form
 
 I now only need to create the form used to select the membership type. I will create this form using civix (generate:form) with the url that I have specified in the `getExtraDataInputUrl` method. The template of the form looks like this:
 

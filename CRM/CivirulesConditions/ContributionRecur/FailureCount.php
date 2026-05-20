@@ -10,22 +10,6 @@
 
 class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirules_Condition {
 
-  private $_conditionParams = array();
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Method to determine if the condition is valid
    *
@@ -36,7 +20,7 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
     $isConditionValid = FALSE;
     $contributionRecur = $triggerData->getEntityData('ContributionRecur');
     if ($contributionRecur['failure_count'] && $contributionRecur['failure_count']) {
-      if ($contributionRecur['failure_count'] == $this->_conditionParams['failure_count'] && $contributionRecur['failure_count'] == $this->_conditionParams['failure_count']) {
+      if ($contributionRecur['failure_count'] == $this->conditionParams['failure_count'] && $contributionRecur['failure_count'] == $this->conditionParams['failure_count']) {
         $isConditionValid = TRUE;
       }
     }
@@ -65,8 +49,8 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $operator = \CRM_CivirulesConditions_Utils_Period::generateFriendlyOperator($this->_conditionParams['operator']);
-    return "Recurring contribution {$operator} " . $this->_conditionParams['failure_count'] . " failed attempts";
+    $operator = \CRM_CivirulesConditions_Utils_Period::generateFriendlyOperator($this->conditionParams['operator']);
+    return "Recurring contribution {$operator} " . $this->conditionParams['failure_count'] . " failed attempts";
   }
 
 

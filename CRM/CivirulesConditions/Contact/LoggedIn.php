@@ -4,22 +4,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesConditions_Contact_LoggedIn extends CRM_Civirules_Condition {
 
-  private $conditionParams = [];
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = [];
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
-  }
-
   /**
    * Method to determine if the condition is valid
    *

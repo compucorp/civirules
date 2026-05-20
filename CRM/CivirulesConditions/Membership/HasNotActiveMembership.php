@@ -2,8 +2,6 @@
 
 class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civirules_Condition {
 
-  private $_conditionParams = array();
-
   /**
    * This method returns true or false when an condition is valid or not
    *
@@ -13,7 +11,7 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
    * @abstract
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $params['membership_type_id'] = $this->_conditionParams['membership_type_id'];
+    $params['membership_type_id'] = $this->conditionParams['membership_type_id'];
     $params['contact_id'] = $triggerData->getContactId();
     $params['active_only'] = 1;
 
@@ -95,26 +93,12 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
       $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
       $operator = 'equals';
       foreach ($membershipTypes['values'] as $membershipType) {
-        if ($membershipType['id'] == $this->_conditionParams['membership_type_id']) {
+        if ($membershipType['id'] == $this->conditionParams['membership_type_id']) {
           return "Membership Type ".$operator." ".$membershipType['name'];
         }
       }
     } catch (CRM_Core_Exception $ex) {}
     return '';
-  }
-
-  /**
-   * Method to set the Rule Condition data
-   *
-   * @param array $ruleCondition
-   * @access public
-   */
-  public function setRuleConditionData($ruleCondition) {
-    parent::setRuleConditionData($ruleCondition);
-    $this->_conditionParams = array();
-    if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
-    }
   }
 
 }
