@@ -131,6 +131,9 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
     $timeType = CRM_Utils_Type::T_TIME;
     $dateTimeType = $dateType + $timeType;
     $timestampType = CRM_Utils_Type::T_TIMESTAMP;
+    if (in_array($entity, ['Individual', 'Organization', 'Household'])) {
+      $entity = 'Contact';
+    }
     $dateFields = \Civi::cache()->get("isDateFieldList_$entity") ?? [];
     if (!$dateFields) {
       $fields = civicrm_api3(
