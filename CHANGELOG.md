@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Version 3.36.0 (2026-06-02)
+
+* Added action: Switch Head of Household. This action is needed when a person is marked as deceased. We will then mark the other household member as head of household. 
+
 # Version 3.35.0 (2026-05-06)
 
 * Fix fatal error on add condition.

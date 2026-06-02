@@ -42,6 +42,7 @@
   {"name":"participant_update_role","label":"Update Participant Role","class_name":"CRM_CivirulesActions_Participant_UpdateRole"},
   {"name":"participant_update_status","label":"Update Participant Status","class_name":"CRM_CivirulesActions_Participant_UpdateStatus"},
   {"name":"Relationship_add", "label":"Add Relationship", "class_name":"CRM_CivirulesActions_Relationship_Add"},
+  {"name":"Relationship_SwitchHeadOfHousehold", "label":"Switch Head of Household", "class_name":"CRM_CivirulesActions_Relationship_SwitchHeadOfHousehold"},
   {"name":"membership_add","label":"Add Membership","class_name":"CRM_CivirulesActions_Membership_Add"},
   {"name":"membership_update_status","label":"Update Membership Status","class_name":"CRM_CivirulesActions_Membership_UpdateStatus"},
   {"name":"contribution_financial_type","label":"Set the Financial Type for a Contribution","class_name":"CRM_CivirulesActions_Contribution_FinancialType"},
