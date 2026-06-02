@@ -2,7 +2,12 @@
 
 # Version 3.36.0 (2026-06-02)
 
-* Added action: Switch Head of Household. This action is needed when a person is marked as deceased. We will then mark the other household member as head of household. 
+* Added action: Switch Head of Household. This action is needed when a person is marked as deceased. We will then mark the other household member as head of household.
+* [!344](https://lab.civicrm.org/extensions/civirules/-/merge_requests/344) Fix caching of isDate
+* [!343](https://lab.civicrm.org/extensions/civirules/-/merge_requests/343) Fix #284 - Reordering last rule condition results in error
+* [!341](https://lab.civicrm.org/extensions/civirules/-/merge_requests/341) Implement getEntityName for trigger
+* [!340](https://lab.civicrm.org/extensions/civirules/-/merge_requests/340) Schema - Add serialize metadata
+* [!342](https://lab.civicrm.org/extensions/civirules/-/merge_requests/342) Fix unserialize of condition params
 
 # Version 3.35.0 (2026-05-06)
 
