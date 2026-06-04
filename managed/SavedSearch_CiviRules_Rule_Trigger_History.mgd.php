@@ -43,7 +43,7 @@ return [
         'saved_search_id.name' => 'CiviRules_Rule_Trigger_History',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts(NULL),
+          'description' => NULL,
           'sort' => [
             ['log_date', 'DESC'],
           ],

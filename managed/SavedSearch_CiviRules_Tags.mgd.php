@@ -53,7 +53,7 @@ return [
         'saved_search_id.name' => 'CiviRules_Tags',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts(NULL),
+          'description' => NULL,
           'sort' => [],
           'limit' => 50,
           'pager' => [],
