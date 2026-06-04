@@ -305,7 +305,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
         case 'Participant::participant_register_date':
           $friendlyText = ts('Participant Register Date');
           break;
-        default;
+        default:
           return 'Invalid date type!';
       }
     } else {
