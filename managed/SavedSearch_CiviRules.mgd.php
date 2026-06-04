@@ -78,7 +78,7 @@ return [
         'saved_search_id.name' => 'CiviRules',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts(NULL),
+          'description' => NULL,
           'sort' => [
             ['label', 'ASC'],
           ],
