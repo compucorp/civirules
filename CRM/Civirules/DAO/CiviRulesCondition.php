@@ -13,10 +13,6 @@
  * @property string $label 
  * @property string $class_name 
  * @property bool|string $is_active 
- * @property string $created_date 
- * @property string $created_user_id 
- * @property string $modified_date 
- * @property string $modified_user_id 
  */
 class CRM_Civirules_DAO_CiviRulesCondition extends CRM_Civirules_DAO_Base {
 
