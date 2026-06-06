@@ -14,6 +14,9 @@
  * @property string $condition_id 
  * @property string $condition_params 
  * @property bool|string $is_active 
+ * @property int $weight
+ * @property string $created_date
+ * @property string|null $modified_date
  */
 class CRM_Civirules_DAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_Base {
 
