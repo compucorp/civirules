@@ -12,6 +12,7 @@
 
 namespace Civi\Api4\Service\Spec\Provider;
 
+use Civi\Api4\Query\Api4SelectQuery;
 use Civi\Api4\Service\Spec\FieldSpec;
 use Civi\Api4\Service\Spec\RequestSpec;
 
@@ -37,6 +38,31 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'description']);
     $spec->addFieldSpec($field);
+
+    // Calculated field for last run/trigger date
+    $lastRun = new FieldSpec('last_run_date', 'CiviRulesRule', 'Timestamp');
+    $lastRun->setLabel(ts('Last Run Date'))
+      ->setDescription(ts('When this rule was last triggered'))
+      ->setColumnName('id')
+      ->setType('Extra')
+      ->setReadonly(TRUE)
+      ->setSqlRenderer([__CLASS__, 'renderLastRunDate']);
+    $spec->addFieldSpec($lastRun);
+
+    // Virtual field for rule tags
+    $tags = new FieldSpec('tag_id', 'CiviRulesRule', 'Array');
+    $tags->setLabel(ts('Tags'))
+      ->setTitle(ts('Tags'))
+      ->setDescription(ts('Tags belonging to this rule.'))
+      ->setType('Extra')
+      ->setInputType('Select')
+      ->setInputAttrs(['multiple' => TRUE])
+      ->setSerialize(\CRM_Core_DAO::SERIALIZE_COMMA)
+      ->setSuffixes(['id', 'name', 'label'])
+      ->setOptionsCallback([__CLASS__, 'getTagOptions'])
+      ->setColumnName('id')
+      ->setSqlRenderer([__CLASS__, 'renderTags']);
+    $spec->addFieldSpec($tags);
   }
 
   /**
@@ -46,7 +72,7 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
    * @return bool
    */
   public function applies($entity, $action): bool {
-    return $entity === 'CiviRulesRule' && in_array($action, ['get', 'create']);
+    return $entity === 'CiviRulesRule';
   }
 
   public static function description(&$value, $row) {
@@ -56,6 +82,18 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
       $triggerClass->setTriggerParams($row['trigger_params_display']);
       $value = $triggerClass->getTriggerDescription();
     }
+  }
+
+  public static function renderLastRunDate(array $field): string {
+    return '(SELECT MAX(log_date) FROM civirule_rule_log WHERE rule_id = ' . $field['sql_name'] . ')';
+  }
+
+  public static function renderTags(array $field, Api4SelectQuery $query): string {
+    return '(SELECT GROUP_CONCAT(rule_tag_id) FROM civirule_rule_tag WHERE rule_id = ' . $field['sql_name'] . ')';
+  }
+
+  public static function getTagOptions($field, $values, $returnFormat, $checkPermissions): array {
+    return \Civi::entity('CiviRulesRuleTag')->getOptions('rule_tag_id', $values, FALSE, $checkPermissions);
   }
 
 }

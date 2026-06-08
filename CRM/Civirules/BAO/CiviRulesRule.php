@@ -5,7 +5,7 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
+class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements \Civi\Core\HookInterface {
 
   /**
    * Function to get values
@@ -239,6 +239,36 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule {
       return is_array($this->trigger_params) ? $this->trigger_params : unserialize($this->trigger_params);
     }
     return [];
+  }
+
+  /**
+   * Event fired after an action is taken on a CiviRulesRule record.
+   * @param \Civi\Core\Event\PostEvent $event
+   */
+  public static function self_hook_civicrm_post(\Civi\Core\Event\PostEvent $event) {
+    if (
+      in_array($event->action, ['create', 'edit'], TRUE) &&
+      isset($event->params['tag_id']) && $event->id
+    ) {
+      $tags = (array) ($event->params['tag_id'] ?: []);
+      $newTags = [];
+      foreach ($tags as $tagId) {
+        if ($tagId) {
+          $newTags[] = ['rule_tag_id' => $tagId];
+        }
+      }
+      if ($newTags) {
+        \Civi\Api4\CiviRulesRuleTag::replace(FALSE)
+          ->addWhere('rule_id', '=', $event->id)
+          ->setRecords($newTags)
+          ->execute();
+      }
+      else {
+        \Civi\Api4\CiviRulesRuleTag::delete(FALSE)
+          ->addWhere('rule_id', '=', $event->id)
+          ->execute();
+      }
+    }
   }
 
 }
