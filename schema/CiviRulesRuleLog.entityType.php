@@ -28,6 +28,11 @@ return [
         'contact_id' => TRUE,
       ],
     ],
+    'log_date' => [
+      'fields' => [
+        'log_date' => TRUE,
+      ],
+    ],
   ],
   'getFields' => fn() => [
     'id' => [
