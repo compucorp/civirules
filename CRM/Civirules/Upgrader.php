@@ -619,5 +619,13 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     return TRUE;
   }
 
+  public function upgrade_3003() {
+    $this->ctx->log->info('Applying update 3003');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfIndexExists('civirule_rule_log', 'log_date')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE `civirule_rule_log` ADD INDEX `log_date` (`log_date`)");
+    }
+    return TRUE;
+  }
+
 }
 
