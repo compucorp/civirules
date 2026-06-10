@@ -25,11 +25,17 @@ class CRM_CivirulesConditions_Activity_Type extends CRM_Civirules_Condition {
     $params = parent::exportConditionParameters();
     if (!empty($params['activity_type_id'])) {
       try {
-        $params['activity_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
-          'return' => 'name',
-          'value' => $params['activity_type_id'],
-          'option_group_id' => 'activity_type',
+        $optionValues = civicrm_api4('OptionValue', 'get', [
+          'select' => [
+            'name',
+          ],
+          'where' => [
+            ['value', 'IN', $params['activity_type_id']],
+            ['option_group_id:name', '=', 'activity_type'],
+          ],
+          'checkPermissions' => FALSE,
         ]);
+        $params['activity_type_id'] = array_column(iterator_to_array($optionValues), 'name');
       } catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
