@@ -327,11 +327,11 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
         }
         return true;
       case 'matches regex':
-        preg_match('/' . $rightValue . '/', $leftValue, $matches);
+        preg_match('/' . $rightValue . '/', $leftValue ?? '', $matches);
         return (!empty($matches));
         break;
       case 'not matches regex':
-        preg_match('/' . $rightValue . '/', $leftValue, $matches);
+        preg_match('/' . $rightValue . '/', $leftValue ?? '', $matches);
         return (empty($matches));
         break;
       default:

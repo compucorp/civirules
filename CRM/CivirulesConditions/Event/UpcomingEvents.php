@@ -32,8 +32,17 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
       ->selectRowCount()
       ->addWhere('is_active', '=', TRUE)
       ->addWhere('start_date', '>=', date("Y-m-d H:i:s"));
-    if (count($this->conditionParams['event_type_id'])) {
+    if ($this->conditionParams['event_type_id'] !== NULL && count($this->conditionParams['event_type_id'])) {
       $eventApi->addWhere('event_type_id', 'IN', $this->conditionParams['event_type_id']);
+    }
+    if ($this->conditionParams['additional_wheres'] !== NULL) {
+      $additionalWheres = json_decode($this->conditionParams['additional_wheres'], TRUE);
+      if ($additionalWheres) {
+        foreach($additionalWheres as $where) {
+          list($field, $op, $value) = $where;
+          $eventApi->addWhere($field, $op, $value);
+        }
+      }
     }
     $events = $eventApi->execute();
     if ($events->countMatched() > 0) {
