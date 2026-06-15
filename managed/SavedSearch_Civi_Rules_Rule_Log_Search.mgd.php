@@ -30,7 +30,7 @@ return [
           'join' => [
             [
               'CiviRulesRule AS CiviRulesRuleLog_CiviRulesRule_rule_id_01',
-              'INNER',
+              'LEFT',
               [
                 'rule_id',
                 '=',
