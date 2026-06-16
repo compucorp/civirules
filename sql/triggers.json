@@ -109,5 +109,6 @@
   {"name": "next_scheduled_contribution", "label": "Daily trigger on Next Scheduled (Recurring) Contribution", "object_name": null, "op": null, "class_name": "CRM_CivirulesCronTrigger_NextContributionDate", "cron": "1"},
   {"name":"membership_activity","label":"Membership Activity","object_name":"Activity","op":"create|edit","class_name":"CRM_CivirulesPostTrigger_MembershipActivity","cron":"0"},
   {"name":"nocaseactivitysince","label":"No Case Activity Since","object_name":null,"op":null,"class_name":"CRM_CivirulesCronTrigger_NoCaseActivitySince","cron":"1"},
-  {"name":"afformsubmission_contact","label":"FormBuilder submission","object_name":"AfformSubmission","op":"create|edit","class_name":"CRM_CivirulesPostTrigger_AfformSubmission","cron":"0"}
+  {"name":"afformsubmission_contact","label":"FormBuilder submission","object_name":"AfformSubmission","op":"create|edit","class_name":"CRM_CivirulesPostTrigger_AfformSubmission","cron":"0"},
+  {"name": "page_view", "label": "User accesses a site page", "object_name": null, "op": null, "class_name": "CRM_CivirulesTrigger_PageView", "cron": "0"}
 ]

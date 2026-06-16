@@ -599,7 +599,7 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
    * For developers:
    * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.
    * This is done in the function civirules_civicrm_managed which is called as soon as the cached is cleared.
-   * 
+   *
    * ps. This functionality is gone since version 3.21.0, since then you have to use the upgrade function again.
    */
   public function upgrade_2087() {
@@ -611,6 +611,18 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
   public function upgrade_3001() {
     CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
     CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
+    return TRUE;
+  }
+
+  /**
+   * @return bool
+   */
+  public function upgrade_3002() {
+    $this->ctx->log->info('Applying update 3002 - register PageView trigger, UrlContains condition, CreatePortalAccess action');
+    CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('sql/triggers.json'));
+    CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
+    CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
+
     return TRUE;
   }
 

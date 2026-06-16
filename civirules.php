@@ -123,6 +123,59 @@ function civirules_civicrm_post($op, $objectName, $objectId, &$objectRef) {
   }
 }
 
+function _civirules_fire_page_view_trigger() {
+  try {
+    if (PHP_SAPI === 'cli') {
+      return;
+    }
+
+    if (function_exists('module_exists') && module_exists('civirules_pagetrack')) {
+      return;
+    }
+
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
+      return;
+    }
+
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+      return;
+    }
+
+    static $fired = FALSE;
+    if ($fired) {
+      return;
+    }
+    $fired = TRUE;
+
+    $session   = CRM_Core_Session::singleton();
+    $contactId = $session->getLoggedInContactID();
+    if (empty($contactId)) {
+      return;
+    }
+
+    $path  = CRM_Utils_System::currentPath();
+    $query = $_SERVER['QUERY_STRING'] ?? '';
+    $url   = '/' . ltrim($path, '/') . ($query !== '' ? '?' . $query : '');
+
+    CRM_CivirulesTrigger_PageView::fireForContact((int) $contactId, $url);
+  }
+  catch (Throwable $e) {
+    \Civi::log('civirules')->error(
+      'CiviRules PageView: unexpected error in page-view trigger helper: {message}',
+      ['message' => $e->getMessage()]
+    );
+  }
+}
+
+/**
+ * Implements hook_civicrm_pageRun().
+ *
+ * @param CRM_Core_Page $page
+ */
+function civirules_civicrm_pageRun(&$page) {
+  _civirules_fire_page_view_trigger();
+}
+
 /**
  * Function to check whether the pre hook could be called from a symfony
  * preInsert, preUpdate, preDelete event. Or whether this should be called from
@@ -417,6 +470,8 @@ function civirules_civicrm_scanClasses(&$classes) {
  * @param $form
  */
 function civirules_civicrm_buildForm($formName, &$form) {
+  _civirules_fire_page_view_trigger();
+
   switch ($formName) {
     case 'CRM_Civirules_Form_Rule':
       Civi::service('angularjs.loader')->addModules([

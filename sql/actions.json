@@ -57,5 +57,6 @@
   {"name":"decease_contact","label":"Set Contact as Deceased","class_name":"CRM_CivirulesActions_Contact_DeceaseContact"},
   {"name":"cancel_latest_membership","label":"Cancel Latest Membership","class_name":"CRM_CivirulesActions_Membership_CancelLatestMembership"},
   {"name":"log_to_civicrm","label":"Log to CiviCRM logs","class_name":"CRM_CivirulesActions_Log"},
-  {"name":"set_field_generic","label":"Set Field Value","class_name":"CRM_CivirulesActions_Generic_SetField"}
+  {"name":"set_field_generic","label":"Set Field Value","class_name":"CRM_CivirulesActions_Generic_SetField"},
+  {"name":"create_portal_access_record","label":"Create Portal Access Record","class_name":"CRM_CivirulesActions_Contact_CreatePortalAccess"}
 ]

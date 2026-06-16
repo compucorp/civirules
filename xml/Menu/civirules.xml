@@ -747,4 +747,11 @@
     <title>Set Field Value</title>
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
+  <item>
+    <path>civicrm/civirule/form/condition/pageview/urlcontains</path>
+    <page_callback>CRM_CivirulesConditions_Form_PageView_UrlContains</page_callback>
+    <title>Page URL matches pattern</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+    <access_arguments>administer CiviRules</access_arguments>
+  </item>
 </menu>

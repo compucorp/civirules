@@ -95,5 +95,6 @@
   {"name":"user_is_logged_in", "label":"User is Logged In", "class_name":"CRM_CivirulesConditions_Contact_LoggedIn"},
   {"name":"contribution_recur_xth_contribution", "label":"xth Contribution of the Recurring Contribution", "class_name":"CRM_CivirulesConditions_ContributionRecur_xthContribution"},
   {"name":"afformsubmission_status", "label":"FormBuilder Submission status", "class_name":"CRM_CivirulesConditions_AfformSubmission_Status"},
-  {"name":"afformsubmission_statuschanged", "label":"FormBuilder Submission status changed", "class_name":"CRM_CivirulesConditions_AfformSubmission_StatusChanged"}
+  {"name":"afformsubmission_statuschanged", "label":"FormBuilder Submission status changed", "class_name":"CRM_CivirulesConditions_AfformSubmission_StatusChanged"},
+  {"name":"page_view_url_contains", "label":"Page URL matches pattern (wildcard)", "class_name":"CRM_CivirulesConditions_PageView_UrlContains"}
 ]
