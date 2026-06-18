@@ -1,8 +1,7 @@
 # CHANGELOG
 
 # Version 3.38.0 (2026-06-18)
-
-
+* [!357](https://lab.civicrm.org/extensions/civirules/-/merge_requests/357) -  fix for issue #290 - trigger activity does not respect activity type email
 
 # Version 3.36.0 (2026-06-02)
 
