@@ -9,8 +9,7 @@ use CRM_Civirules_ExtensionUtil as E;
  *
  * @license AGPL-3.0
  */
-class CRM_CivirulesConditions_Form_ContributionRecur_Membership
-      extends CRM_CivirulesConditions_Form_Membership_ContactHasMembership {
+class CRM_CivirulesConditions_Form_ContributionRecur_Membership extends CRM_CivirulesConditions_Form_Membership_ContactHasMembership {
 
   /**
    * Overridden parent method to build form
@@ -103,5 +102,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Membership
   public function getHelpText() {
     return E::ts('This condition checks if the recurring contribution pays for a membership, optionally of certain type(s) and statuses.');
   }
-}
 
+}

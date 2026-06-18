@@ -2,10 +2,10 @@
 
 require_once 'civirules.civix.php';
 if (!interface_exists("\\Psr\\Log\\LoggerInterface")) {
-  require_once('psr/log/LoggerInterface.php');
+  require_once 'psr/log/LoggerInterface.php';
 }
 if (!class_exists("\\Psr\\Log\\LogLevel")) {
-  require_once('psr/log/LogLevel.php');
+  require_once 'psr/log/LogLevel.php';
 }
 
 use Civi\Core\ClassScanner;
@@ -27,27 +27,27 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
   $container->findDefinition('dispatcher')
     ->addMethodCall('addListener', [
       'civi.dao.preInsert',
-      'civirules_trigger_preinsert'
+      'civirules_trigger_preinsert',
     ])
     ->addMethodCall('addListener', [
       'civi.dao.postInsert',
-      'civirules_trigger_postinsert'
+      'civirules_trigger_postinsert',
     ])
     ->addMethodCall('addListener', [
       'civi.dao.preUpdate',
-      'civirules_trigger_preupdate'
+      'civirules_trigger_preupdate',
     ])
     ->addMethodCall('addListener', [
       'civi.dao.postUpdate',
-      'civirules_trigger_postupdate'
+      'civirules_trigger_postupdate',
     ])
     ->addMethodCall('addListener', [
       'civi.dao.preDelete',
-      'civirules_trigger_predelete'
+      'civirules_trigger_predelete',
     ])
     ->addMethodCall('addListener', [
       'civi.dao.postDelete',
-      'civirules_trigger_postdelete'
+      'civirules_trigger_postdelete',
     ]);
 }
 
@@ -98,7 +98,8 @@ function civirules_civicrm_pre($op, $objectName, $objectId, &$params) {
     try {
       CRM_Civirules_Utils_PreData::pre($op, $objectName, $objectId, $params, 1);
       CRM_Civirules_Utils_CustomDataFromPre::pre($op, $objectName, $objectId, $params, 1);
-    } catch (\Exception $ex) {
+    }
+    catch (\Exception $ex) {
       // Do nothing.
     }
   }
@@ -177,7 +178,8 @@ function civirules_trigger_preinsert(\Civi\Core\DAO\Event\PreUpdate $event) {
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('create', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('create', $objectName, $objectId, $params, $eventID);
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -213,7 +215,8 @@ function civirules_trigger_preupdate(\Civi\Core\DAO\Event\PreUpdate $event) {
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('edit', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('edit', $objectName, $objectId, $params, $eventID);
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -245,7 +248,8 @@ function civirules_trigger_predelete(\Civi\Core\DAO\Event\PreDelete $event) {
     CRM_Core_DAO::storeValues($event->object, $params);
     CRM_Civirules_Utils_PreData::pre('delete', $objectName, $objectId, $params, $eventID);
     CRM_Civirules_Utils_CustomDataFromPre::pre('delete', $objectName, $objectId, $params, $eventID);
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -281,13 +285,14 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
         $objectName,
         $objectId,
         $objectRef,
-        $eventId
+        $eventId,
       ]);
     }
     else {
       civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventId);
     }
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -304,7 +309,8 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
 function civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventID) {
   try {
     CRM_Civirules_Trigger_Post::post($op, $objectName, $objectId, $objectRef, $eventID);
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -320,7 +326,8 @@ function civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $e
 function civirules_civicrm_customPre($op, $groupID, $entityID, &$params) {
   try {
     CRM_Civirules_Utils_PreData::customPre($op, $groupID, $entityID, $params, 1);
-  } catch (\Exception $ex) {
+  }
+  catch (\Exception $ex) {
     // Do nothing.
   }
 }
@@ -402,7 +409,7 @@ function civirules_civicrm_permission(&$permissions) {
  *
  * @return void
  *
- * Implements hook_civicrm_scanClasses
+ *   Implements hook_civicrm_scanClasses
  *
  * @see CRM_Utils_Hook::scanClasses()
  */
@@ -422,7 +429,7 @@ function civirules_civicrm_buildForm($formName, &$form) {
       Civi::service('angularjs.loader')->addModules([
         'afsearchRuleConditions',
         'afsearchRuleActions',
-        'afsearchRuleTriggerHistory'
+        'afsearchRuleTriggerHistory',
       ]);
       break;
   }

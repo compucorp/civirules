@@ -6,7 +6,6 @@
  * @date 29 Oct 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -29,8 +28,9 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
       ['id' => 'privacy_options', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -45,7 +45,8 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
     if (isset($data['on_or_off'])) {
       if ($data['on_or_off'] == 1) {
         $defaultValues['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $defaultValues['on_or_off'] = 1;
       }
     }
@@ -65,7 +66,8 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
     if (isset($this->_submitValues['on_or_off'])) {
       if ($this->_submitValues['on_or_off'] == 1) {
         $data['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $data['on_or_off'] = 1;
       }
     }

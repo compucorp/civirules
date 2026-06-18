@@ -96,6 +96,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
       case 'not contains string':
         $key = 'original_value';
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -109,7 +110,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     if (isset($key)
       and !empty($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -132,6 +134,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
       case 'not contains string':
         $key = 'value';
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -145,7 +148,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     if (isset($key)
       and !empty($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -167,7 +171,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
   protected function getOriginalOperator() {
     if (!empty($this->conditionParams['original_operator'])) {
       return $this->conditionParams['original_operator'];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -189,7 +194,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
   protected function getOperator() {
     if (!empty($this->conditionParams['operator'])) {
       return $this->conditionParams['operator'];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -201,11 +207,10 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
    * @return bool
    * @access public
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     //not the right trigger. The trigger data should contain also
     if (!$triggerData instanceof CRM_Civirules_TriggerData_Interface_OriginalData) {
-      return false;
+      return FALSE;
     }
 
     $originalValue = $this->getOriginalFieldValue($triggerData);
@@ -217,9 +222,9 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     $newComparison = $this->compare($value, $compareValue, $this->getOperator());
 
     if ($originalComparison && $newComparison) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -239,26 +244,27 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     $options = $this->getFieldOptions();
     if (is_array($options)) {
       if (is_array($originalComparisonValue)) {
-        foreach($originalComparisonValue as $idx => $val) {
+        foreach ($originalComparisonValue as $idx => $val) {
           if (isset($options[$val])) {
             $originalComparisonValue[$idx] = $options[$val];
           }
         }
-      } elseif (isset($options[$originalComparisonValue])) {
+      }
+      elseif (isset($options[$originalComparisonValue])) {
         $originalComparisonValue = $options[$originalComparisonValue];
       }
 
       if (is_array($comparisonValue)) {
-        foreach($comparisonValue as $idx => $val) {
+        foreach ($comparisonValue as $idx => $val) {
           if (isset($options[$val])) {
             $comparisonValue[$idx] = $options[$val];
           }
         }
-      } elseif (isset($options[$comparisonValue])) {
+      }
+      elseif (isset($options[$comparisonValue])) {
         $comparisonValue = $options[$comparisonValue];
       }
     }
-
 
     if (is_array($originalComparisonValue)) {
       $originalComparisonValue = implode(", ", $originalComparisonValue);
@@ -266,10 +272,9 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     if (is_array($comparisonValue)) {
       $comparisonValue = implode(", ", $comparisonValue);
     }
-    return
-      E::ts('Old value  ')
-      . htmlentities(($this->getOriginalOperator())).' '.htmlentities($originalComparisonValue)
-      . E::ts (' and new value ')
+    return E::ts('Old value  ')
+      . htmlentities(($this->getOriginalOperator())) . ' ' . htmlentities($originalComparisonValue)
+      . E::ts(' and new value ')
       . htmlentities(($this->getOperator())) . ' ' . htmlentities($comparisonValue);
   }
 
@@ -285,12 +290,13 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
     if (!is_array($options)) {
       return $params;
     }
-    foreach(['value', 'multi_value', 'original_value', 'original_multi_value'] as $key) {
+    foreach (['value', 'multi_value', 'original_value', 'original_multi_value'] as $key) {
       if (isset($params[$key]) && is_array($params[$key])) {
         foreach ($params[$key] as $i => $j) {
           $params[$key][$i] = $options[$j];
         }
-      } elseif (isset($params[$key])) {
+      }
+      elseif (isset($params[$key])) {
         $params[$key] = $options[$params[$key]];
       }
     }
@@ -309,12 +315,13 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
       return $condition_params;
     }
     $options = array_flip($options);
-    foreach(['value', 'multi_value', 'original_value', 'original_multi_value'] as $key) {
+    foreach (['value', 'multi_value', 'original_value', 'original_multi_value'] as $key) {
       if (isset($condition_params[$key]) && is_array($condition_params[$key])) {
         foreach ($condition_params[$key] as $i => $j) {
           $condition_params[$key][$i] = $options[$j];
         }
-      } elseif (isset($condition_params[$key])) {
+      }
+      elseif (isset($condition_params[$key])) {
         $condition_params[$key] = $options[$condition_params[$key]];
       }
     }

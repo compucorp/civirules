@@ -26,7 +26,7 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
 
     // check if it's json
     $json_value = json_decode($new_value, 1);
-    if ($json_value !== null) {
+    if ($json_value !== NULL) {
       $new_value = $json_value;
     }
 
@@ -34,7 +34,8 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
     $field_id = $action_params['field_id'];
     civicrm_api3('Case', 'create', [
       'id'                 => $case['id'],
-      "custom_{$field_id}" => $new_value]
+      "custom_{$field_id}" => $new_value,
+    ]
     );
   }
 
@@ -57,7 +58,8 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
         unset($action_params['field_id']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -80,7 +82,8 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
         $action_params['field_id'] = $customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -140,4 +143,5 @@ class CRM_CivirulesActions_Case_SetCustomField extends CRM_Civirules_Action {
 
     return $helpText ?? '';
   }
+
 }

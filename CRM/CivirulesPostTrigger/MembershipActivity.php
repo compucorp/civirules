@@ -1,7 +1,6 @@
 <?php
 
 use Civi\Api4\Membership;
-use Civi\Api4\OptionValue;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesPostTrigger_MembershipActivity extends CRM_CivirulesPostTrigger_Activity {
@@ -59,7 +58,7 @@ class CRM_CivirulesPostTrigger_MembershipActivity extends CRM_CivirulesPostTrigg
       'Membership Signup',
       'Membership Renewal',
       'Change Membership Status',
-      'Change Membership Type'
+      'Change Membership Type',
     ];
 
     $activityTypes = Civi::entity('Activity')->getOptions('activity_type_id');
@@ -97,7 +96,7 @@ class CRM_CivirulesPostTrigger_MembershipActivity extends CRM_CivirulesPostTrigg
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Membership', 'Membership', 'CRM_Member_DAO_Membership' , 'Membership');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Membership', 'Membership', 'CRM_Member_DAO_Membership', 'Membership');
     return $entities;
   }
 
@@ -141,6 +140,7 @@ class CRM_CivirulesPostTrigger_MembershipActivity extends CRM_CivirulesPostTrigg
         return E::ts('Select the activity contact type that you want to trigger for. Also select if you want to trigger on Create and/or Edit')
           . '<br/>'
           . E::ts('This will trigger on all "Membership" activity types. Add conditions to restrict to specific activity types, status etc.');
+
       default:
         return parent::getHelpText($context);
     }

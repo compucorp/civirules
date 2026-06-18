@@ -24,6 +24,7 @@ class CRM_CivirulesActions_Contact_SoftDelete extends CRM_Civirules_Action {
 
     CRM_Contact_BAO_Contact::deleteContact($contactId);
   }
+
   /**
    * Method to return the url for additional form processing for action
    * and return false if none is needed
@@ -35,6 +36,5 @@ class CRM_CivirulesActions_Contact_SoftDelete extends CRM_Civirules_Action {
   public function getExtraDataInputUrl($ruleActionId) {
     return FALSE;
   }
-
 
 }

@@ -13,8 +13,8 @@ class CRM_CivirulesActions_Case_Form_AddRole extends CRM_CivirulesActions_Form_F
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('select', 'role', E::ts('Case role'), CRM_CivirulesActions_Case_AddRole::getCaseRoles(), true, ['class' => 'crm-select2 huge']);
-    $this->addEntityRef('cid', E::ts('Contact'), [], false);
+    $this->add('select', 'role', E::ts('Case role'), CRM_CivirulesActions_Case_AddRole::getCaseRoles(), TRUE, ['class' => 'crm-select2 huge']);
+    $this->addEntityRef('cid', E::ts('Contact'), [], FALSE);
 
     $this->addButtons([
       [
@@ -24,11 +24,10 @@ class CRM_CivirulesActions_Case_Form_AddRole extends CRM_CivirulesActions_Form_F
       ],
       [
         'type' => 'cancel',
-        'name' => ts('Cancel')
-      ]
+        'name' => ts('Cancel'),
+      ],
     ]);
   }
-
 
   /**
    * Set default values.
@@ -41,7 +40,6 @@ class CRM_CivirulesActions_Case_Form_AddRole extends CRM_CivirulesActions_Form_F
     return $defaultValues;
   }
 
-
   /**
    * Process form data after submitting
    */
@@ -52,4 +50,5 @@ class CRM_CivirulesActions_Case_Form_AddRole extends CRM_CivirulesActions_Form_F
     $this->ruleAction->save();
     parent::postProcess();
   }
+
 }

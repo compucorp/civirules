@@ -15,9 +15,11 @@ class CRM_CivirulesConditions_Contribution_IsPayLater extends CRM_Civirules_Cond
     $contribution = $triggerData->getEntityData('Contribution');
     if ($this->conditionParams['test'] == 'is pay later') {
       return !empty($contribution['is_pay_later']);
-    } elseif ($this->conditionParams['test'] == 'is not pay later') {
+    }
+    elseif ($this->conditionParams['test'] == 'is not pay later') {
       return empty($contribution['is_pay_later']);
-    } else {
+    }
+    else {
       throw new Exception("Invalid operator in 'Is Pay Later' Condition", 1);
     }
 

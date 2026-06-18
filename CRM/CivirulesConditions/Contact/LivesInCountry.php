@@ -6,7 +6,6 @@
  * @date 13 June 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condition {
 
   /**
@@ -81,7 +80,7 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
     $fieldIds = [];
     foreach ($this->conditionParams[$fieldName] as $fieldValue) {
       $this->_index++;
-      $fieldIds[] = '%'.$this->_index;
+      $fieldIds[] = '%' . $this->_index;
       $this->_queryParams[$this->_index] = [$fieldValue, 'Integer'];
     }
     if (!empty($fieldIds)) {
@@ -134,7 +133,7 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
         $text .= ' (checking address with location type ' . civicrm_api3('LocationType', 'getvalue', [
           'return' => 'display_name',
           'id' => $this->conditionParams['location_type_id'],
-          ]) . ')';
+        ]) . ')';
       }
       catch (CRM_Core_Exception $ex) {
       }

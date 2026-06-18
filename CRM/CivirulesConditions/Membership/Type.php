@@ -18,13 +18,13 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
         if ($membership['membership_type_id'] == $this->conditionParams['membership_type_id']) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
 
       case 1:
         if ($membership['membership_type_id'] != $this->conditionParams['membership_type_id']) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
 
       case 2:
         if (in_array($membership['membership_type_id'], $this->conditionParams['membership_type_ids'])) {
@@ -51,19 +51,21 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['membership_type_ids']) && is_array($params['membership_type_ids'])) {
-      foreach($params['membership_type_ids'] as $i => $j) {
+      foreach ($params['membership_type_ids'] as $i => $j) {
         $params['membership_type_ids'][$i] = civicrm_api3('MembershipType', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
       }
-    } elseif (!empty($params['membership_type_ids'])) {
+    }
+    elseif (!empty($params['membership_type_ids'])) {
       try {
         $params['membership_type_ids'] = civicrm_api3('MembershipType', 'getvalue', [
           'return' => 'name',
           'id' => $params['membership_type_ids'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -78,19 +80,21 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['membership_type_ids']) && is_array($condition_params['membership_type_ids'])) {
-      foreach($condition_params['membership_type_ids'] as $i => $j) {
+      foreach ($condition_params['membership_type_ids'] as $i => $j) {
         $condition_params['membership_type_ids'][$i] = civicrm_api3('MembershipType', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
       }
-    } elseif (!empty($condition_params['membership_type_ids'])) {
+    }
+    elseif (!empty($condition_params['membership_type_ids'])) {
       try {
         $condition_params['membership_type_ids'] = civicrm_api3('MembershipType', 'getvalue', [
           'return' => 'id',
           'name' => $condition_params['membership_type_ids'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -122,7 +126,7 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
     ];
     try {
       $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
-      $operator = null;
+      $operator = NULL;
       if ($this->conditionParams['operator'] == 0) {
         $operator = E::ts('equals');
       }
@@ -141,13 +145,15 @@ class CRM_CivirulesConditions_Membership_Type extends CRM_Civirules_Condition {
           if (in_array($membershipType['id'], $this->conditionParams['membership_type_ids'])) {
             $membershipTypeLabels[] = $membershipType['name'];
           }
-        } elseif ($membershipType['id'] == $this->conditionParams['membership_type_id']) {
+        }
+        elseif ($membershipType['id'] == $this->conditionParams['membership_type_id']) {
           $membershipTypeLabels[] = $membershipType['name'];
         }
       }
-      return E::ts('Membership type %1 %2', [1 => $operator, 2=> implode(', ', $membershipTypeLabels)]);
+      return E::ts('Membership type %1 %2', [1 => $operator, 2 => implode(', ', $membershipTypeLabels)]);
     }
-    catch (CRM_Core_Exception $ex) {}
+    catch (CRM_Core_Exception $ex) {
+    }
     return '';
   }
 

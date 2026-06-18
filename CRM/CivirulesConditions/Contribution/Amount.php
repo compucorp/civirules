@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contribution_Amount extends CRM_CivirulesConditions_Generic_ValueComparison {
 
   /**
@@ -20,7 +19,8 @@ class CRM_CivirulesConditions_Contribution_Amount extends CRM_CivirulesCondition
     if (isset($contribution['total_amount'])) {
       return (float) $contribution['total_amount'];
     }
-    return (float) 0.00; //undefined birth date
+    //undefined birth date
+    return (float) 0.00;
   }
 
   /**
@@ -32,11 +32,11 @@ class CRM_CivirulesConditions_Contribution_Amount extends CRM_CivirulesCondition
   protected function getComparisonValue() {
     if (!empty($this->conditionParams['value'])) {
       return (float) $this->conditionParams['value'];
-    } else {
+    }
+    else {
       return (float) 0.00;
     }
   }
-
 
   /**
    * This function validates whether this condition works with the selected trigger.

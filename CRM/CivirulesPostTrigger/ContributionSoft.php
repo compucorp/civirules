@@ -3,7 +3,6 @@
  * @author Jon Goldberg <jon@megaphonetech.com>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesPostTrigger_ContributionSoft extends CRM_Civirules_Trigger_Post {
 
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
@@ -24,4 +23,5 @@ class CRM_CivirulesPostTrigger_ContributionSoft extends CRM_Civirules_Trigger_Po
     $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contribution', 'Contribution', 'CRM_Contribute_DAO_Contribution', 'Contribution');
     return $entities;
   }
+
 }

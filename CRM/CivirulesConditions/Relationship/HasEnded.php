@@ -20,7 +20,7 @@ class CRM_CivirulesConditions_Relationship_HasEnded extends CRM_Civirules_Condit
     else {
       // if end_date <= today then relationship ended
       if (isset($relationship['end_date']) && !empty($relationship['end_date'])) {
-        if (!$relationship['end_date'] instanceof DateTime){
+        if (!$relationship['end_date'] instanceof DateTime) {
           $endDate = new DateTime($relationship['end_date']);
         }
         else {

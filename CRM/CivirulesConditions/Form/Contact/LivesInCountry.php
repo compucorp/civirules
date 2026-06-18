@@ -6,7 +6,6 @@
  * @date 13 June 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -17,13 +16,14 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'country_id', ts('Country'), $this->getCountries(), TRUE,
-      ['id' => 'country_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+      ['id' => 'country_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'location_type_id', ts('Location Type of the Address to Test'), $this->getLocationTypes(), FALSE);
-    $this->add('checkbox','no_address_found', ts('Use CiviCRM Default Country if Contact has no Address'));
-    $this->add('checkbox','no_country_found', ts('Use CiviCRM Default Country if Address has no Country'));
+    $this->add('checkbox', 'no_address_found', ts('Use CiviCRM Default Country if Contact has no Address'));
+    $this->add('checkbox', 'no_country_found', ts('Use CiviCRM Default Country if Address has no Country'));
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

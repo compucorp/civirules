@@ -27,21 +27,23 @@ class CRM_CivirulesConditions_ContributionRecur_Status extends CRM_CivirulesCond
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['status_id']) && is_array($params['status_id'])) {
-      foreach($params['status_id'] as $i => $j) {
+      foreach ($params['status_id'] as $i => $j) {
         $params['status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'contribution_status',
         ]);
       }
-    } elseif (!empty($params['status_id'])) {
+    }
+    elseif (!empty($params['status_id'])) {
       try {
         $params['status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -56,21 +58,23 @@ class CRM_CivirulesConditions_ContributionRecur_Status extends CRM_CivirulesCond
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['status_id']) && is_array($condition_params['status_id'])) {
-      foreach($condition_params['status_id'] as $i => $j) {
+      foreach ($condition_params['status_id'] as $i => $j) {
         $condition_params['status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $j,
           'option_group_id' => 'contribution_status',
         ]);
       }
-    } elseif (!empty($condition_params['status_id'])) {
+    }
+    elseif (!empty($condition_params['status_id'])) {
       try {
         $condition_params['status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -103,7 +107,9 @@ class CRM_CivirulesConditions_ContributionRecur_Status extends CRM_CivirulesCond
       foreach ($options as $option) {
         $return[$option['value']] = $option['label'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return $return;
   }
 

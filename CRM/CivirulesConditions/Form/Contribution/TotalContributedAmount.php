@@ -12,12 +12,12 @@ class CRM_CivirulesConditions_Form_Contribution_TotalContributedAmount extends C
 
     CRM_CivirulesConditions_Utils_Period::buildQuickForm($this);
 
-    $financial_type_id = $this->add('select', 'financial_type_id', ts('Financial type'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getFinancialTypes(), false);
-    $financial_type_id->setMultiple(true);
-    $payment_instrument_id = $this->add('select', 'payment_instrument_id', ts('Payment instrument'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getPaymentInstruments(), false);
-    $payment_instrument_id->setMultiple(true);
-    $contribution_status_id = $this->add('select', 'contribution_status_id', ts('Status'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getContributionStatus(), false);
-    $contribution_status_id->setMultiple(true);
+    $financial_type_id = $this->add('select', 'financial_type_id', ts('Financial type'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getFinancialTypes(), FALSE);
+    $financial_type_id->setMultiple(TRUE);
+    $payment_instrument_id = $this->add('select', 'payment_instrument_id', ts('Payment instrument'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getPaymentInstruments(), FALSE);
+    $payment_instrument_id->setMultiple(TRUE);
+    $contribution_status_id = $this->add('select', 'contribution_status_id', ts('Status'), CRM_CivirulesConditions_Contribution_TotalContributedAmount::getContributionStatus(), FALSE);
+    $contribution_status_id->setMultiple(TRUE);
   }
 
   /**
@@ -51,8 +51,7 @@ class CRM_CivirulesConditions_Form_Contribution_TotalContributedAmount extends C
     return $defaultValues;
   }
 
-  public function addRules()
-  {
+  public function addRules() {
     CRM_CivirulesConditions_Utils_Period::addRules($this);
   }
 
@@ -62,8 +61,7 @@ class CRM_CivirulesConditions_Form_Contribution_TotalContributedAmount extends C
    * @throws Exception when rule condition not found
    * @access public
    */
-  public function postProcess()
-  {
+  public function postProcess() {
     $data = $this->ruleCondition->unserializeParams();
     $data = CRM_CivirulesConditions_Utils_Period::getConditionParams($this->_submitValues, $data);
     $data['financial_type_id'] = $this->_submitValues['financial_type_id'];

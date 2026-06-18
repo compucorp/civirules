@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_ActionLog_ScheduledReminder extends CRM_Civirules_Condition {
 
   /**
@@ -37,9 +36,10 @@ class CRM_CivirulesConditions_ActionLog_ScheduledReminder extends CRM_Civirules_
           $isConditionValid = TRUE;
         }
         break;
+
       case 1:
         if (!in_array($reminder, $this->conditionParams['scheduledreminder_ids'])) {
-         $isConditionValid = TRUE;
+          $isConditionValid = TRUE;
         }
         break;
     }

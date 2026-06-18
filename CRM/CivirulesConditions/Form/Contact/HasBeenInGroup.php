@@ -19,11 +19,11 @@ class CRM_CivirulesConditions_Form_Contact_HasBeenInGroup extends CRM_CivirulesC
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'group_id', E::ts('Group(s)'), CRM_Civirules_Utils::getGroupList(), TRUE,
-      ['id' => 'group_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+      ['id' => 'group_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'operator', E::ts('Operator'), ['has been in', 'has NEVER been in'], TRUE);
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -59,4 +59,5 @@ class CRM_CivirulesConditions_Form_Contact_HasBeenInGroup extends CRM_CivirulesC
 
     parent::postProcess();
   }
+
 }

@@ -12,11 +12,11 @@ class CRM_CivirulesCronTrigger_Form_ActivityScheduledDate extends CRM_CivirulesC
     parent::buildQuickForm();
     $this->add('select', 'activity_type_id', ts('Activity Type'), $this->getActivityType(), TRUE, [
       'multiple' => TRUE,
-      'class' => 'crm-select2'
+      'class' => 'crm-select2',
     ]);
     $this->add('select', 'activity_status_id', ts('Activity Status'), $this->getActivityStatus(), TRUE, [
       'multiple' => TRUE,
-      'class' => 'crm-select2'
+      'class' => 'crm-select2',
     ]);
 
     $this->add('select', 'interval_unit', ts('Interval'), CRM_CivirulesCronTrigger_ActivityScheduledDate::intervals(), TRUE);
@@ -42,8 +42,10 @@ class CRM_CivirulesCronTrigger_Form_ActivityScheduledDate extends CRM_CivirulesC
 
     if (!empty($data['record_type'])) {
       $defaultValues['record_type'] = $data['record_type'];
-    } else {
-      $defaultValues['record_type'] = 3; // Default to only targets
+    }
+    else {
+      // Default to only targets
+      $defaultValues['record_type'] = 3;
     }
 
     $defaultValues['case_activity'] = $data['case_activity'] ?? FALSE;

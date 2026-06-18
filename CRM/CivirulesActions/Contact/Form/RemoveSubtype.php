@@ -11,9 +11,9 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
   protected function getSubtypes() {
     $types = CRM_Contact_BAO_ContactType::contactTypeInfo();
     $options = [];
-    foreach($types as $name => $type) {
-      if(!empty($type['parent_id'])) {
-        $options[$name] = $type['parent_label'].' - '.$type['label'];
+    foreach ($types as $name => $type) {
+      if (!empty($type['parent_id'])) {
+        $options[$name] = $type['parent_label'] . ' - ' . $type['label'];
       }
     }
     return $options;
@@ -44,8 +44,9 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
     $multiGroup->setButtonAttributes('remove', ['value' => ts('<< Remove')]);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   public function addRules() {
@@ -60,18 +61,19 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
    * @access public
    * @static
    */
-  static function validateSubtype($fields) {
+  public static function validateSubtype($fields) {
     $errors = [];
     if ($fields['type'] == 0 && empty($fields['subtype'])) {
       $errors['subtype'] = ts('You have to select at least one subtype');
-    } elseif ($fields['type'] == 1 && (empty($fields['subtypes']) || count($fields['subtypes']) < 1)) {
+    }
+    elseif ($fields['type'] == 1 && (empty($fields['subtypes']) || count($fields['subtypes']) < 1)) {
       $errors['subtypes'] = ts('You have to select at least one subtype');
     }
 
     if (count($errors)) {
       return $errors;
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -89,7 +91,8 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
     }
     if (!empty($data['sub_type']) && count($data['sub_type']) <= 1) {
       $defaultValues['type'] = 0;
-    } elseif (!empty($data['sub_type'])) {
+    }
+    elseif (!empty($data['sub_type'])) {
       $defaultValues['type'] = 1;
     }
     return $defaultValues;
@@ -104,7 +107,8 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
     $data['sub_type'] = [];
     if ($this->_submitValues['type'] == 0) {
       $data['sub_type'] = [$this->_submitValues['subtype']];
-    } else {
+    }
+    else {
       $data['sub_type'] = $this->_submitValues['subtypes'];
     }
 

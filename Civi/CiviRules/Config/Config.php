@@ -37,7 +37,7 @@ class Config extends Container {
       return $customGroup['values'][0];
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -52,10 +52,11 @@ class Config extends Container {
       $customGroupApi = civicrm_api3('CustomGroup', 'get', [
         'options' => ['limit' => 0],
       ]);
-      foreach($customGroupApi['values'] as $customGroup) {
+      foreach ($customGroupApi['values'] as $customGroup) {
         $customGroups[$customGroup['id']] = $customGroup;
       }
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
 
     $customGroups = $containerBuilder->getParameterBag()->escapeValue($customGroups);

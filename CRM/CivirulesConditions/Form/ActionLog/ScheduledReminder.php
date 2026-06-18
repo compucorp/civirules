@@ -19,13 +19,14 @@ class CRM_CivirulesConditions_Form_ActionLog_ScheduledReminder extends CRM_Civir
 
     $remindersList = ['- select -'] + CRM_Civirules_Utils::getScheduledReminderList();
     asort($remindersList);
-    $this->add('select', 'scheduledreminder_ids', ts('Schedule Reminder(s)'), $remindersList, true,
-      ['id' => 'scheduledreminder_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
-    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
+    $this->add('select', 'scheduledreminder_ids', ts('Schedule Reminder(s)'), $remindersList, TRUE,
+      ['id' => 'scheduledreminder_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

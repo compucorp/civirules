@@ -26,8 +26,8 @@ class CRM_Civirules_Utils_Upgrader {
    * @throws \Exception
    */
   public static function insertActionsFromJson(string $jsonFile) {
-    $actions = json_decode(file_get_contents($jsonFile), true);
-    foreach($actions as $action) {
+    $actions = json_decode(file_get_contents($jsonFile), TRUE);
+    foreach ($actions as $action) {
       $records[] = [
         'name' => $action['name'],
         'label' => $action['label'],
@@ -59,8 +59,8 @@ class CRM_Civirules_Utils_Upgrader {
    * @throws \Exception
    */
   public static function insertConditionsFromJson(string $jsonFile) {
-    $conditions = json_decode(file_get_contents($jsonFile), true);
-    foreach($conditions as $condition) {
+    $conditions = json_decode(file_get_contents($jsonFile), TRUE);
+    foreach ($conditions as $condition) {
       $records[] = [
         'name' => $condition['name'],
         'label' => $condition['label'],
@@ -95,8 +95,8 @@ class CRM_Civirules_Utils_Upgrader {
    * @throws \Exception
    */
   public static function insertTriggersFromJson(string $jsonFile) {
-    $triggers = json_decode(file_get_contents($jsonFile), true);
-    foreach($triggers as $trigger) {
+    $triggers = json_decode(file_get_contents($jsonFile), TRUE);
+    foreach ($triggers as $trigger) {
       if (!empty($trigger['object_name']) && empty($trigger['op'])) {
         \Civi::log('civirules')->error('CiviRules: Op parameter could not be empty for trigger ' . $trigger['name']);
         continue;

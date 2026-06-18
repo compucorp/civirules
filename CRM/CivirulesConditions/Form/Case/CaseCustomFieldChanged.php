@@ -32,11 +32,11 @@ class CRM_CivirulesConditions_Form_Case_CaseCustomFieldChanged extends CRM_Civir
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'case_custom_field_id', ts('Changed Custom Field is one of:'), $this->getCaseCustomFields(), TRUE,
-      ['id' => 'case_custom_field_ids', 'multiple' => 'multiple',  'class' => 'crm-select2']);
+      ['id' => 'case_custom_field_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
-      ]);
+    ]);
   }
 
   /**
@@ -66,4 +66,5 @@ class CRM_CivirulesConditions_Form_Case_CaseCustomFieldChanged extends CRM_Civir
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

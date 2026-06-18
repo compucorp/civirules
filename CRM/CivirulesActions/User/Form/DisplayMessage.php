@@ -62,4 +62,5 @@ class CRM_CivirulesActions_User_Form_DisplayMessage extends CRM_CivirulesActions
     $this->ruleAction->save();
     parent::postProcess();
   }
+
 }

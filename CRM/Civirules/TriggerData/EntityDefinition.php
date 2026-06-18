@@ -30,7 +30,7 @@ class CRM_Civirules_TriggerData_EntityDefinition {
    */
   public $key;
 
-  public function __construct($label, $entity, $daoClass='', $key='') {
+  public function __construct($label, $entity, $daoClass = '', $key = '') {
     $this->label = $label;
     $this->entity = $entity;
     $this->daoClass = $daoClass;

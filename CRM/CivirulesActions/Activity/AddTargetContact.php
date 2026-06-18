@@ -46,11 +46,11 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
       $sqlParams[1] = [$target_record_id, 'Integer'];
       $sqlParams[2] = [$activity['id'], 'Integer'];
       $dao = \CRM_Core_DAO::executeQuery($sql, $sqlParams);
-      while($dao->fetch()) {
+      while ($dao->fetch()) {
         civicrm_api3('ActivityContact', 'create', [
           'contact_id' => $dao->contact_id,
           'activity_id' => $activity['id'],
-          'record_type_id' => $target_record_id
+          'record_type_id' => $target_record_id,
         ]);
       }
     }
@@ -77,7 +77,8 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
           $return[] = $value[$return_field];
         }
       }
-    } catch (\Exception $ex) {
+    }
+    catch (\Exception $ex) {
       // Do nothing
     }
     return $return;
@@ -99,7 +100,8 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
           'return' => 'name_a_b',
           'id' => $rel_type_id,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
       $action_params['rel_type_id'] .= $rel_dir . $rel_type_id;
     }
@@ -121,7 +123,8 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
           'return' => 'id',
           'name_a_b' => $rel_type_id,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
       $action_params['rel_type_id'] .= $rel_dir . $rel_type_id;
     }
@@ -137,12 +140,11 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
    * @param int $ruleActionId
    *
    * @return bool|string
-   * $access public
+   *   $access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/activity_add_target_contact', $ruleActionId);
   }
-
 
   /**
    * Returns a user friendly text explaining the condition params
@@ -163,9 +165,10 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
           $params['return'] = 'label_b_a';
         }
         $label = civicrm_api3('RelationshipType', 'getvalue', $params);
-        return E::ts('Set to related contact: %1', [1=> $label]);
+        return E::ts('Set to related contact: %1', [1 => $label]);
       }
-    } catch (\Exception $ex) {
+    }
+    catch (\Exception $ex) {
       return '';
     }
   }
@@ -188,8 +191,5 @@ class CRM_CivirulesActions_Activity_AddTargetContact extends CRM_Civirules_Actio
     }
     return FALSE;
   }
-
-
-
 
 }

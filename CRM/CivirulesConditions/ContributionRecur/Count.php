@@ -8,7 +8,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @link http://redmine.civicoop.org/projects/civirules/wiki/Tutorial_create_a_more_complicated_condition_with_its_own_form_processing
  */
-
 class CRM_CivirulesConditions_ContributionRecur_Count extends CRM_Civirules_Condition {
 
   /**
@@ -17,7 +16,6 @@ class CRM_CivirulesConditions_ContributionRecur_Count extends CRM_Civirules_Cond
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contribution = $triggerData->getEntityData('Contribution');
@@ -29,7 +27,8 @@ WHERE contact_id = %1 AND civicrm_contribution.contribution_recur_id > %2 AND co
     $params = [
       1 => [$contribution['contact_id'], 'Positive'],
       2 => [0, 'Positive'],
-      3 => [CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'String']];
+      3 => [CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'String'],
+    ];
     $dao = CRM_Core_DAO::executeQuery($query, $params);
     if ($dao->fetch()) {
 
@@ -38,32 +37,37 @@ WHERE contact_id = %1 AND civicrm_contribution.contribution_recur_id > %2 AND co
           if ($dao->recurringContributions != $this->conditionParams['no_of_recurring']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
+
         case 2:
           if ($dao->recurringContributions > $this->conditionParams['no_of_recurring']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
+
         case 3:
           if ($dao->recurringContributions >= $this->conditionParams['no_of_recurring']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         case 4:
           if ($dao->recurringContributions < $this->conditionParams['no_of_recurring']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         case 5:
           if ($dao->recurringContributions <= $this->conditionParams['no_of_recurring']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         default:
           if ($dao->recurringContributions == $this->conditionParams['no_of_recurring']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
       }
     }
     return $isConditionValid;
@@ -92,7 +96,7 @@ WHERE contact_id = %1 AND civicrm_contribution.contribution_recur_id > %2 AND co
    */
   public function userFriendlyConditionParams() {
     $operator = \CRM_CivirulesConditions_Utils_Period::generateFriendlyOperator($this->conditionParams['operator']);
-    return 'Number of recurring contribution collections '.$operator.' '.$this->conditionParams['no_of_recurring'];
+    return 'Number of recurring contribution collections ' . $operator . ' ' . $this->conditionParams['no_of_recurring'];
   }
 
   /**

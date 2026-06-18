@@ -27,9 +27,10 @@ class CRM_CivirulesActions_Contact_SetPrivacyOptions extends CRM_Civirules_Actio
 
       foreach ($actionParams['privacy_options'] as $privacyOption) {
         if ($privacyOption == 'opt_out') {
-          $f = 'is_'.$privacyOption;
-        } else {
-          $f = 'do_not_'.$privacyOption;
+          $f = 'is_' . $privacyOption;
+        }
+        else {
+          $f = 'do_not_' . $privacyOption;
         }
         $sqlUpd[] = "{$f} = {$v}";
       }
@@ -40,12 +41,12 @@ class CRM_CivirulesActions_Contact_SetPrivacyOptions extends CRM_Civirules_Actio
         SET {$sqlUpdStr}
         WHERE id = %1
       ", [
-        1 => [$triggerData->getContactId(), 'Positive']
+        1 => [$triggerData->getContactId(), 'Positive'],
       ]);
     }
     catch (CRM_Core_Exception $ex) {
-      throw new Exception('Could not update contact with privacy options in '.__METHOD__
-        .', contact your system administrator. Error from API Contact create: '.$ex->getMessage());
+      throw new Exception('Could not update contact with privacy options in ' . __METHOD__
+        . ', contact your system administrator. Error from API Contact create: ' . $ex->getMessage());
     }
   }
 

@@ -21,4 +21,5 @@ class CiviRulesRuleTag extends Generic\DAOEntity {
       'default' => ['administer CiviRules'],
     ];
   }
+
 }

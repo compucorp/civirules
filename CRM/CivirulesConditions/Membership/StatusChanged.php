@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Membership_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
 
   /**
@@ -64,7 +63,9 @@ class CRM_CivirulesConditions_Membership_StatusChanged extends CRM_CivirulesCond
       foreach ($options as $option) {
         $return[$option['id']] = $option['name'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return $return;
   }

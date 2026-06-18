@@ -1,6 +1,5 @@
 <?php
 
-use Civi\Api4\CiviRulesCondition;
 use Civi\Api4\CiviRulesRule;
 use Civi\Api4\CiviRulesRuleAction;
 use Civi\Api4\CiviRulesRuleCondition;
@@ -45,7 +44,8 @@ function civicrm_api3_civi_rules_rule_create($params) {
   if (isset($params['id'])) {
     $params['modified_date'] = date('Ymd');
     $params['modified_user_id'] = $userId;
-  } else {
+  }
+  else {
     $params['created_date'] = date('Ymd');
     $params['created_user_id'] = $userId;
   }
@@ -68,7 +68,6 @@ function civicrm_api3_civi_rules_rule_get($params) {
   $returnValues = CRM_Civirules_BAO_CiviRulesRule::getValues($params);
   return civicrm_api3_create_success($returnValues, $params, 'CiviRulesRule', 'Get');
 }
-
 
 /**
  * CiviRulesRule.Delete API specification (optional)

@@ -22,7 +22,7 @@ class CRM_Civirules_TriggerData_Post extends CRM_Civirules_TriggerData_TriggerDa
     $ruleIDText = $this->getTrigger() ? 'Rule ID: ' . $this->getTrigger()->getRuleId() . ': ' : '';
 
     if (empty($objectId)) {
-      \Civi::log('civirules')->error('CiviRules ' . $ruleIDText . 'TriggerData_Post entityID is NULL! Entity: ' . $entity . '; Data: ' . print_r($data,TRUE));
+      \Civi::log('civirules')->error('CiviRules ' . $ruleIDText . 'TriggerData_Post entityID is NULL! Entity: ' . $entity . '; Data: ' . print_r($data, TRUE));
       throw new CRM_Core_Exception('CiviRules ' . $ruleIDText . 'TriggerData_Post entityID is NULL! Entity: ' . $entity);
     }
 

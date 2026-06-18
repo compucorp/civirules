@@ -77,13 +77,14 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['tag_id'] as $i=>$j) {
+    foreach ($action_params['tag_id'] as $i => $j) {
       try {
         $action_params['tag_id'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -96,13 +97,14 @@ class CRM_CivirulesActions_Tag_CaseTagRemove extends CRM_Civirules_Action {
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['tag_id'] as $i=>$j) {
+    foreach ($action_params['tag_id'] as $i => $j) {
       try {
         $action_params['tag_id'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

@@ -19,11 +19,12 @@ class CRM_CivirulesConditions_Form_Activity_RecordType extends CRM_CivirulesCond
 
     $activityTypeList = ['- select -'] + CRM_Core_OptionGroup::values('activity_contacts');
     asort($activityTypeList);
-    $this->add('select', 'record_type_id', 'Contact record Type', $activityTypeList, true);
+    $this->add('select', 'record_type_id', 'Contact record Type', $activityTypeList, TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

@@ -28,11 +28,13 @@
         try {
           $participant = civicrm_api3('Participant', 'getsingle', ['id' => CRM_Civirules_Utils_ContributionTrigger::getParticipantId()]);
           $triggerData->setEntityData('Participant', $participant);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           // Do nothing
         }
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       // Do nothing. There could be an exception when the contribution does not exists in the database anymore.
     }
 

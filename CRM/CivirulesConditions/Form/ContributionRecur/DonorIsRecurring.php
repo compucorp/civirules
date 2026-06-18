@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Condition Contribution Donor Is Recurring
  *
@@ -28,8 +29,9 @@ class CRM_CivirulesConditions_Form_ContributionRecur_DonorIsRecurring extends CR
     $this->add('hidden', 'rule_condition_id');
     $this->addElement('checkbox', 'has_recurring', ts('Donor has recurring contributions?'));
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -54,7 +56,8 @@ class CRM_CivirulesConditions_Form_ContributionRecur_DonorIsRecurring extends CR
   public function postProcess() {
     if (isset($this->_submitValues['has_recurring'])) {
       $data['has_recurring'] = $this->_submitValues['has_recurring'];
-    } else {
+    }
+    else {
       $data['has_recurring'] = 0;
     }
     $this->ruleCondition->condition_params = serialize($data);

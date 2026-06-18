@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_CivirulesConditions_Generic_ValueComparison {
 
   /**
@@ -19,7 +18,7 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
     $completed_status_id = civicrm_api3('OptionValue', 'getsingle', [
       'option_group_id' => 'contribution_status',
       'name' => 'completed',
-      'is_active' => 1
+      'is_active' => 1,
     ])['value'];
     $contact_id = $triggerData->getContactId();
 
@@ -31,7 +30,8 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
       $last_date = new DateTime($last_date);
       return $last_date->diff(new DateTime('now'))->days;
     }
-    return false; //undefined contribution date
+    //undefined contribution date
+    return FALSE;
   }
 
   /**
@@ -44,26 +44,32 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
   public function userFriendlyConditionParams() {
     switch ($this->getOperator()) {
       case '=':
-        $label =  'Last contribution is %1 days ago';
+        $label = 'Last contribution is %1 days ago';
         break;
+
       case '>':
-        $label =  'Last contribution is more than %1 days ago';
+        $label = 'Last contribution is more than %1 days ago';
         break;
+
       case '<':
-        $label =  'Last contribution is less than %1 days ago';
+        $label = 'Last contribution is less than %1 days ago';
         break;
+
       case '>=':
-        $label =  'Last contribution is more than %1 days ago or is %1 days ago';
+        $label = 'Last contribution is more than %1 days ago or is %1 days ago';
         break;
+
       case '<=':
-        $label =  'Last contribution is less than %1 days ago or is %1 days ago';
+        $label = 'Last contribution is less than %1 days ago or is %1 days ago';
         break;
+
       case '!=':
-        $label =  'Last contribution is not %1 days ago';
+        $label = 'Last contribution is not %1 days ago';
         break;
+
       default:
         return '';
-        break;
+      break;
     }
     return ts($label, [1 => $this->getComparisonValue()]);
   }
@@ -83,7 +89,7 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
       '<=' => ts('Last contribution is less than n days ago or is n days ago'),
     ];
   }
-  
+
   /**
    * Returns the value for the data comparison
    *

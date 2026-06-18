@@ -39,7 +39,8 @@ class CRM_Civirules_Engine {
           $triggerData->setContactId($triggerData->getEntityId());
         }
       }
-    } catch (Throwable $e) {
+    }
+    catch (Throwable $e) {
       // Catch *any* error when loading the triggerData and log it.
       \Civi::log('civirules')->error('CiviRules: Failed loading triggerData for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
       return FALSE;
@@ -48,7 +49,8 @@ class CRM_Civirules_Engine {
     // Check if the conditions are valid
     try {
       $isRuleValid = self::areConditionsValid($triggerData);
-    } catch (Throwable $e) {
+    }
+    catch (Throwable $e) {
       // Catch *any* error when executing the conditions and log it.
       \Civi::log('civirules')->error('CiviRules: One or more conditions is failing for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
       return FALSE;
@@ -61,7 +63,8 @@ class CRM_Civirules_Engine {
         self::executeActions($triggerData);
         return TRUE;
       }
-    } catch (Throwable $e) {
+    }
+    catch (Throwable $e) {
       // Catch *any* error when executing the actions and log it.
       \Civi::log('civirules')->error('CiviRules: Failed executing actions for ruleID: ' . $trigger->getRuleId() . ' with error: ' . $e->getMessage());
       return FALSE;
@@ -106,14 +109,15 @@ class CRM_Civirules_Engine {
       $triggerData->isDelayedExecution = TRUE;
       $triggerData->delayedSubmitDateTime = CRM_Utils_Time::date('YmdHis');
       self::delayAction($delay, $actionEngine);
-    } else {
+    }
+    else {
       //there is no delay so process action immediately
       $triggerData->isDelayedExecution = FALSE;
       try {
         $actionEngine->execute();
       }
       catch (Throwable $e) {
-        CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+        CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute action'), $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
       }
     }
   }
@@ -129,20 +133,25 @@ class CRM_Civirules_Engine {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => FALSE, //do not flush queue upon creation
+    //do not flush queue upon creation
+      'reset' => FALSE,
     ]);
 
     $returnValues = [];
 
     // retrieve the queue
     $runner = new CRM_Queue_Runner([
-      'title' => E::ts('Process delayed civirules actions'), // title for the queue
-      'queue' => $queue, // the queue object
-      'errorMode'=> CRM_Queue_Runner::ERROR_CONTINUE, // continue on error otherwise the queue will hang
+    // title for the queue
+      'title' => E::ts('Process delayed civirules actions'),
+    // the queue object
+      'queue' => $queue,
+    // continue on error otherwise the queue will hang
+      'errorMode' => CRM_Queue_Runner::ERROR_CONTINUE,
     ]);
 
-    $stopTime = time() + $maxRunTime; // stop executing next item after 30 seconds
-    while((time() < $stopTime) && $queue->numberOfItems() > 0) {
+    // stop executing next item after 30 seconds
+    $stopTime = time() + $maxRunTime;
+    while ((time() < $stopTime) && $queue->numberOfItems() > 0) {
       $result = $runner->runNext(FALSE);
       $returnValues[] = $result;
 
@@ -167,7 +176,8 @@ class CRM_Civirules_Engine {
       $triggerData = $actionEngine->getTriggerData();
       if ($actionEngine->ignoreConditionsOnDelayedProcessing()) {
         $processAction = TRUE;
-      } else {
+      }
+      else {
         $entity = $triggerData->getEntity();
         if ($entity) {
           try {
@@ -197,8 +207,9 @@ class CRM_Civirules_Engine {
       if ($processAction) {
         $actionEngine->execute();
       }
-    } catch (Throwable $e) {
-      CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute delayed action'),  $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
+    }
+    catch (Throwable $e) {
+      CRM_Civirules_Utils_LoggerFactory::logError(E::ts('Failed to execute delayed action'), $e->getMessage(), $triggerData, $actionEngine->getRuleAction());
     }
     return TRUE;
   }
@@ -234,13 +245,16 @@ class CRM_Civirules_Engine {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
-      'reset' => FALSE, // do not flush queue upon creation
+    // do not flush queue upon creation
+      'reset' => FALSE,
     ]);
 
     // create a task with the action and eventData as parameters
     $task = new CRM_Queue_Task(
-      ['CRM_Civirules_Engine', 'executeDelayedAction'], // call back method
-      [$actionEngine] // parameters
+    // call back method
+      ['CRM_Civirules_Engine', 'executeDelayedAction'],
+    // parameters
+      [$actionEngine]
     );
 
     // save the task with a delay
@@ -248,7 +262,8 @@ class CRM_Civirules_Engine {
     $dao->queue_name  = $queue->getName();
     $dao->submit_time = CRM_Utils_Time::date('YmdHis');
     $dao->data        = serialize($task);
-    $dao->weight      = 0; // weight, normal priority
+    // weight, normal priority
+    $dao->weight      = 0;
     $dao->release_time = $delayTo->format('YmdHis');
     $dao->save();
   }
@@ -280,7 +295,8 @@ class CRM_Civirules_Engine {
         return $actionDelayedTo;
       }
       return FALSE;
-    } elseif ($delayedTo instanceof DateTime and $now < $delayedTo) {
+    }
+    elseif ($delayedTo instanceof DateTime and $now < $delayedTo) {
       return $delayedTo;
     }
     return FALSE;
@@ -385,7 +401,7 @@ class CRM_Civirules_Engine {
     $trigger = $triggerData->getTrigger();
     $reactOnEntity = $trigger->getReactOnEntity();
     $daoClass = $reactOnEntity->daoClass;
-    if(!empty($daoClass)) {
+    if (!empty($daoClass)) {
       $table = $daoClass::getTableName();
     }
 

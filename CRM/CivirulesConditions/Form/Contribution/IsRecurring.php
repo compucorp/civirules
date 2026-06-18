@@ -14,12 +14,14 @@ class CRM_CivirulesConditions_Form_Contribution_IsRecurring extends CRM_Civirule
 
     $radioOptions = [
       'is recurring' => ts('is recurring'),
-      'is not recurring' => ts('is not recurring')];
+      'is not recurring' => ts('is not recurring'),
+    ];
     $this->addRadio('test', ts('Contribution') . ': ', $radioOptions);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -36,7 +38,6 @@ class CRM_CivirulesConditions_Form_Contribution_IsRecurring extends CRM_Civirule
     }
     return $defaultValues;
   }
-
 
   /**
    * Overridden parent method to process form data after submission

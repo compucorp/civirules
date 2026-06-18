@@ -10,7 +10,6 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $eventApi = \Civi\Api4\Event::get(FALSE)
       ->selectRowCount()
@@ -22,12 +21,12 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
     if ($this->conditionParams['additional_wheres'] !== NULL) {
       $additionalWheres = json_decode($this->conditionParams['additional_wheres'], TRUE);
       if ($additionalWheres) {
-        foreach($additionalWheres as $where) {
+        foreach ($additionalWheres as $where) {
           list($field, $op, $value) = $where;
           $eventApi->addWhere($field, $op, $value);
         }
       }
-    }  
+    }
     $events = $eventApi->execute();
     if ($events->countMatched() > 0) {
       return TRUE;
@@ -60,19 +59,19 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
   public function userFriendlyConditionParams() {
     $friendlyText = "";
     $typeText = [];
-      if (!empty($this->conditionParams['event_type_id'])) {
+    if (!empty($this->conditionParams['event_type_id'])) {
       $eventTypes = civicrm_api3('OptionValue', 'get', [
         'value' => ['IN' => $this->conditionParams['event_type_id']],
         'option_group_id' => 'event_type',
-        'options' => ['limit' => 0]
+        'options' => ['limit' => 0],
       ]);
-      foreach($eventTypes['values'] as $eventType) {
+      foreach ($eventTypes['values'] as $eventType) {
         $typeText[] = $eventType['label'];
       }
     }
 
     if (!empty($typeText)) {
-      $friendlyText .= E::ts('Event type is one of: %1', [1=>implode(", ", $typeText)]);
+      $friendlyText .= E::ts('Event type is one of: %1', [1 => implode(", ", $typeText)]);
     }
     return $friendlyText;
   }
@@ -86,21 +85,23 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['event_type_id']) && is_array($params['event_type_id'])) {
-      foreach($params['event_type_id'] as $i => $j) {
+      foreach ($params['event_type_id'] as $i => $j) {
         $params['event_type_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'event_type',
         ]);
       }
-    } elseif (!empty($params['event_type_id'])) {
+    }
+    elseif (!empty($params['event_type_id'])) {
       try {
         $params['event_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['event_type_id'],
           'option_group_id' => 'event_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -115,21 +116,23 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['event_type_id']) && is_array($condition_params['event_type_id'])) {
-      foreach($condition_params['event_type_id'] as $i => $j) {
+      foreach ($condition_params['event_type_id'] as $i => $j) {
         $condition_params['event_type_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'event_type',
         ]);
       }
-    } elseif (!empty($condition_params['event_type_id'])) {
+    }
+    elseif (!empty($condition_params['event_type_id'])) {
       try {
         $condition_params['event_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['event_type_id'],
           'option_group_id' => 'event_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

@@ -6,7 +6,6 @@
  * @date 15 Nov 2017
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -42,8 +41,9 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
       ['id' => 'tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -93,14 +93,15 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
       foreach ($fields['tag_id'] as $tagId) {
         try {
           $tag = civicrm_api3('Tag', 'getsingle', [
-            'id' => $tagId
+            'id' => $tagId,
           ]);
           if (strpos($tag['used_for'], 'civicrm_contact') === FALSE) {
             $errors['tag_id'] = ts('Can not use the selected tag "%1" with contacts, condition only allowed for tags that are used for contacts.', [1 => $tag['name']]);
             return $errors;
           }
         }
-        catch (CRM_Core_Exception $ex) {}
+        catch (CRM_Core_Exception $ex) {
+        }
       }
     }
     return TRUE;

@@ -30,7 +30,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
   protected \CRM_Civirules_Trigger $triggerObject;
 
   /**
-   * @var ?int
+   * @var int
    */
   protected ?int $ruleId = NULL;
 
@@ -39,7 +39,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    *
    * @access public
    */
-  function buildQuickForm() {
+  public function buildQuickForm() {
     $this->setFormTitle();
     $this->createFormElements();
     parent::buildQuickForm();
@@ -50,9 +50,9 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    *
    * @access public
    */
-  function preProcess() {
+  public function preProcess() {
     $this->ruleId = CRM_Utils_Request::retrieve('rid', 'Integer');
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleId, TRUE);
+    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->ruleId, TRUE);
     $session = CRM_Core_Session::singleton();
     $session->pushUserContext($redirectUrl);
     $this->assign('countRuleConditions', CRM_Civirules_BAO_RuleCondition::countConditionsForRule($this->ruleId));
@@ -83,11 +83,11 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    *
    * @access public
    */
-  function postProcess() {
+  public function postProcess() {
     $session = CRM_Core_Session::singleton();
     $saveParams = [
       'rule_id' => $this->_submitValues['rule_id'],
-      'condition_id' => $this->_submitValues['rule_condition_select']
+      'condition_id' => $this->_submitValues['rule_condition_select'],
     ];
     if (isset($this->_submitValues['rule_condition_link_select'])) {
       $saveParams['condition_link'] = $this->_submitValues['rule_condition_link_select'];
@@ -99,7 +99,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       ->execute()
       ->first();
 
-    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], true);
+    $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], TRUE);
     $redirectUrl = $condition->getExtraDataInputUrl($ruleCondition['id']);
     if (empty($redirectUrl)) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->_submitValues['rule_id'], TRUE);
@@ -107,7 +107,8 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
         $session->setStatus('Condition added to CiviRule ' . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->_submitValues['rule_id']),
           'Condition added', 'success');
       }
-    } else {
+    }
+    else {
       // Redirect to action configuration (required to redirect popup without closing
       CRM_Utils_System::redirect($redirectUrl);
     }
@@ -122,7 +123,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       ->execute()
       ->indexBy('id')
       ->column('label');
-    foreach($conditions as $conditionID => $conditionLabel) {
+    foreach ($conditions as $conditionID => $conditionLabel) {
       if ($this->doesConditionWorkWithTrigger($conditionID)) {
         $conditionOptions[$conditionID] = $conditionLabel;
       }
@@ -143,7 +144,8 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       if (!$conditionClass) {
         return FALSE;
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       return FALSE;
     }
     if (!$conditionClass->doesWorkWithTrigger($this->triggerObject, $this->rule)) {
@@ -174,11 +176,11 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     else {
       $conditionList = [' - select - '];
     }
-    $this->add('select', 'rule_condition_select', E::ts('Select Condition'), $conditionList, true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'rule_condition_select', E::ts('Select Condition'), $conditionList, TRUE, ['class' => 'crm-select2 huge']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -196,7 +198,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    */
   protected function setFormTitle() {
     $title = 'CiviRules Add Condition';
-    $this->assign('ruleConditionHeader', 'Add Condition to CiviRule '.CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleId));
+    $this->assign('ruleConditionHeader', 'Add Condition to CiviRule ' . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleId));
     CRM_Utils_System::setTitle($title);
   }
 
@@ -214,8 +216,8 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    * @param $fields
    * @return array|bool
    */
-  static function validateConditionEntities($fields) {
-    $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($fields['rule_condition_select'], false);
+  public static function validateConditionEntities($fields) {
+    $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($fields['rule_condition_select'], FALSE);
     if (!$conditionClass) {
       $errors['rule_condition_select'] = E::ts('Not a valid condition, condition class is missing');
       return $errors;
@@ -236,7 +238,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       return $errors;
     }
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -247,7 +249,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    * @access public
    * @static
    */
-  static function validateRuleCondition($fields) {
+  public static function validateRuleCondition($fields) {
     if (isset($fields['rule_condition_link_select']) && empty($fields['rule_condition_link_select'])) {
       $errors['rule_condition_link_select'] = E::ts('Link Operator can only be AND or OR');
       return $errors;
@@ -258,4 +260,5 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     }
     return TRUE;
   }
+
 }

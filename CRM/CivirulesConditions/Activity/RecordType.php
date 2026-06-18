@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -23,10 +22,11 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $ActivityContact = $triggerData->getEntityData('ActivityContact');
     if ($ActivityContact['record_type_id'] == $this->conditionParams['record_type_id']) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
+
   /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
@@ -57,7 +57,8 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
           'value' => $params['record_type_id'],
           'option_group_id' => 'activity_contacts',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -78,7 +79,8 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
           'name' => $params['record_type_id'],
           'option_group_id' => 'activity_contacts',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -100,4 +102,5 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntities(['Activity', 'ActivityContact']);
   }
+
 }

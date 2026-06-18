@@ -1,7 +1,8 @@
 <?php
 
 use CRM_Civirules_ExtensionUtil as E;
-require_once(E::path('api/v3/CiviRulesTrigger.php'));
+
+require_once E::path('api/v3/CiviRulesTrigger.php');
 
 /**
  * Notification of deprecated function.
@@ -40,7 +41,6 @@ function _civicrm_api3_civi_rule_trigger_create_spec(&$spec) {
 function civicrm_api3_civi_rule_trigger_create($params) {
   return civicrm_api3_civi_rules_trigger_create($params);
 }
-
 
 /**
  * CiviRuleTrigger.Get API
@@ -110,5 +110,3 @@ function _civicrm_api3_civi_rule_trigger_cleanup_spec(&$spec) {
 function civicrm_api3_civi_rule_trigger_cleanup($params) {
   return civicrm_api3_civi_rules_trigger_cleanup($params);
 }
-
-

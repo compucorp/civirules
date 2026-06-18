@@ -42,7 +42,7 @@ class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesCondit
       return $data[$field];
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -76,7 +76,7 @@ class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesCondit
     $return = [];
     $params = [
       'return' => ["name", "value"],
-      'option_group_id' =>  'activity_status',
+      'option_group_id' => 'activity_status',
       'options' => ['limit' => 0, 'sort' => "label ASC"],
     ];
     try {
@@ -84,11 +84,12 @@ class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesCondit
       foreach ($options as $option) {
         $return[$option['value']] = $option['name'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return $return;
   }
-
 
   /**
    * Returns true when the field is a select option with multiple select
@@ -97,7 +98,7 @@ class CRM_CivirulesConditions_Activity_StatusChanged extends CRM_CivirulesCondit
    * @return bool
    */
   public function isMultiple() {
-    return true;
+    return TRUE;
   }
 
 }

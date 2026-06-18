@@ -1,8 +1,7 @@
 <?php
 
 
-class CRM_CivirulesActions_Relationship_SwitchHeadOfHousehold extends CRM_Civirules_Action
-{
+class CRM_CivirulesActions_Relationship_SwitchHeadOfHousehold extends CRM_Civirules_Action {
 
   /**
    * Process the action
@@ -16,7 +15,7 @@ class CRM_CivirulesActions_Relationship_SwitchHeadOfHousehold extends CRM_Civiru
       ->addWhere('relationship_type_id:name', '=', 'Head of Household for')
       ->addWhere('is_active', '=', TRUE)
       ->execute();
-    foreach($relationships as $relationship) {
+    foreach ($relationships as $relationship) {
       try {
         $memberRelationship = \Civi\Api4\Relationship::get(FALSE)
           ->addWhere('contact_id_b', '=', $relationship['contact_id_b'])
@@ -51,16 +50,17 @@ class CRM_CivirulesActions_Relationship_SwitchHeadOfHousehold extends CRM_Civiru
             ->addValue('contact_id_b', $relationship['contact_id_b'])
             ->addValue('is_active', TRUE)
             ->addValue('relationship_type_id:name', 'Household Member of')
-            ->execute(); 
-        }   
-      } catch (\Exception $e) {
+            ->execute();
+        }
+      }
+      catch (\Exception $e) {
         // Do nothing
       }
     }
   }
 
   public function getExtraDataInputUrl($ruleActionId) {
-    return false;
+    return FALSE;
   }
 
 }

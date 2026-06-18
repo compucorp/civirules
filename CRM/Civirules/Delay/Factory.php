@@ -31,13 +31,13 @@ class CRM_Civirules_Delay_Factory {
    * @throws Exception
    */
   public static function getDelayClassByName($name) {
-    foreach(self::getAllDelayClasses() as $class) {
+    foreach (self::getAllDelayClasses() as $class) {
       if ($class->getName() == $name) {
         return $class;
       }
     }
 
-    throw new Exception('Could not find delay class for '.$name);
+    throw new Exception('Could not find delay class for ' . $name);
   }
 
   /**
@@ -52,7 +52,7 @@ class CRM_Civirules_Delay_Factory {
   public static function getOptionList() {
     $classes = self::getAllDelayClasses();
     $options = [];
-    foreach($classes as $class) {
+    foreach ($classes as $class) {
       if ($class instanceof CRM_Civirules_Delay_Delay) {
         $options[$class->getName()] = $class->getDescription();
       }

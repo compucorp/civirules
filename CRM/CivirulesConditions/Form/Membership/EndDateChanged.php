@@ -18,8 +18,9 @@ class CRM_CivirulesConditions_Form_Membership_EndDateChanged extends CRM_Civirul
     $this->add('checkbox', 'end_date_after_old_end_date', ts('New end date after the old end date'));
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

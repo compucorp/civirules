@@ -54,6 +54,7 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
     catch (CRM_Core_Exception $ex) {
     }
   }
+
   /**
    * Method to return the url for additional form processing for action
    * and return false if none is needed

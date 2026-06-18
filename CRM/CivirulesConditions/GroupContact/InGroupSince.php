@@ -10,7 +10,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @link https://lab.civicrm.org/extensions/civirules/-/issues/158
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Condition {
 
   /**
@@ -184,7 +183,8 @@ class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Co
           'return' => 'name',
           'id' => $params['group_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -204,7 +204,8 @@ class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Co
           'return' => 'id',
           'name' => $condition_params['group_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

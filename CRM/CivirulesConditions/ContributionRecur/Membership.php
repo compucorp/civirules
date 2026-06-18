@@ -18,7 +18,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
     }
 
     $sqlParams = [];
-    $whereClauses = [ 'contribution_recur_id = %1' ];
+    $whereClauses = ['contribution_recur_id = %1'];
     $sqlParams[1] = [$recurringID, 'Integer'];
     // Most of the following is copied from  CRM_CivirulesConditions_Membership_ContactHasMembership class.
 
@@ -84,24 +84,26 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['membership_type_id']) && is_array($params['membership_type_id'])) {
-      foreach($params['membership_type_id'] as $i => $gid) {
+      foreach ($params['membership_type_id'] as $i => $gid) {
         try {
           $params['membership_type_id'][$i] = civicrm_api3('MembershipType', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($params['membership_status_id']) && is_array($params['membership_status_id'])) {
-      foreach($params['membership_status_id'] as $i => $gid) {
+      foreach ($params['membership_status_id'] as $i => $gid) {
         try {
           $params['membership_status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -116,24 +118,26 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['membership_type_id']) && is_array($condition_params['membership_type_id'])) {
-      foreach($condition_params['membership_type_id'] as $i => $gid) {
+      foreach ($condition_params['membership_type_id'] as $i => $gid) {
         try {
           $condition_params['membership_type_id'][$i] = civicrm_api3('MembershipType', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($condition_params['membership_status_id']) && is_array($condition_params['membership_status_id'])) {
-      foreach($condition_params['membership_status_id'] as $i => $gid) {
+      foreach ($condition_params['membership_status_id'] as $i => $gid) {
         try {
           $condition_params['membership_status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -274,4 +278,3 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
   }
 
 }
-

@@ -96,7 +96,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
-    $condition->find(true);
+    $condition->find(TRUE);
     self::writeRecord(['id' => $condition->id, 'is_active' => 0]);
   }
 
@@ -114,7 +114,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
-    $condition->find(true);
+    $condition->find(TRUE);
     self::writeRecord(['id' => $condition->id, 'is_active' => 1]);
   }
 
@@ -132,7 +132,7 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
     $condition = new CRM_Civirules_BAO_Condition();
     $condition->id = $conditionId;
-    $condition->find(true);
+    $condition->find(TRUE);
     return $condition->label;
   }
 
@@ -145,10 +145,11 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
    * @return CRM_Civirules_Condition|FALSE
    * @throws Exception if abort is set to true and class does not exist or is not valid
    */
-  public static function getConditionObjectById(int $conditionID, bool $abort=TRUE) {
+  public static function getConditionObjectById(int $conditionID, bool $abort = TRUE) {
     if (isset(self::$conditionClassNames[$conditionID])) {
       $className = self::$conditionClassNames[$conditionID];
-    } else {
+    }
+    else {
       $condition = new CRM_Civirules_BAO_Condition();
       $condition->id = $conditionID;
       if (!$condition->find(TRUE)) {
@@ -177,4 +178,5 @@ class CRM_Civirules_BAO_CiviRulesCondition extends CRM_Civirules_DAO_Condition {
     }
     return $object;
   }
+
 }

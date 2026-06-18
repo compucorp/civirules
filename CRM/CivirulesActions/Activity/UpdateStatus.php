@@ -6,7 +6,6 @@ use Civi\Api4\OptionValue;
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Activity_UpdateStatus extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -59,7 +58,8 @@ class CRM_CivirulesActions_Activity_UpdateStatus extends CRM_CivirulesActions_Ge
         'value' => $action_params['status_id'],
         'option_group_id' => 'activity_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -77,7 +77,8 @@ class CRM_CivirulesActions_Activity_UpdateStatus extends CRM_CivirulesActions_Ge
         'name' => $action_params['status_id'],
         'option_group_id' => 'activity_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -128,9 +129,9 @@ class CRM_CivirulesActions_Activity_UpdateStatus extends CRM_CivirulesActions_Ge
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     $entities = $trigger->getProvidedEntities();
     if (isset($entities['Activity'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }

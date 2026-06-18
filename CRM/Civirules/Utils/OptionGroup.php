@@ -5,40 +5,42 @@
  */
 class CRM_Civirules_Utils_OptionGroup {
 
-    /**
-     * Returns which custom field html_type is a multiselect
-     *
-     * @param string $name
-     * @param string $title
-     * @params string $description
-     * @return array|bool
-     */
-    public static function create($name, $title = "", $description = "") {
+  /**
+   * Returns which custom field html_type is a multiselect
+   *
+   * @param string $name
+   * @param string $title
+   * @params string $description
+   * @return array|bool
+   */
+  public static function create($name, $title = "", $description = "") {
 
-      if (self::exists($name) == TRUE) {
-        return FALSE;
-      }
-
-      if (empty($name)) {
-        return FALSE;
-      }
-
-      if (empty($title)) {
-        $title = CRM_Civirules_Utils::buildLabelFromName($name);
-      }
-      $params = [
-        'name' => trim($name),
-        'title' => trim($title),
-        'description' => $description,
-        'is_active' => 1,
-        'is_reserved' => 1];
-      try {
-        $optionGroup = civicrm_api3('OptionGroup', 'create', $params);
-      } catch (CRM_Core_Exception $ex) {
-        return FALSE;
-      }
-      return $optionGroup;
+    if (self::exists($name) == TRUE) {
+      return FALSE;
     }
+
+    if (empty($name)) {
+      return FALSE;
+    }
+
+    if (empty($title)) {
+      $title = CRM_Civirules_Utils::buildLabelFromName($name);
+    }
+    $params = [
+      'name' => trim($name),
+      'title' => trim($title),
+      'description' => $description,
+      'is_active' => 1,
+      'is_reserved' => 1,
+    ];
+    try {
+      $optionGroup = civicrm_api3('OptionGroup', 'create', $params);
+    }
+    catch (CRM_Core_Exception $ex) {
+      return FALSE;
+    }
+    return $optionGroup;
+  }
 
   /**
    * Method to check if option group exists with name
@@ -50,7 +52,8 @@ class CRM_Civirules_Utils_OptionGroup {
     $count = civicrm_api3('OptionGroup', 'getcount', ['name' => $name]);
     if ($count > 0) {
       return TRUE;
-    } else {
+    }
+    else {
       return FALSE;
     }
   }
@@ -68,7 +71,8 @@ class CRM_Civirules_Utils_OptionGroup {
     }
     try {
       return civicrm_api3('OptionGroup', 'getsingle', ['name' => $name]);
-    } catch (CRM_Core_Exception $ex) {
+    }
+    catch (CRM_Core_Exception $ex) {
       return [];
     }
   }
@@ -79,14 +83,17 @@ class CRM_Civirules_Utils_OptionGroup {
    * @param $optionGroupId (can contain id or name of option grouop)
    * @return array
    */
-    public static function getActiveValues($optionGroupId) {
-      $result = [];
-      try {
-        $optionValues = civicrm_api3('OptionValue', 'get', ['option_group_id' => $optionGroupId]);
-        foreach ($optionValues['values'] as $optionValue) {
-          $result[$optionValue['value']] = $optionValue['label'];
-        }
-      } catch (CRM_Core_Exception $ex) {}
-      return $result;
+  public static function getActiveValues($optionGroupId) {
+    $result = [];
+    try {
+      $optionValues = civicrm_api3('OptionValue', 'get', ['option_group_id' => $optionGroupId]);
+      foreach ($optionValues['values'] as $optionValue) {
+        $result[$optionValue['value']] = $optionValue['label'];
+      }
     }
+    catch (CRM_Core_Exception $ex) {
+    }
+    return $result;
+  }
+
 }

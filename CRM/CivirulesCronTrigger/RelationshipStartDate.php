@@ -3,7 +3,7 @@
 class CRM_CivirulesCronTrigger_RelationshipStartDate extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Contact_DAO_Relationship $dao
+   * @var \CRM_Contact_DAO_Relationship
    */
   private $dao = NULL;
 
@@ -37,7 +37,7 @@ class CRM_CivirulesCronTrigger_RelationshipStartDate extends CRM_Civirules_Trigg
       CRM_Core_DAO::storeValues($this->dao, $data);
       return new CRM_Civirules_TriggerData_Cron($this->dao->contact_id_a, 'Relationship', $data, NULL, $this);
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -57,6 +57,7 @@ class CRM_CivirulesCronTrigger_RelationshipStartDate extends CRM_Civirules_Trigg
               WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
             );";
     $params[1] = [$this->ruleId, 'Integer'];
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_BAO_Relationship');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_BAO_Relationship');
   }
+
 }

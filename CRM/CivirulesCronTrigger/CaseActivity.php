@@ -8,7 +8,7 @@ use Civi\Api4\CaseContact;
 class CRM_CivirulesCronTrigger_CaseActivity extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Case_DAO_Case $dao
+   * @var \CRM_Case_DAO_Case
    */
   private $dao = NULL;
 

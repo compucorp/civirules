@@ -130,5 +130,4 @@ class CRM_CivirulesActions_ContributionRecur_CancelRecurring extends CRM_Civirul
     }
   }
 
-
 }

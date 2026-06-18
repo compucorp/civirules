@@ -11,7 +11,7 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesCronTrigger_WeeklyGroupMembership extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Contact_DAO_GroupContact $dao
+   * @var \CRM_Contact_DAO_GroupContact
    */
   private $dao = NULL;
 
@@ -85,9 +85,10 @@ class CRM_CivirulesCronTrigger_WeeklyGroupMembership extends CRM_Civirules_Trigg
 
     if (is_array($this->triggerParams['group_id'])) {
       $this->triggerParams['group_id'] = CRM_Utils_Type::escapeAll($this->triggerParams['group_id'], 'Integer');
-      $groupWhereStatement = "`c`.`group_id` IN (".implode(", ", $this->triggerParams['group_id']).")";
-    } else {
-      $groupWhereStatement = "`c`.`group_id` = '".CRM_Utils_Type::escape($this->triggerParams['group_id'], 'Integer', true)."'";
+      $groupWhereStatement = "`c`.`group_id` IN (" . implode(", ", $this->triggerParams['group_id']) . ")";
+    }
+    else {
+      $groupWhereStatement = "`c`.`group_id` = '" . CRM_Utils_Type::escape($this->triggerParams['group_id'], 'Integer', TRUE) . "'";
     }
 
     CRM_Contact_BAO_GroupContactCache::loadAll($this->triggerParams['group_id']);
@@ -112,9 +113,9 @@ class CRM_CivirulesCronTrigger_WeeklyGroupMembership extends CRM_Civirules_Trigg
     ";
 
     $params[1] = [$this->ruleId, 'Integer'];
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_DAO_GroupContact');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_DAO_GroupContact');
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -140,19 +141,21 @@ class CRM_CivirulesCronTrigger_WeeklyGroupMembership extends CRM_Civirules_Trigg
     if (is_array($this->triggerParams['group_id'])) {
       $groupApi = civicrm_api3('Group', 'get', ['id' => ['IN' => $this->triggerParams['group_id']], 'options' => ['limit' => 0]]);
       $groupNames = [];
-      foreach($groupApi['values'] as $group) {
+      foreach ($groupApi['values'] as $group) {
         $groupNames[] = $group['title'];
       }
       if (!empty($groupNames)) {
         $groupName = implode(", ", $groupNames);
       }
-    } else {
+    }
+    else {
       try {
         $groupName = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $this->triggerParams['group_id']
+          'id' => $this->triggerParams['group_id'],
         ]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         //do nothing
       }
     }
@@ -162,11 +165,13 @@ class CRM_CivirulesCronTrigger_WeeklyGroupMembership extends CRM_Civirules_Trigg
 
     $time = '';
     if (!empty($this->triggerParams['not_before_time']) && !empty($this->triggerParams['not_after_time'])) {
-      $time = E::ts('Between %1 and %2', [1=>$this->triggerParams['not_before_time'], 2=>$this->triggerParams['not_after_time']]);
-    } elseif (!empty($this->triggerParams['not_before_time'])) {
-      $time = E::ts('After %1', [1=>$this->triggerParams['not_before_time']]);
-    } elseif (!empty($this->triggerParams['not_after_time'])) {
-      $time = E::ts('Before %1', [1=>$this->triggerParams['not_after_time']]);
+      $time = E::ts('Between %1 and %2', [1 => $this->triggerParams['not_before_time'], 2 => $this->triggerParams['not_after_time']]);
+    }
+    elseif (!empty($this->triggerParams['not_before_time'])) {
+      $time = E::ts('After %1', [1 => $this->triggerParams['not_before_time']]);
+    }
+    elseif (!empty($this->triggerParams['not_after_time'])) {
+      $time = E::ts('Before %1', [1 => $this->triggerParams['not_after_time']]);
     }
     return trim(E::ts('Weekly trigger for all members of group %1 on each %2. %3', [
       1 => $groupName,

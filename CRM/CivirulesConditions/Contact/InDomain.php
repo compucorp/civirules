@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
 
   /**
@@ -18,10 +17,11 @@ class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contact_id = $triggerData->getContactId();
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in':
         $isConditionValid = $this->contactIsMemberOfDomain($contact_id, $this->conditionParams['domain_id']);
         break;
+
       case 'not in':
         $isConditionValid = $this->contactIsNotMemberOfDomain($contact_id, $this->conditionParams['domain_id']);
         break;
@@ -86,7 +86,7 @@ class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
 
     $domainTitle = self::getDomainName($this->conditionParams['domain_id']);
 
-    return $operatorLabel.' groups ('.$domainTitle.')';
+    return $operatorLabel . ' groups (' . $domainTitle . ')';
   }
 
   /**
@@ -155,9 +155,10 @@ class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
       try {
         $params['domain_id'] = civicrm_api3('Domain', 'getvalue', [
           'return' => 'name',
-          'id' => $params['domain_id']
+          'id' => $params['domain_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -175,9 +176,10 @@ class CRM_CivirulesConditions_Contact_InDomain extends CRM_Civirules_Condition {
       try {
         $condition_params['domain_id'] = civicrm_api3('Domain', 'getvalue', [
           'return' => 'id',
-          'name' => $condition_params['domain_id']
+          'name' => $condition_params['domain_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

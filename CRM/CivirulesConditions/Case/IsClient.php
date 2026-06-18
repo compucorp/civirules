@@ -7,13 +7,13 @@ class CRM_CivirulesConditions_Case_IsClient extends CRM_Civirules_Condition {
     if (empty($relationship)) {
       $caseData = $triggerData->getEntityData('Case');
       $contactId = $triggerData->getContactId();
-      return in_array($contactId,$caseData['client_id']);
+      return in_array($contactId, $caseData['client_id']);
     }
-    return false;
+    return FALSE;
   }
 
   public function getExtraDataInputUrl($ruleConditionId) {
-    return false;
+    return FALSE;
   }
 
   /**

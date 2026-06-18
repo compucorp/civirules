@@ -5,7 +5,6 @@
  * @author A.J. Fasano (Grand Lodge of Virginia AF&AM)
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Activity_ActivityIsPast extends CRM_Civirules_Condition {
 
   /**
@@ -29,14 +28,12 @@ class CRM_CivirulesConditions_Activity_ActivityIsPast extends CRM_Civirules_Cond
    * @return bool
    * @access public
    */
-  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
-  {
+  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $activityData = $triggerData->getEntityData('Activity');
     $activityDate = new DateTime($activityData['activity_date_time']);
     $currentDate = new DateTime();
 
-    if ($activityDate < $currentDate)
-    {
+    if ($activityDate < $currentDate) {
       return TRUE;
     }
     return FALSE;
@@ -57,4 +54,5 @@ class CRM_CivirulesConditions_Activity_ActivityIsPast extends CRM_Civirules_Cond
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Activity');
   }
+
 }

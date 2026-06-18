@@ -22,7 +22,8 @@ class CRM_CivirulesPostTrigger_ContributionRecur extends CRM_Civirules_Trigger_P
       // Merge both arrays preserving the data in the posthook.
       $newData = array_merge($dataInDatabase, $dataFromPostHook);
       $triggerData->setEntityData('ContributionRecur', $newData);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       // Do nothing. There could be an exception when the contribution does not exists in the database anymore.
     }
 

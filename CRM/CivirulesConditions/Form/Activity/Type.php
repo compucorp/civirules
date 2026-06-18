@@ -19,13 +19,14 @@ class CRM_CivirulesConditions_Form_Activity_Type extends CRM_CivirulesConditions
 
     $activityTypeList = ['- select -'] + CRM_Civirules_Utils::getActivityTypeList();
     asort($activityTypeList);
-    $this->add('select', 'activity_type_id', ts('Activity Type(s)'), $activityTypeList, true,
-      ['id' => 'activity_type_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
-    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
+    $this->add('select', 'activity_type_id', ts('Activity Type(s)'), $activityTypeList, TRUE,
+      ['id' => 'activity_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

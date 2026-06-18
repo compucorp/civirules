@@ -5,11 +5,10 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Contact_DAO_Contact $dao
+   * @var \CRM_Contact_DAO_Contact
    */
   private $dao = NULL;
 
@@ -43,7 +42,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
       CRM_Core_DAO::storeValues($this->dao, $data);
       return new CRM_Civirules_TriggerData_Cron($this->dao->id, 'Contact', $data, NULL, $this);
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -64,6 +63,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
               WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
             )";
     $params[1] = [$this->ruleId, 'Integer'];
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_BAO_Contact');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_BAO_Contact');
   }
+
 }

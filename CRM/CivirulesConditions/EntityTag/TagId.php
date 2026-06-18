@@ -6,8 +6,6 @@
  * @date 15 Nov 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
-
 class CRM_CivirulesConditions_EntityTag_TagId extends CRM_Civirules_Condition {
 
   /**
@@ -52,9 +50,10 @@ class CRM_CivirulesConditions_EntityTag_TagId extends CRM_Civirules_Condition {
         $tagLabels[] = civicrm_api3('Tag', 'getvalue',
           [
             'return' => 'name',
-            'id' => $tagId]);
+            'id' => $tagId,
+          ]);
       }
-      return ts('Tag for Contact is one of selected: ').implode(', ', $tagLabels);
+      return ts('Tag for Contact is one of selected: ') . implode(', ', $tagLabels);
     }
     return '';
   }
@@ -68,13 +67,14 @@ class CRM_CivirulesConditions_EntityTag_TagId extends CRM_Civirules_Condition {
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['tag_id']) && is_array($params['tag_id'])) {
-      foreach($params['tag_id'] as $i => $gid) {
+      foreach ($params['tag_id'] as $i => $gid) {
         try {
           $params['tag_id'][$i] = civicrm_api3('Tag', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -89,13 +89,14 @@ class CRM_CivirulesConditions_EntityTag_TagId extends CRM_Civirules_Condition {
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['tag_id']) && is_array($condition_params['tag_id'])) {
-      foreach($condition_params['tag_id'] as $i => $gid) {
+      foreach ($condition_params['tag_id'] as $i => $gid) {
         try {
           $condition_params['tag_id'][$i] = civicrm_api3('Tag', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }

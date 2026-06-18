@@ -4,8 +4,7 @@
  * @date 12-6-18
  * @license AGPL-3.0
  */
-
-class CRM_CivirulesPostTrigger_ContactTrashed  extends CRM_Civirules_Trigger_Post {
+class CRM_CivirulesPostTrigger_ContactTrashed extends CRM_Civirules_Trigger_Post {
 
   /**
    * Returns an array of entities on which the trigger reacts

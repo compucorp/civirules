@@ -46,8 +46,9 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
     if (count($this->conditionParams['payment_processor_id'])) {
       switch ($this->conditionParams['payment_processor_id_operator']) {
         case 'in':
-          $whereClauses[] = 'payment_processor_id IN (' . implode(',', $this->conditionParams['payment_processor_id']). ')';
+          $whereClauses[] = 'payment_processor_id IN (' . implode(',', $this->conditionParams['payment_processor_id']) . ')';
           break;
+
         case 'not in':
           $whereClauses[] = '(payment_processor_id NOT IN ('
             . implode(',', $this->conditionParams['payment_processor_id'])
@@ -112,7 +113,9 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
           2 => $values,
         ]);
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return trim($label);
   }
@@ -126,13 +129,14 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['payment_processor_id']) && is_array($params['payment_processor_id'])) {
-      foreach($params['payment_processor_id'] as $i => $gid) {
+      foreach ($params['payment_processor_id'] as $i => $gid) {
         try {
           $params['payment_processor_id'][$i] = civicrm_api3('PaymentProcessor', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -147,13 +151,14 @@ LEFT JOIN civicrm_contribution_recur ccr ON ccr.id = cm.contribution_recur_id WH
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['payment_processor_id']) && is_array($condition_params['payment_processor_id'])) {
-      foreach($condition_params['payment_processor_id'] as $i => $gid) {
+      foreach ($condition_params['payment_processor_id'] as $i => $gid) {
         try {
           $condition_params['payment_processor_id'][$i] = civicrm_api3('PaymentProcessor', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }

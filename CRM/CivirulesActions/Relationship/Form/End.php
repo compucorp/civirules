@@ -8,8 +8,7 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 26 Aug 2021
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
-class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Form_Form{
+class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Form_Form {
 
   /**
    * Overridden parent method to build the form
@@ -20,14 +19,15 @@ class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Fo
     parent::buildForm();
     $this->add('hidden', 'rule_action_id');
     $this->addEntityRef('relationship_type_id', E::ts('Relationship Type'), [
-      'entity' => 'relationshipType'
+      'entity' => 'relationshipType',
     ]);
     $this->add('select', 'operation', E::ts('End or Delete Relationship'), ['Disable', 'Delete'], TRUE);
-    $this->add('datepicker', 'end_date', E::ts('Relationship End Date (only if disable)'), ['placeholder' => E::ts('End date')],FALSE, ['time' => FALSE]);
+    $this->add('datepicker', 'end_date', E::ts('Relationship End Date (only if disable)'), ['placeholder' => E::ts('End date')], FALSE, ['time' => FALSE]);
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -36,15 +36,15 @@ class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Fo
    * @return array
    */
   public function setDefaultValues() {
-    $defaultValues =  parent::setDefaultValues();
+    $defaultValues = parent::setDefaultValues();
     $data = $this->ruleAction->unserializeParams();
-    if (!empty($data['relationship_type_id'])){
+    if (!empty($data['relationship_type_id'])) {
       $defaultValues['relationship_type_id'] = $data['relationship_type_id'];
     }
-    if (!empty($data['end_date'])){
+    if (!empty($data['end_date'])) {
       $defaultValues['end_date'] = $data['end_date'];
     }
-    if (!empty($data['operation'])){
+    if (!empty($data['operation'])) {
       $defaultValues['operation'] = $data['operation'];
     }
     else {
@@ -56,7 +56,7 @@ class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Fo
   /**
    * Overridden parent method to process submitted form
    */
-  public function postProcess()   {
+  public function postProcess() {
     $data['relationship_type_id'] = $this->_submitValues['relationship_type_id'];
     $data['operation'] = $this->_submitValues['operation'];
     if (isset($this->_submitValues['end_date'])) {
@@ -66,4 +66,5 @@ class CRM_CivirulesActions_Relationship_Form_End extends CRM_CivirulesActions_Fo
     $this->ruleAction->save();
     parent::postProcess();
   }
+
 }

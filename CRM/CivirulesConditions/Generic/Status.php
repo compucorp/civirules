@@ -51,7 +51,9 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
       foreach ($options as $option) {
         $return[$option['value']] = $option['label'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return $return;
   }
 
@@ -172,7 +174,7 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
    */
   public function userFriendlyConditionParams() {
     $statusList = $this->getEntityStatusList(TRUE, TRUE);
-    $operator = null;
+    $operator = NULL;
     if ($this->conditionParams['operator'] == 0) {
       $operator = self::getOperatorOptions()[0];
     }

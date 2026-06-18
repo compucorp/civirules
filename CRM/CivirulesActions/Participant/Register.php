@@ -3,7 +3,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -70,7 +69,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'value' => $action_params['participant_role_id'],
           'option_group_id' => "participant_role",
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     if (!empty($action_params['participant_status_id'])) {
@@ -79,7 +79,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'return' => 'name',
           'id' => $action_params['participant_status_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     if (!empty($action_params['campaign_id'])) {
@@ -88,7 +89,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'return' => 'name',
           'id' => $action_params['campaign_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -108,7 +110,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'name' => $action_params['participant_role_id'],
           'option_group_id' => "participant_role",
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     if (!empty($action_params['participant_status_id'])) {
@@ -117,7 +120,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'return' => 'id',
           'name' => $action_params['participant_status_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     if (!empty($action_params['campaign_id'])) {
@@ -126,7 +130,8 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
           'return' => 'id',
           'name' => $action_params['campaign_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);
@@ -160,12 +165,15 @@ class CRM_CivirulesActions_Participant_Register extends CRM_CivirulesActions_Gen
         case "mm-dd-yy":
           $friendlyTxt .= $registrationDate->format('m-d-y');
           break;
+
         case "yy-mm-dd":
           $friendlyTxt .= $registrationDate->format('y-m-d');
           break;
+
         case "mm-yy-dd":
           $friendlyTxt .= $registrationDate->format('m-y-d');
           break;
+
         default:
           $friendlyTxt .= $registrationDate->format('d-m-y');
           break;

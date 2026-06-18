@@ -26,16 +26,17 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
     $target_contacts = $this->getTargetContacts($triggerData);
     $type = $action_params['type'];
     $selected_tags = $this->getSelectedTagsOnContact($triggerData->getContactId(), $tag_ids);
-    foreach($target_contacts as $target_contact_id) {
+    foreach ($target_contacts as $target_contact_id) {
       $target_selected_tags = $this->getSelectedTagsOnContact($target_contact_id, $tag_ids);
-      foreach($tag_ids as $tag_id) {
+      foreach ($tag_ids as $tag_id) {
         if (in_array($tag_id, $selected_tags) && !in_array($tag_id, $target_selected_tags)) {
           civicrm_api3('EntityTag', 'create', [
             'entity_table' => 'civicrm_contact',
             'entity_id' => $target_contact_id,
             'tag_id' => $tag_id,
           ]);
-        } elseif (!in_array($tag_id, $selected_tags) && in_array($tag_id, $target_selected_tags) && $type == 'sync') {
+        }
+        elseif (!in_array($tag_id, $selected_tags) && in_array($tag_id, $target_selected_tags) && $type == 'sync') {
           civicrm_api3('EntityTag', 'delete', ['tag_id' => $tag_id, 'contact_id' => $target_contact_id]);
         }
       }
@@ -58,7 +59,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
     $return = [];
     try {
       $actionParams = $this->getActionParameters();
-      foreach($actionParams['rel_type_ids'] as $rel_type_id) {
+      foreach ($actionParams['rel_type_ids'] as $rel_type_id) {
         $params['relationship_type_id'] = substr($rel_type_id, 4);
         $params['is_active'] = '1';
         $params['options']['limit'] = '0';
@@ -75,7 +76,8 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
           $return[] = $value[$return_field];
         }
       }
-    } catch (\Exception $ex) {
+    }
+    catch (\Exception $ex) {
       // Do nothing
     }
     return $return;
@@ -90,7 +92,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
    * @param int $ruleActionId
    *
    * @return bool|string
-   * $access public
+   *   $access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/sync_tag', $ruleActionId);
@@ -107,7 +109,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
     $params = $this->getActionParameters();
     $tags = '';
     $relationshipTypes = '';
-    foreach($params['tag_ids'] as $tag_id) {
+    foreach ($params['tag_ids'] as $tag_id) {
       $tag = civicrm_api3('Tag', 'getvalue', ['return' => 'name', 'id' => $tag_id]);
       if (strlen($tags)) {
         $tags .= ', ';
@@ -115,7 +117,7 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
       $tags .= $tag;
     }
     $relationshipTypeOptions = CRM_Civirules_Utils::getRelationshipTypes();
-    foreach($params['rel_type_ids'] as $rel_type_id) {
+    foreach ($params['rel_type_ids'] as $rel_type_id) {
       if (strlen($relationshipTypes)) {
         $relationshipTypes .= ', ';
       }
@@ -125,12 +127,13 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
     if ($params['type'] == 'sync') {
       return E::ts('Sync tags: %1 to related contacts with relationship type %2', [
         1 => $tags,
-        2 => $relationshipTypes
+        2 => $relationshipTypes,
       ]);
-    } else {
+    }
+    else {
       return E::ts('Copy tags: %1 to related contacts with relationship type %2', [
         1 => $tags,
-        2 => $relationshipTypes
+        2 => $relationshipTypes,
       ]);
     }
   }
@@ -143,16 +146,17 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['tag_ids'] as $i=>$j) {
+    foreach ($action_params['tag_ids'] as $i => $j) {
       try {
         $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
-    foreach($action_params['rel_type_ids'] as $i=>$j) {
+    foreach ($action_params['rel_type_ids'] as $i => $j) {
       $rel_dir = substr($j, 0, 4);
       $rel_type = substr($j, 4);
       try {
@@ -160,7 +164,8 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
           'return' => 'name_a_b',
           'id' => $rel_type,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -173,24 +178,26 @@ class CRM_CivirulesActions_Tag_Sync extends CRM_Civirules_Action {
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['tag_ids'] as $i=>$j) {
+    foreach ($action_params['tag_ids'] as $i => $j) {
       try {
         $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
-    foreach($action_params['rel_type_ids'] as $i=>$j) {
+    foreach ($action_params['rel_type_ids'] as $i => $j) {
       $rel_dir = substr($j, 0, 4);
       $rel_type = substr($j, 4);
       try {
         $action_params['rel_type_ids'][$i] = $rel_dir . civicrm_api3('Tag', 'getvalue', [
-            'return' => 'id',
-            'name_a_b' => $rel_type,
-          ]);
-      } catch (CRM_Core_Exception $e) {
+          'return' => 'id',
+          'name_a_b' => $rel_type,
+        ]);
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

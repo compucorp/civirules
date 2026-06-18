@@ -4,9 +4,9 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends CRM_CivirulesActions_Form_Form {
 
- /**
-  * Get Schedule Base options
-  */
+  /**
+   * Get Schedule Base options
+   */
   private function getScheduleOptions() {
     return [
       'today' => 'today',
@@ -14,7 +14,6 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
       '+48 hours' => '+2 days',
     ];
   }
-
 
   /**
    * Overridden parent method to build the form
@@ -28,8 +27,8 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
     $this->add('select', 'schedule_option', E::ts('Set Next Scheduled Date relative to'), ['' => E::ts('-- please select --')] + $statuses);
     $this->add('text', 'schedule_date', ts('Set Next Scheduled Date (custom date or format)'), '', FALSE);
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -81,7 +80,6 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
 
     return $errors;
   }
-
 
   /**
    * Overridden parent method to process form data after submitting

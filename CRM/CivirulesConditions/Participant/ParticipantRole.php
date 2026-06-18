@@ -8,19 +8,19 @@ class CRM_CivirulesConditions_Participant_ParticipantRole extends CRM_Civirules_
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $participant = $triggerData->getEntityData('Participant');
     $participant['role_id'] = $participant['role_id'] ?? $participant['participant_role_id'];
-    $participant_role_ids = is_array($participant['role_id']) ?  $participant['role_id'] : explode(CRM_Core_DAO::VALUE_SEPARATOR, $participant['role_id']);
-    foreach($participant_role_ids as $participant_role_id) {
+    $participant_role_ids = is_array($participant['role_id']) ? $participant['role_id'] : explode(CRM_Core_DAO::VALUE_SEPARATOR, $participant['role_id']);
+    foreach ($participant_role_ids as $participant_role_id) {
       switch ($this->conditionParams['operator']) {
         case 0:
           if (in_array($participant_role_id, $this->conditionParams['participant_role_id'])) {
             $isConditionValid = TRUE;
           }
           break;
+
         case 1:
           if (!in_array($participant_role_id, $this->conditionParams['participant_role_id'])) {
             $isConditionValid = TRUE;
@@ -40,21 +40,23 @@ class CRM_CivirulesConditions_Participant_ParticipantRole extends CRM_Civirules_
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['participant_role_id']) && is_array($params['participant_role_id'])) {
-      foreach($params['participant_role_id'] as $i => $j) {
+      foreach ($params['participant_role_id'] as $i => $j) {
         $params['participant_role_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'participant_role',
         ]);
       }
-    } elseif (!empty($params['participant_role_id'])) {
+    }
+    elseif (!empty($params['participant_role_id'])) {
       try {
         $params['participant_role_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['participant_role_id'],
           'option_group_id' => 'participant_role',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -69,21 +71,23 @@ class CRM_CivirulesConditions_Participant_ParticipantRole extends CRM_Civirules_
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['participant_role_id']) && is_array($condition_params['participant_role_id'])) {
-      foreach($condition_params['participant_role_id'] as $i => $j) {
+      foreach ($condition_params['participant_role_id'] as $i => $j) {
         $condition_params['participant_role_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $j,
           'option_group_id' => 'participant_role',
         ]);
       }
-    } elseif (!empty($condition_params['participant_role_id'])) {
+    }
+    elseif (!empty($condition_params['participant_role_id'])) {
       try {
         $condition_params['participant_role_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['participant_role_id'],
           'option_group_id' => 'participant_role',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -124,9 +128,9 @@ class CRM_CivirulesConditions_Participant_ParticipantRole extends CRM_Civirules_
     $participantRoles = civicrm_api3('OptionValue', 'get', [
       'value' => ['IN' => $this->conditionParams['participant_role_id']],
       'option_group_id' => 'participant_role',
-      'options' => ['limit' => 0]
+      'options' => ['limit' => 0],
     ]);
-    foreach($participantRoles['values'] as $role) {
+    foreach ($participantRoles['values'] as $role) {
       $roleText[] = $role['label'];
     }
 

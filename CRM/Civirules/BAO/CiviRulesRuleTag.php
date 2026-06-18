@@ -5,7 +5,7 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-class CRM_Civirules_BAO_CiviRulesRuleTag extends CRM_Civirules_DAO_RuleTag  {
+class CRM_Civirules_BAO_CiviRulesRuleTag extends CRM_Civirules_DAO_RuleTag {
 
   /**
    * Function to get values
@@ -31,7 +31,8 @@ class CRM_Civirules_BAO_CiviRulesRuleTag extends CRM_Civirules_DAO_RuleTag  {
       self::storeValues($ruleTag, $row);
       if (!empty($row['rule_id']) && !empty($row['rule_tag_id'])) {
         $result[$row['id']] = $row;
-      } else {
+      }
+      else {
         //invalid ruleTag because there is no linked tag or rule
         CRM_Civirules_BAO_RuleTag::deleteWithId($row['id']);
       }

@@ -74,7 +74,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
     }
     $action = new CRM_Civirules_BAO_Action();
     $action->id = $actionId;
-    $action->find(true);
+    $action->find(TRUE);
     return $action->label;
   }
 
@@ -86,14 +86,14 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
    * @return CRM_Civirules_Action
    * @throws Exception if abort is set to true and class does not exist or is not valid
    */
-  public static function getActionObjectById($actionId, $abort=true) {
+  public static function getActionObjectById($actionId, $abort = TRUE) {
     $action = new CRM_Civirules_BAO_Action();
     $action->id = $actionId;
-    if (!$action->find(true)) {
+    if (!$action->find(TRUE)) {
       if ($abort) {
         throw new Exception('CiviRule could not find action');
       }
-      return false;
+      return FALSE;
     }
 
     $className = $action->class_name;
@@ -102,7 +102,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
 
         throw new Exception('CiviRule action class "' . $className . '" does not exist');
       }
-      return false;
+      return FALSE;
     }
 
     $object = new $className();
@@ -110,7 +110,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
       if ($abort) {
         throw new Exception('CiviRule action class "' . $className . '" is not a subclass of CRM_Civirules_Action');
       }
-      return false;
+      return FALSE;
     }
 
     $actionData = [];

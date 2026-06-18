@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -26,10 +25,13 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
         }
         $paymentInstruments[0] = '- select -';
         asort($paymentInstruments);
-      } catch (CRM_Core_Exception $ex) {}
-    } catch (CRM_Core_Exception $ex) {
+      }
+      catch (CRM_Core_Exception $ex) {
+      }
+    }
+    catch (CRM_Core_Exception $ex) {
       throw new Exception('Option group with name payment_instrument not found,
-      error from API OptionGroup Getvalue: '.$ex->getMessage());
+      error from API OptionGroup Getvalue: ' . $ex->getMessage());
     }
     return $paymentInstruments;
   }
@@ -52,11 +54,13 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
     ]);
     $this->add('select', 'operator', ts('Operator'), [
       'is one of',
-      'is not one of'], true);
+      'is not one of',
+    ], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -90,4 +94,5 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

@@ -19,13 +19,14 @@ class CRM_CivirulesConditions_Form_Activity_Status extends CRM_CivirulesConditio
 
     $activityStatusList = CRM_Civirules_Utils::getActivityStatusList();
     asort($activityStatusList);
-      $this->add('select', 'status_id', ts('Activity status(es)'), $activityStatusList, true,
-      ['id' => 'status_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
-    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
+    $this->add('select', 'status_id', ts('Activity status(es)'), $activityStatusList, TRUE,
+      ['id' => 'status_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

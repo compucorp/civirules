@@ -3,7 +3,6 @@
 /**
  * Class to execute actions provided by civirules
  */
-
 class CRM_Civirules_ActionEngine_RuleActionEngine extends CRM_Civirules_ActionEngine_AbstractActionEngine {
 
   /**
@@ -13,9 +12,9 @@ class CRM_Civirules_ActionEngine_RuleActionEngine extends CRM_Civirules_ActionEn
 
   public function __construct($ruleAction, CRM_Civirules_TriggerData_TriggerData $triggerData) {
     parent::__construct($ruleAction, $triggerData);
-    $this->actionClass = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], true);
+    $this->actionClass = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], TRUE);
     if (!$this->ruleAction) {
-      throw new Exception('Could not instanciate action for ruleAction with action_id: '.$ruleAction['action_id']);
+      throw new Exception('Could not instanciate action for ruleAction with action_id: ' . $ruleAction['action_id']);
     }
     $this->actionClass->setRuleActionData($ruleAction);
   }

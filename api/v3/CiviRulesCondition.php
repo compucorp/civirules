@@ -148,6 +148,6 @@ function _civicrm_api3_civi_rules_condition_cleanup_spec(&$spec) {
   $spec['dry_run'] = [
     'title' => 'Dry run (do not actually make any changes)',
     'type' => CRM_Utils_Type::T_BOOLEAN,
-    'api.default' => TRUE
+    'api.default' => TRUE,
   ];
 }

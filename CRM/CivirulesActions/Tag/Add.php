@@ -8,7 +8,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Tag_Add extends CRM_CivirulesActions_Tag_Tag {
 
   /**

@@ -39,7 +39,6 @@ class CRM_CivirulesConditions_Form_Contribution_IsPayLater extends CRM_Civirules
     return $defaultValues;
   }
 
-
   /**
    * Overridden parent method to process form data after submission
    *

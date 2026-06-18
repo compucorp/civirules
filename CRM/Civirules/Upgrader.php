@@ -48,7 +48,8 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     // If empty, we are installing
     $schemaVersion = CRM_Core_DAO::singleValueQuery("SELECT schema_version FROM civicrm_extension WHERE `name` = 'CiviRules'");
     if ($schemaVersion >= 1023 || empty($schemaVersion)) {
-      return; // No need for preparing the update.
+      // No need for preparing the update.
+      return;
     }
 
     if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
@@ -84,8 +85,9 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
           ('groupmembership', 'Daily trigger for group members', NULL, NULL, 1, 'CRM_CivirulesCronTrigger_GroupMembership',  CURDATE(), 1);
         ");
     }
-    return true;
+    return TRUE;
   }
+
   /**
    * Method for upgrade 1002
    * (rename events to trigger, check https://github.com/CiviCooP/org.civicoop.civirules/issues/42)
@@ -98,7 +100,8 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     // rename table civirule_event to civirule_trigger
     if (CRM_Core_DAO::checkTableExists("civirule_event")) {
       CRM_Core_DAO::executeQuery("RENAME TABLE civirule_event TO civirule_trigger");
-    } else {
+    }
+    else {
       $this->executeSqlFile('sql/upgrade_1002.sql');
     }
     // rename columns event_id and event_params in civirule_rule
@@ -123,7 +126,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
         CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule ADD INDEX fk_rule_trigger_idx (trigger_id);");
       }
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -135,7 +138,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
    */
   public function upgrade_1003() {
     $this->executeSqlFile('sql/update_1003.sql');
-    return true;
+    return TRUE;
   }
 
   /**
@@ -150,12 +153,12 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civirule_rule_action', 'ignore_condition_with_delay')) {
       CRM_Core_DAO::executeQuery("ALTER TABLE `civirule_rule_action` ADD COLUMN `ignore_condition_with_delay` TINYINT NULL default 0 AFTER `delay`");
     }
-    return true;
+    return TRUE;
   }
 
   public function upgrade_1005() {
     CRM_Core_DAO::executeQuery("update `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Case' where `object_name` = 'Case'");
-    return true;
+    return TRUE;
   }
 
   /**
@@ -166,7 +169,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
    */
   public function upgrade_1006() {
     CRM_Core_DAO::executeQuery("update `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Relationship' where `object_name` = 'Relationship'");
-    return true;
+    return TRUE;
   }
 
   /**
@@ -183,7 +186,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
         CRM_Core_DAO::executeQuery("ALTER TABLE `civirule_rule` ADD COLUMN `help_text` TEXT NULL AFTER `description`");
       }
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -193,20 +196,23 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     $query = 'UPDATE civirule_condition SET class_name = %1 WHERE class_name = %2';
     $paramsRecurCount = [
       1 => ['CRM_CivirulesConditions_ContributionRecur_Count', 'String'],
-      2 => ['CRM_CivirulesConditions_Contribution_CountRecurring', 'String']];
+      2 => ['CRM_CivirulesConditions_Contribution_CountRecurring', 'String'],
+    ];
     CRM_Core_DAO::executeQuery($query, $paramsRecurCount);
 
     $paramsRecurIs = [
       1 => ['CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring', 'String'],
-      2 => ['CRM_CivirulesConditions_Contribution_DonorIsRecurring', 'String']];
+      2 => ['CRM_CivirulesConditions_Contribution_DonorIsRecurring', 'String'],
+    ];
     CRM_Core_DAO::executeQuery($query, $paramsRecurIs);
 
     $paramsRecurEnd = [
       1 => ['CRM_CivirulesConditions_ContributionRecur_EndDate', 'String'],
-      2 => ['CRM_CivirulesConditions_Contribution_RecurringEndDate', 'String']];
+      2 => ['CRM_CivirulesConditions_Contribution_RecurringEndDate', 'String'],
+    ];
     CRM_Core_DAO::executeQuery($query, $paramsRecurEnd);
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -308,7 +314,6 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
       CRM_Core_DAO::executeQuery("DROP TABLE `civirule_rule_condition_backup`");
     }
 
-
     // Update the participant trigger and add the event conditions
     CRM_Core_DAO::executeQuery("UPDATE `civirule_trigger` SET `class_name` = 'CRM_CivirulesPostTrigger_Participant' WHERE `object_name` = 'Participant'");
 
@@ -341,12 +346,13 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
       $optionValueId = civicrm_api3('OptionValue', 'getvalue', [
         'option_group_id' => 'custom_search',
         'name' => 'CRM_Civirules_Form_Search_Rules',
-        'return' => 'id'
+        'return' => 'id',
       ]);
       if ($optionValueId) {
         civicrm_api3('OptionValue', 'delete', ['id' => $optionValueId]);
       }
-    } catch (CRM_Core_Exception $ex) {
+    }
+    catch (CRM_Core_Exception $ex) {
     }
     return TRUE;
   }
@@ -484,7 +490,7 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
     $conditionId = CRM_Core_DAO::singleValueQuery("SELECT id FROM civirule_condition WHERE name = %1", [
       1 => [$conditionName, "String"],
       2 => [$className, "String"],
-      ]);
+    ]);
     if ($conditionId) {
       // check if there are any usages of this condition and if so, warn user
       $query = "SELECT a.rule_id, b.label FROM civirule_rule_condition AS a
@@ -599,7 +605,7 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
    * For developers:
    * since CiviRules 2.28 it is not needed to create an upgrade if you created a new condition, action or trigger.
    * This is done in the function civirules_civicrm_managed which is called as soon as the cached is cleared.
-   * 
+   *
    * ps. This functionality is gone since version 3.21.0, since then you have to use the upgrade function again.
    */
   public function upgrade_2087() {
@@ -628,4 +634,3 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
   }
 
 }
-

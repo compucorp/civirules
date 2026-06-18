@@ -5,7 +5,6 @@
  * @author Véronique Gratioulet <veronique.gratioulet@atd-quartmonde.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
 
   /**
@@ -24,7 +23,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
       return $data[$field];
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -43,7 +42,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
       return $data[$field];
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -62,7 +61,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
     if ($trigger instanceof CRM_Civirules_TriggerData_Interface_OriginalData) {
       return $trigger->doesProvideEntity('Activity');
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -77,7 +76,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
    * @return bool
    */
   public function getFieldOptions() {
-    return CRM_Contact_BAO_ContactType::subTypePairs(null, true, null);
+    return CRM_Contact_BAO_ContactType::subTypePairs(NULL, TRUE, NULL);
   }
 
   /**
@@ -87,7 +86,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
    * @return bool
    */
   public function isMultiple() {
-    return true;
+    return TRUE;
   }
 
 }

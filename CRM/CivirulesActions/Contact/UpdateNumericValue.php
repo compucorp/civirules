@@ -87,20 +87,23 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
   protected function setValue($field_id, $new_value, $contact_id) {
     if ($field_id == 'contact_external_id') {
       civicrm_api3('Contact', 'create', [
-          'id'                  => $contact_id,
-          'external_identifier' => (int) $new_value]);
+        'id'                  => $contact_id,
+        'external_identifier' => (int) $new_value,
+      ]);
 
-    } elseif (is_numeric($field_id)) {
+    }
+    elseif (is_numeric($field_id)) {
       civicrm_api3('Contact', 'create', [
-          'id'                 => $contact_id,
-          "custom_{$field_id}" => $new_value]);
+        'id'                 => $contact_id,
+        "custom_{$field_id}" => $new_value,
+      ]);
 
-    } else {
+    }
+    else {
       // this shouldn't happen
       Civi::log()->debug("UpdateNumericCustomValue Action: Unknown field id '{$field_id}'.");
     }
   }
-
 
   /**
    * Get the value of the given field for the given contact
@@ -116,13 +119,16 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
       if (is_numeric($field_id)) {
         return (float) civicrm_api3('Contact', 'getvalue', ['id' => $contact_id, 'return' => "custom_{$field_id}"]);
 
-      } elseif ($field_id == 'contact_id') {
+      }
+      elseif ($field_id == 'contact_id') {
         return (float) $contact_id;
 
-      } elseif ($field_id == 'contact_external_id') {
-        return (int)  civicrm_api3('Contact', 'getvalue', ['id' => $contact_id, 'return' => 'external_identifier']);
+      }
+      elseif ($field_id == 'contact_external_id') {
+        return (int) civicrm_api3('Contact', 'getvalue', ['id' => $contact_id, 'return' => 'external_identifier']);
 
-      } else {
+      }
+      else {
         // this should not happen
         Civi::log()->debug("UpdateNumericCustomValue Action: Unknown field id '{$field_id}'.");
         return 0;
@@ -133,24 +139,29 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
     if ($mode == 'min' || $mode == 'max') {
       if (is_numeric($field_id)) {
         $custom_field = civicrm_api3('CustomField', 'getsingle', [
-            'id'     => $field_id,
-            'return' => 'custom_group_id,column_name']);
+          'id'     => $field_id,
+          'return' => 'custom_group_id,column_name',
+        ]);
         $custom_group = civicrm_api3('CustomGroup', 'getsingle', [
-            'id'     => $custom_field['custom_group_id'],
-            'return' => 'table_name']);
+          'id'     => $custom_field['custom_group_id'],
+          'return' => 'table_name',
+        ]);
         return (float) CRM_Core_DAO::singleValueQuery("
             SELECT {$mode}({$custom_field['column_name']})
             FROM {$custom_group['table_name']}
             LEFT JOIN civicrm_contact contact ON contact.id = {$custom_group['table_name']}.entity_id
             WHERE (contact.is_deleted IS NULL OR contact.is_deleted = 0);");
 
-      } elseif ($field_id == 'contact_id') {
+      }
+      elseif ($field_id == 'contact_id') {
         return (float) CRM_Core_DAO::singleValueQuery("SELECT {$mode}(id) FROM civicrm_contact WHERE is_deleted IS NULL OR is_deleted = 0;");
 
-      } elseif ($field_id == 'contact_external_id') {
+      }
+      elseif ($field_id == 'contact_external_id') {
         return (float) CRM_Core_DAO::singleValueQuery("SELECT {$mode}(external_identifier) FROM civicrm_contact WHERE is_deleted IS NULL OR is_deleted = 0;");
 
-      } else {
+      }
+      else {
         // this should not happen
         Civi::log()->debug("UpdateNumericCustomValue Action: Unknown field id '{$field_id}'.");
         return 0;
@@ -193,7 +204,8 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         unset($action_params['target_field_id']);
         $action_params['target_custom_group'] = $customGroup['name'];
         $action_params['target_custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -208,7 +220,8 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         unset($action_params['source_field_id']);
         $action_params['source_custom_group'] = $customGroup['name'];
         $action_params['source_custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -231,7 +244,8 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         $action_params['target_field_id'] = $customField['id'];
         unset($action_params['target_custom_group']);
         unset($action_params['target_custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -244,7 +258,8 @@ class CRM_CivirulesActions_Contact_UpdateNumericValue extends CRM_Civirules_Acti
         $action_params['source_field_id'] = $customField['id'];
         unset($action_params['source_custom_group']);
         unset($action_params['source_custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

@@ -51,7 +51,7 @@ class CRM_CivirulesConditions_Case_StatusChanged extends CRM_CivirulesConditions
     $return = [];
     $params = [
       'return' => ["name", "value"],
-      'option_group_id' =>  'case_status',
+      'option_group_id' => 'case_status',
       'options' => ['limit' => 0, 'sort' => "label ASC"],
     ];
     try {
@@ -59,7 +59,9 @@ class CRM_CivirulesConditions_Case_StatusChanged extends CRM_CivirulesConditions
       foreach ($options as $option) {
         $return[$option['value']] = $option['name'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return $return;
   }
@@ -71,7 +73,7 @@ class CRM_CivirulesConditions_Case_StatusChanged extends CRM_CivirulesConditions
    * @return bool
    */
   public function isMultiple() {
-    return true;
+    return TRUE;
   }
 
 }

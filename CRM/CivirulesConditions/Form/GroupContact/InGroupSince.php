@@ -9,7 +9,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @link https://lab.civicrm.org/extensions/civirules/-/issues/158
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_GroupContact_InGroupSince extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -22,18 +21,19 @@ class CRM_CivirulesConditions_Form_GroupContact_InGroupSince extends CRM_Civirul
     $this->add('select', 'group_id', E::ts('Group'), CRM_Civirules_Utils::getGroupList(), TRUE, ['class' => 'crm-select2 civirules-group-id']);
     $operatorOptions = [
       'longer' => E::ts('longer than'),
-      'shorter' => E::ts('shorter than')];
-    $this->addRadio('operator', E::ts('longer/shorter than') . ': ', $operatorOptions,  [], " ", TRUE);
-    $this->add('text',  'number', E::ts('number'));
-    $this->addRule('number','Number has to be a whole number','numeric');
-    $this->addRule('number','Number has to be a whole number','nopunctuation');
+      'shorter' => E::ts('shorter than'),
+    ];
+    $this->addRadio('operator', E::ts('longer/shorter than') . ': ', $operatorOptions, [], " ", TRUE);
+    $this->add('text', 'number', E::ts('number'));
+    $this->addRule('number', 'Number has to be a whole number', 'numeric');
+    $this->addRule('number', 'Number has to be a whole number', 'nopunctuation');
     $this->add('select', 'period', E::ts('Period'), CRM_Civirules_Utils::getPeriods(), TRUE, ['class' => 'crm-select2 civirules-periods']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
-
 
   /**
    * Overridden parent method to set default values

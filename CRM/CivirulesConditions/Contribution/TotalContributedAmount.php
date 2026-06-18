@@ -25,33 +25,36 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['contribution_status_id']) && is_array($params['contribution_status_id'])) {
-      foreach($params['contribution_status_id'] as $i => $j) {
+      foreach ($params['contribution_status_id'] as $i => $j) {
         $params['contribution_status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'contribution_status',
         ]);
       }
-    } elseif (!empty($params['contribution_status_id'])) {
+    }
+    elseif (!empty($params['contribution_status_id'])) {
       try {
         $params['contribution_status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['contribution_status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
     if (!empty($params['payment_instrument_id']) && is_array($params['payment_instrument_id'])) {
-      foreach($params['payment_instrument_id'] as $i => $gid) {
+      foreach ($params['payment_instrument_id'] as $i => $gid) {
         try {
           $params['payment_instrument_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
-            'option_group_id' => 'payment_instrument'
+            'option_group_id' => 'payment_instrument',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -66,55 +69,60 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['contribution_status_id']) && is_array($condition_params['contribution_status_id'])) {
-      foreach($condition_params['contribution_status_id'] as $i => $j) {
+      foreach ($condition_params['contribution_status_id'] as $i => $j) {
         $condition_params['contribution_status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'contribution_status',
         ]);
       }
-    } elseif (!empty($condition_params['contribution_status_id'])) {
+    }
+    elseif (!empty($condition_params['contribution_status_id'])) {
       try {
         $condition_params['contribution_status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['contribution_status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
     if (!empty($condition_params['payment_instrument_id']) && is_array($condition_params['payment_instrument_id'])) {
-      foreach($condition_params['payment_instrument_id'] as $i => $gid) {
+      foreach ($condition_params['payment_instrument_id'] as $i => $gid) {
         try {
           $condition_params['payment_instrument_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
-            'option_group_id' => 'payment_instrument'
+            'option_group_id' => 'payment_instrument',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($params['financial_type_id']) && is_array($params['financial_type_id'])) {
-      foreach($params['financial_type_id'] as $i => $gid) {
+      foreach ($params['financial_type_id'] as $i => $gid) {
         try {
           $params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($condition_params['financial_type_id']) && is_array($condition_params['financial_type_id'])) {
-      foreach($condition_params['financial_type_id'] as $i => $gid) {
+      foreach ($condition_params['financial_type_id'] as $i => $gid) {
         try {
           $condition_params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -150,14 +158,13 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
       $financial_type_statement = " AND `financial_type_id` IN (" . implode(",", $this->conditionParams['financial_type_id']) . ")";
     }
 
-
     $periodStartDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToStartDate($this->conditionParams);
     $periodEndDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToEndDate($this->conditionParams);
     if ($periodStartDate) {
-      $period_start_statement = " AND DATE(`receive_date`) >= '".$periodStartDate->format('Y-m-d')."'";
+      $period_start_statement = " AND DATE(`receive_date`) >= '" . $periodStartDate->format('Y-m-d') . "'";
     }
     if ($periodEndDate) {
-      $period_end_statement = " AND DATE(`receive_date`) <= '".$periodEndDate->format('Y-m-d')."'";
+      $period_end_statement = " AND DATE(`receive_date`) <= '" . $periodEndDate->format('Y-m-d') . "'";
     }
 
     $sql = "SELECT SUM(`total_amount`)
@@ -193,6 +200,7 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
       case 'not contains string':
         $key = 'value';
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -205,7 +213,8 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
 
     if (!empty($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -237,11 +246,11 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
 
     $strParams = [];
 
-    if (isset($this->conditionParams['financial_type_id']) && is_array($this->conditionParams['financial_type_id']) && count($this->conditionParams['financial_type_id']) >0) {
+    if (isset($this->conditionParams['financial_type_id']) && is_array($this->conditionParams['financial_type_id']) && count($this->conditionParams['financial_type_id']) > 0) {
       $financial_types = self::getFinancialTypes();
       $strFinancialTypes = 'with financial type: ';
       $i = 0;
-      foreach($this->conditionParams['financial_type_id'] as $finTypeId) {
+      foreach ($this->conditionParams['financial_type_id'] as $finTypeId) {
         if ($i > 0) {
           $strFinancialTypes .= ', ';
         }
@@ -250,11 +259,11 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
       $strParams[] = $strFinancialTypes;
     }
 
-    if (isset($this->conditionParams['payment_instrument_id']) && is_array($this->conditionParams['payment_instrument_id']) && count($this->conditionParams['payment_instrument_id']) >0) {
+    if (isset($this->conditionParams['payment_instrument_id']) && is_array($this->conditionParams['payment_instrument_id']) && count($this->conditionParams['payment_instrument_id']) > 0) {
       $payment_instruments = self::getPaymentInstruments();
       $strPaidBy = 'paid by: ';
       $i = 0;
-      foreach($this->conditionParams['payment_instrument_id'] as $payment_instrument) {
+      foreach ($this->conditionParams['payment_instrument_id'] as $payment_instrument) {
         if ($i > 0) {
           $strPaidBy .= ', ';
         }
@@ -263,11 +272,11 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
       $strParams[] = $strPaidBy;
     }
 
-    if (isset($this->conditionParams['contribution_status_id']) && is_array($this->conditionParams['contribution_status_id']) && count($this->conditionParams['contribution_status_id']) >0) {
+    if (isset($this->conditionParams['contribution_status_id']) && is_array($this->conditionParams['contribution_status_id']) && count($this->conditionParams['contribution_status_id']) > 0) {
       $statuses = self::getContributionStatus();
       $strStatus = 'with status: ';
       $i = 0;
-      foreach($this->conditionParams['contribution_status_id'] as $status) {
+      foreach ($this->conditionParams['contribution_status_id'] as $status) {
         if ($i > 0) {
           $strStatus .= ', ';
         }
@@ -277,10 +286,10 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
     }
 
     if (count($strParams)) {
-      $strParams = '('.implode(", ", $strParams).')';
+      $strParams = '(' . implode(", ", $strParams) . ')';
     }
 
-    return ts('Total amount').' '.$period.' '.$strParams.' '.$userFriendlyConditionParams;
+    return ts('Total amount') . ' ' . $period . ' ' . $strParams . ' ' . $userFriendlyConditionParams;
   }
 
   public static function getPaymentInstruments() {

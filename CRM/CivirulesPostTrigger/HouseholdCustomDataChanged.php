@@ -5,11 +5,12 @@
  */
 /**
  * Trigger when Household Custom Data changes.
-
+ *
  */
 class CRM_CivirulesPostTrigger_HouseholdCustomDataChanged extends CRM_CivirulesPostTrigger_ContactCustomDataChanged {
 
   protected static function getObjectName() {
     return 'Household';
   }
+
 }

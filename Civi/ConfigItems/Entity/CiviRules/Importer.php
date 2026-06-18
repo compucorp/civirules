@@ -68,7 +68,7 @@ class Importer implements EntityImporter {
     }
     $fileFormat = $fileFactory->getFileFormatClass($config_item_set['import_file_format']);
     $entityData = $fileFormat->loadEntityImportData($config_item_set, $this->entityDefinition->getName(), $this->getEntityDefinition()->getFileName());
-    foreach($this->entityDefinition->getExporterClass()->getGroups() as $group => $groupTitle) {
+    foreach ($this->entityDefinition->getExporterClass()->getGroups() as $group => $groupTitle) {
       if (isset($entityData[$group])) {
         $entityData[$group] = $this->checkEntityDataForExistence($entityData[$group]);
       }
@@ -94,7 +94,8 @@ class Importer implements EntityImporter {
       if (empty($entityData)) {
         return FALSE;
       }
-    } catch (EntityImportDataException $ex) {
+    }
+    catch (EntityImportDataException $ex) {
       return FALSE;
     }
     return TRUE;
@@ -111,19 +112,20 @@ class Importer implements EntityImporter {
    */
   protected function checkEntityDataForExistence($entityData) {
     $entity = $this->entityDefinition->getApiEntityName();
-    foreach($entityData as $name => $data) {
+    foreach ($entityData as $name => $data) {
       try {
         $result = civicrm_api3($entity, 'getvalue', [
           'return' => $this->getEntityDefinition()->getIdAttribute(),
           $this->entityDefinition->getNameAttribute() => $data[$this->entityDefinition->getNameAttribute()],
           'options' => [
             'sort' => $this->getEntityDefinition()
-                ->getIdAttribute() . ' ASC',
+              ->getIdAttribute() . ' ASC',
           ],
           'limit' => 1,
         ]);
         $entityData[$name][$this->getEntityDefinition()->getIdAttribute()] = $result;
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
         // Do nothing
       }
     }
@@ -157,8 +159,8 @@ class Importer implements EntityImporter {
    */
   public function getGroups() {
     return [
-      'include' => E::ts('Include %1', [1=>$this->entityDefinition->getTitlePlural()]),
-      'remove' => E::ts('Removed %1', [1=>$this->entityDefinition->getTitlePlural()]),
+      'include' => E::ts('Include %1', [1 => $this->entityDefinition->getTitlePlural()]),
+      'remove' => E::ts('Removed %1', [1 => $this->entityDefinition->getTitlePlural()]),
     ];
   }
 
@@ -174,15 +176,17 @@ class Importer implements EntityImporter {
         0 => E::ts('Do not update'),
         1 => E::ts('Update'),
       ];
-    } elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
+    }
+    elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
       return [
         1 => E::ts('Add'),
         0 => E::ts('Do not add'),
       ];
-    } elseif ($group == 'remove' && isset($data[$this->entityDefinition->getIdAttribute()])) {
-      return  [
+    }
+    elseif ($group == 'remove' && isset($data[$this->entityDefinition->getIdAttribute()])) {
+      return [
         0 => E::ts('Keep'),
-        1 => E::ts('Remove')
+        1 => E::ts('Remove'),
       ];
     }
     return [];
@@ -197,10 +201,12 @@ class Importer implements EntityImporter {
   public function getDefaultOption($group, $data) {
     if ($group == 'include' && isset($data[$this->entityDefinition->getIdAttribute()])) {
       return '0';
-    } elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
+    }
+    elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
       return '1';
-    } elseif ($group == 'remove') {
-      return  '0';
+    }
+    elseif ($group == 'remove') {
+      return '0';
     }
   }
 
@@ -221,7 +227,7 @@ class Importer implements EntityImporter {
       $params = [
         $configuration,
         $config_item_set,
-        $this->entityDefinition->getName()
+        $this->entityDefinition->getName(),
       ];
       $entityTitle = $this->entityDefinition->getTitlePlural();
       $queue->addCallbackToCurrentTask($entityTitle, $callback, $params);
@@ -246,7 +252,7 @@ class Importer implements EntityImporter {
     $nameAttribute = $this->entityDefinition->getNameAttribute();
     $titleAttribute = $this->entityDefinition->getTitleAttribute();
     $groups = $this->entityDefinition->getExporterClass()->getGroups();
-    foreach($groups as $group => $groupTitle) {
+    foreach ($groups as $group => $groupTitle) {
       foreach ($entityData[$group] as $data) {
         if (isset($configuration[$group]) && isset($configuration[$group][$data[$nameAttribute]]) && $configuration[$group][$data[$nameAttribute]]) {
           $apiAction = $this->getApiAction($group, $data);
@@ -259,8 +265,9 @@ class Importer implements EntityImporter {
                 $this->addRuleConditions($ruleId, $data);
                 $this->addRuleActions($ruleId, $data);
               }
-            } catch (CRM_Core_Exception|Exception $ex) {
-              CRM_Core_Session::setStatus($ex->getMessage(), E::ts("Could not %1 '%2' %3", [1=>$apiAction, 2=>$data[$titleAttribute], 3=>$this->entityDefinition->getTitleSingle()]), 'error');
+            }
+            catch (CRM_Core_Exception | Exception $ex) {
+              CRM_Core_Session::setStatus($ex->getMessage(), E::ts("Could not %1 '%2' %3", [1 => $apiAction, 2 => $data[$titleAttribute], 3 => $this->entityDefinition->getTitleSingle()]), 'error');
             }
           }
         }
@@ -280,10 +287,10 @@ class Importer implements EntityImporter {
     $sqlParams[1] = [$ruleId, 'Integer'];
     $sql = "DELETE FROM `civirule_rule_condition` WHERE `rule_id` = %1";
     CRM_Core_DAO::executeQuery($sql, $sqlParams);
-    foreach($data['conditions'] as $ruleCondition) {
+    foreach ($data['conditions'] as $ruleCondition) {
       $ruleCondition['condition_id'] = $this->getEntityDefinition()->getConditionId($ruleCondition['condition']);
       unset($ruleCondition['condition']);
-      $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], false);
+      $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], FALSE);
       if (!$condition) {
         continue;
       }
@@ -306,10 +313,10 @@ class Importer implements EntityImporter {
     $sqlParams[1] = [$ruleId, 'Integer'];
     $sql = "DELETE FROM `civirule_rule_action` WHERE `rule_id` = %1";
     CRM_Core_DAO::executeQuery($sql, $sqlParams);
-    foreach($data['actions'] as $ruleAction) {
+    foreach ($data['actions'] as $ruleAction) {
       $ruleAction['action_id'] = $this->getEntityDefinition()->getActionId($ruleAction['action']);
       unset($ruleAction['action']);
-      $action = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], false);
+      $action = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], FALSE);
       if (!$action) {
         continue;
       }
@@ -348,9 +355,11 @@ class Importer implements EntityImporter {
   protected function getApiAction($group, $data) {
     if ($group == 'include' && isset($data[$this->entityDefinition->getIdAttribute()])) {
       return 'create';
-    } elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
+    }
+    elseif ($group == 'include' && !isset($data[$this->entityDefinition->getIdAttribute()])) {
       return 'create';
-    } elseif ($group == 'remove' && isset($data[$this->entityDefinition->getIdAttribute()])) {
+    }
+    elseif ($group == 'remove' && isset($data[$this->entityDefinition->getIdAttribute()])) {
       return 'delete';
     }
   }
@@ -368,12 +377,12 @@ class Importer implements EntityImporter {
     $idAttribute = $this->entityDefinition->getIdAttribute();
     $apiAction = $this->getApiAction($group, $data);
     $params = [];
-    switch($apiAction) {
+    switch ($apiAction) {
       case 'create':
         $data['trigger_id'] = $this->getEntityDefinition()->getTriggerId($data['trigger']);
         unset($data['trigger']);
-        foreach($data as $key => $val) {
-          if ($val === null) {
+        foreach ($data as $key => $val) {
+          if ($val === NULL) {
             $data[$key] = '';
           }
         }
@@ -388,6 +397,7 @@ class Importer implements EntityImporter {
         unset($params['conditions']);
         unset($params['actions']);
         break;
+
       case 'delete':
         if (isset($data[$idAttribute]) && $data[$idAttribute]) {
           $id = $data[$idAttribute];

@@ -38,7 +38,7 @@ class Definition extends EntityDefinition {
    * @param $afterEntities
    * @param $beforeEntities
    */
-  public function __construct($name, $afterEntities=[], $beforeEntities=[]) {
+  public function __construct($name, $afterEntities = [], $beforeEntities = []) {
     parent::__construct($name, $afterEntities, $beforeEntities);
     $this->title_plural = E::ts('CiviRules');
     $this->title_single = E::ts('CiviRules');
@@ -136,7 +136,8 @@ class Definition extends EntityDefinition {
         'return' => 'name',
         'id' => $triggerId,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $triggerId;
   }
@@ -152,7 +153,8 @@ class Definition extends EntityDefinition {
         'return' => 'name',
         'id' => $conditionId,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $conditionId;
   }
@@ -168,7 +170,8 @@ class Definition extends EntityDefinition {
         'return' => 'name',
         'id' => $actionId,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $actionId;
   }
@@ -184,7 +187,8 @@ class Definition extends EntityDefinition {
         'return' => 'id',
         'name' => $triggerName,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $triggerName;
   }
@@ -200,7 +204,8 @@ class Definition extends EntityDefinition {
         'return' => 'id',
         'name' => $conditionName,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $conditionName;
   }
@@ -216,10 +221,10 @@ class Definition extends EntityDefinition {
         'return' => 'id',
         'name' => $actionName,
       ]);
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
     }
     return $actionName;
   }
-
 
 }

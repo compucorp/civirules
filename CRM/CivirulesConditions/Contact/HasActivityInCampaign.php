@@ -6,7 +6,6 @@
  * @date 25 April 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirules_Condition {
 
   private $_query = NULL;
@@ -56,7 +55,7 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
     $fieldIds = [];
     foreach ($this->conditionParams[$fieldName] as $fieldValue) {
       $this->_index++;
-      $fieldIds[] = '%'.$this->_index;
+      $fieldIds[] = '%' . $this->_index;
       $this->_queryParams[$this->_index] = [$fieldValue, 'Integer'];
     }
     if (!empty($fieldIds)) {
@@ -138,9 +137,10 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       try {
         $params['campaign_id'] = civicrm_api3('Campaign', 'getvalue', [
           'return' => 'name',
-          'id' => $params['campaign_id']
+          'id' => $params['campaign_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -151,7 +151,8 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
           'value' => $params['activity_type_id'],
           'option_group_id' => 'activity_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -169,9 +170,10 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       try {
         $condition_params['campaign_id'] = civicrm_api3('Campaign', 'getvalue', [
           'return' => 'id',
-          'name' => $condition_params['campaign_id']
+          'name' => $condition_params['campaign_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -182,7 +184,8 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
           'name' => $condition_params['activity_type_id'],
           'option_group_id' => 'activity_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

@@ -17,11 +17,13 @@ class CRM_CivirulesConditions_Contribution_Source extends CRM_Civirules_Conditio
           $isConditionValid = TRUE;
         }
         break;
+
       case 'contains':
-        if (strpos(mb_strtolower($contribution['source']), mb_strtolower($this->conditionParams['text'])) !== false){
+        if (strpos(mb_strtolower($contribution['source']), mb_strtolower($this->conditionParams['text'])) !== FALSE) {
           $isConditionValid = TRUE;
         }
         break;
+
       default:
         throw new Exception("Invalid operator in 'Contribution source' Condition", 1);
     }

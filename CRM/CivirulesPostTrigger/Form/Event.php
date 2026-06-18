@@ -32,11 +32,12 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
     ]);
     $options[0] = E::ts('Do not use Contact ID');
     $options[1] = E::ts('Set contact id to logged in contact');
-    $this->add('select', 'contact_id', E::ts('Contact ID'),$options, true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'contact_id', E::ts('Contact ID'), $options, TRUE, ['class' => 'crm-select2 huge']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -49,11 +50,13 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
     $defaultValues = parent::setDefaultValues();
     // Deprecated compatibility check - remove once all data migrated to array storage
     $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
-    if ($data === false && $this->ruleId) {
+    if ($data === FALSE && $this->ruleId) {
       $defaultValues['contact_id'] = 0;
-    } elseif (!empty($data['contact_id'])) {
+    }
+    elseif (!empty($data['contact_id'])) {
       $defaultValues['contact_id'] = $data['contact_id'];
-    } else {
+    }
+    else {
       $defaultValues['contact_id'] = 0;
     }
     return $defaultValues;

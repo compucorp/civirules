@@ -8,7 +8,6 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $event = $triggerData->getEntityData('Event');
@@ -19,6 +18,7 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
           $isConditionValid = TRUE;
         }
         break;
+
       case 1:
         if (!in_array($event_type_id, $this->conditionParams['event_type_id'])) {
           $isConditionValid = TRUE;
@@ -62,9 +62,9 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
     $eventTypes = civicrm_api3('OptionValue', 'get', [
       'value' => ['IN' => $this->conditionParams['event_type_id']],
       'option_group_id' => 'event_type',
-      'options' => ['limit' => 0]
+      'options' => ['limit' => 0],
     ]);
-    foreach($eventTypes['values'] as $eventType) {
+    foreach ($eventTypes['values'] as $eventType) {
       $typeText[] = $eventType['label'];
     }
 
@@ -83,21 +83,23 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['event_type_id']) && is_array($params['event_type_id'])) {
-      foreach($params['event_type_id'] as $i => $j) {
+      foreach ($params['event_type_id'] as $i => $j) {
         $params['status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'event_type',
         ]);
       }
-    } elseif (!empty($params['event_type_id'])) {
+    }
+    elseif (!empty($params['event_type_id'])) {
       try {
         $params['event_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['event_type_id'],
           'option_group_id' => 'event_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -112,21 +114,23 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['event_type_id']) && is_array($condition_params['event_type_id'])) {
-      foreach($condition_params['event_type_id'] as $i => $j) {
+      foreach ($condition_params['event_type_id'] as $i => $j) {
         $condition_params['event_type_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'event_type',
         ]);
       }
-    } elseif (!empty($condition_params['event_type_id'])) {
+    }
+    elseif (!empty($condition_params['event_type_id'])) {
       try {
         $condition_params['event_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['event_type_id'],
           'option_group_id' => 'event_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

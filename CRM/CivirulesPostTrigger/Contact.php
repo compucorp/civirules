@@ -32,7 +32,7 @@ class CRM_CivirulesPostTrigger_Contact extends CRM_Civirules_Trigger_Post {
       return TRUE;
     }
     $availableEntities = $this->getProvidedEntities();
-    foreach($availableEntities as $providedEntity) {
+    foreach ($availableEntities as $providedEntity) {
       if (strtolower($providedEntity->entity) == strtolower($entity)) {
         return TRUE;
       }
@@ -49,11 +49,12 @@ class CRM_CivirulesPostTrigger_Contact extends CRM_Civirules_Trigger_Post {
    */
   public function doesProvideEntities($entities): bool {
     $availableEntities = $this->getProvidedEntities();
-    foreach($entities as $entity) {
-      $entityPresent = false;
+    foreach ($entities as $entity) {
+      $entityPresent = FALSE;
       if ($entity == 'Contact') {
-        $entityPresent = true;
-      } else {
+        $entityPresent = TRUE;
+      }
+      else {
         foreach ($availableEntities as $providedEntity) {
           if (strtolower($providedEntity->entity) == strtolower($entity)) {
             $entityPresent = TRUE;
@@ -61,10 +62,10 @@ class CRM_CivirulesPostTrigger_Contact extends CRM_Civirules_Trigger_Post {
         }
       }
       if (!$entityPresent) {
-        return false;
+        return FALSE;
       }
     }
-    return true;
+    return TRUE;
   }
 
 }

@@ -9,9 +9,9 @@ class CRM_CivirulesPostTrigger_ParticipantPayment extends CRM_Civirules_Trigger_
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Participant', 'Participant', 'CRM_Event_DAO_Participant' , 'Participant');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contact', 'Contact', 'CRM_Contact_DAO_Contact' , 'Contact');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contribution', 'Contribution', 'CRM_Contribute_DAO_Contribution' , 'Contribution');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Participant', 'Participant', 'CRM_Event_DAO_Participant', 'Participant');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contact', 'Contact', 'CRM_Contact_DAO_Contact', 'Contact');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contribution', 'Contribution', 'CRM_Contribute_DAO_Contribution', 'Contribution');
     return $entities;
   }
 
@@ -31,7 +31,8 @@ class CRM_CivirulesPostTrigger_ParticipantPayment extends CRM_Civirules_Trigger_
       $triggerData->setEntityData('Contact', $contact);
       $contribution = civicrm_api3('Contribution', 'getsingle', ['id' => $participantPayment['contribution_id']]);
       $triggerData->setEntityData('Contribution', $contribution);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       \Civi::log('civirules')->error('Error occurred loading additional entity data for participant payment trigger: ' . $e->getMessage());
     }
 

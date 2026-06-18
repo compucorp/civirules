@@ -6,7 +6,6 @@
  * @date 10 Nov 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Form_Form {
   private $_commPrefs = [];
 
@@ -23,8 +22,9 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
       ['id' => 'comm_pref', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]]);
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -38,7 +38,7 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
         'is_active' => 1,
         'options' => ['limit' => 0],
       ]);
-      foreach($optionValues['values'] as $optionValue) {
+      foreach ($optionValues['values'] as $optionValue) {
         $this->_commPrefs[$optionValue['value']] = $optionValue['label'];
       }
     }
@@ -59,7 +59,8 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
     if (isset($data['on_or_off'])) {
       if ($data['on_or_off'] == 1) {
         $defaultValues['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $defaultValues['on_or_off'] = 1;
       }
     }
@@ -79,7 +80,8 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
     if (isset($this->_submitValues['on_or_off'])) {
       if ($this->_submitValues['on_or_off'] == 1) {
         $data['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $data['on_or_off'] = 1;
       }
     }

@@ -9,7 +9,6 @@ use Civi\Api4\Tag;
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Generic_HasTag {
   protected $entityTable = "civicrm_contact";
 
@@ -58,7 +57,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
   public function entityHasAllTags(int $entityId, array $tagIds):bool {
     $isValid = 0;
     $tags = $this->getApi4TagsWithEntityId($entityId);
-    foreach($tagIds as $tagId) {
+    foreach ($tagIds as $tagId) {
       if (in_array($tagId, $tags)) {
         $isValid++;
       }
@@ -77,7 +76,7 @@ class CRM_CivirulesConditions_Generic_HasTag {
   public function entityHasOneOfTags(int $entityId, array $tagIds): bool {
     $isValid = FALSE;
     $tags = $this->getApi4TagsWithEntityId($entityId);
-    foreach($tagIds as $tagId) {
+    foreach ($tagIds as $tagId) {
       if (in_array($tagId, $tags)) {
         $isValid = TRUE;
         break;

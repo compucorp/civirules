@@ -13,8 +13,8 @@ class CRM_CivirulesActions_Contact_RemoveSubtype extends CRM_Civirules_Action {
     $typesToRemove = [];
     $changed = FALSE;
     $actionParams = $this->getActionParameters();
-    foreach($actionParams['sub_type'] as $subType) {
-      if (in_array($subType, $subTypes )) {
+    foreach ($actionParams['sub_type'] as $subType) {
+      if (in_array($subType, $subTypes)) {
         $typesToRemove[] = $subType;
         $changed = TRUE;
       }
@@ -52,8 +52,8 @@ class CRM_CivirulesActions_Contact_RemoveSubtype extends CRM_Civirules_Action {
     $label = ts('Remove contact subtype');
     $subTypeLabels = [];
     $subTypes = CRM_Contact_BAO_ContactType::contactTypeInfo();
-    foreach($params['sub_type'] as $subType) {
-      $subTypeLabels[] = $subTypes[$subType]['parent_label'].' - '.$subTypes[$subType]['label'];
+    foreach ($params['sub_type'] as $subType) {
+      $subTypeLabels[] = $subTypes[$subType]['parent_label'] . ' - ' . $subTypes[$subType]['label'];
     }
     $label .= ': ' . implode(', ', $subTypeLabels);
     return $label;
@@ -67,13 +67,14 @@ class CRM_CivirulesActions_Contact_RemoveSubtype extends CRM_Civirules_Action {
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['sub_type'] as $i=>$j) {
+    foreach ($action_params['sub_type'] as $i => $j) {
       try {
         $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -86,13 +87,14 @@ class CRM_CivirulesActions_Contact_RemoveSubtype extends CRM_Civirules_Action {
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['sub_type'] as $i=>$j) {
+    foreach ($action_params['sub_type'] as $i => $j) {
       try {
         $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

@@ -6,8 +6,6 @@ use Civi\Api4\MembershipType;
  * @author Jaap Jansma <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
-
 class CRM_CivirulesActions_Membership_Add extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -39,7 +37,8 @@ class CRM_CivirulesActions_Membership_Add extends CRM_CivirulesActions_Generic_A
         'return' => 'name',
         'id' => $action_params['membership_type_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -56,7 +55,8 @@ class CRM_CivirulesActions_Membership_Add extends CRM_CivirulesActions_Generic_A
         'return' => 'id',
         'name' => $action_params['membership_type_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }

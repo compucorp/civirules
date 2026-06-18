@@ -98,4 +98,5 @@ class CRM_CivirulesActions_Generic_Form_SetField extends CRM_CivirulesActions_Fo
     }
     return $return;
   }
+
 }

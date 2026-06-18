@@ -12,7 +12,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
 
   protected function getEntityOptions() {
     $return = [];
-    foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
+    foreach ($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->label;
       }
@@ -22,7 +22,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
 
   protected function getEntities() {
     $return = [];
-    foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
+    foreach ($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->entity;
       }
@@ -32,7 +32,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
 
   protected function getFields() {
     $return = [];
-    foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
+    foreach ($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $key = $entityDef->entity . '_';
         $className = $entityDef->daoClass;
@@ -44,7 +44,8 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
           $fieldKey = $key . $field['name'];
           if (isset($field['title'])) {
             $label = trim($field['title']);
-          } else {
+          }
+          else {
             $label = "";
           }
           if (empty($label)) {
@@ -53,8 +54,8 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
           $return[$fieldKey] = $label;
         }
         $customFields = $this->getCustomfieldsForEntity($entityDef->entity);
-        foreach($customFields as $customFieldKey => $customFieldLabel) {
-          $return[$key.$customFieldKey] = $customFieldLabel;
+        foreach ($customFields as $customFieldKey => $customFieldLabel) {
+          $return[$key . $customFieldKey] = $customFieldLabel;
         }
       }
     }
@@ -65,16 +66,16 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     $extends = [$entity];
     if ($entity == 'Contact') {
       $contact_types = civicrm_api3('ContactType', 'get', []);
-      foreach($contact_types['values'] as $type) {
+      foreach ($contact_types['values'] as $type) {
         $extends[] = $type['name'];
       }
     }
 
     $return = [];
     $processedGroups = [];
-    foreach($extends as $extend) {
+    foreach ($extends as $extend) {
       $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => $extend, 'options' => ['limit' => 0]]);
-      foreach($customGroups['values'] as $customGroup) {
+      foreach ($customGroups['values'] as $customGroup) {
         if (in_array($customGroup['id'], $processedGroups)) {
           continue;
         }
@@ -93,13 +94,12 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   protected function getCustomFieldPerGroup($group_id, $group_label) {
     $fields = civicrm_api3('CustomField', 'get', ['custom_group_id' => $group_id, 'options' => ['limit' => 0]]);
     $return = [];
-    foreach($fields['values'] as $field) {
-      $key = 'custom_'.$field['id'];
-      $return[$key] = $group_label.': '.$field['label'];
+    foreach ($fields['values'] as $field) {
+      $key = 'custom_' . $field['id'];
+      $return[$key] = $group_label . ': ' . $field['label'];
     }
     return $return;
   }
-
 
   /**
    * Overridden parent method to build form
@@ -110,8 +110,8 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     parent::buildQuickForm();
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), true, ['class' => 'crm-select2 huge']);
-    $this->add('select', 'field', ts('Field'), $this->getFields(), true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), TRUE, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'field', ts('Field'), $this->getFields(), TRUE, ['class' => 'crm-select2 huge']);
     $this->add('checkbox', 'original_data', ts('Compare with original value (before the change)?'));
     $this->assign('entities', $this->getEntities());
     $this->assign('custom_field_multi_select_html_types', CRM_Civirules_Utils_CustomField::getMultiselectTypes());
@@ -122,8 +122,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
    *
    * @access public
    */
-  public function addRules()
-  {
+  public function addRules() {
     parent::addRules();
     $this->addFormRule(['CRM_CivirulesConditions_Form_FieldValueComparison', 'validateEntityAndField']);
   }
@@ -133,10 +132,10 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     if (empty($entity)) {
       return ['entity' => ts('Entity could not be empty')];
     }
-    if (stripos($fields['field'], $fields['entity'].'_')!==0) {
+    if (stripos($fields['field'], $fields['entity'] . '_') !== 0) {
       return ['entity' => ts('Field is not valid')];
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -153,7 +152,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
       $defaultValues['entity'] = $data['entity'];
     }
     if (!empty($data['entity']) && !empty($data['field'])) {
-      $defaultValues['field'] = $data['entity'].'_'.$data['field'];
+      $defaultValues['field'] = $data['entity'] . '_' . $data['field'];
     }
     $defaultValues['original_data'] = $data['original_data'] ?? 0;
     return $defaultValues;
@@ -170,11 +169,12 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     $data['value'] = $this->_submitValues['value'];
     $data['multi_value'] = explode("\r\n", $this->_submitValues['multi_value']);
     $data['entity'] = $this->_submitValues['entity'];
-    $data['field'] = substr($this->_submitValues['field'], strlen($data['entity'].'_'));
+    $data['field'] = substr($this->_submitValues['field'], strlen($data['entity'] . '_'));
 
     if (isset($this->_submitValues['original_data'])) {
       $data['original_data'] = $this->_submitValues['original_data'];
-    } else {
+    }
+    else {
       $data['original_data'] = 0;
     }
 
@@ -187,8 +187,9 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
       'success'
     );
 
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
-    CRM_Utils_System::redirect($redirectUrl);  }
+    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
+    CRM_Utils_System::redirect($redirectUrl);
+  }
 
   /**
    * Method to set the form title
@@ -198,8 +199,9 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   protected function setFormTitle() {
     $title = 'CiviRules Edit Condition parameters';
     $this->assign('ruleConditionHeader',
-      E::ts("Edit Condition '%1' for CiviRule '%2'", [ 1 => $this->condition->label, 2 => $this->rule->label])
+      E::ts("Edit Condition '%1' for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label])
     );
     CRM_Utils_System::setTitle($title);
   }
+
 }

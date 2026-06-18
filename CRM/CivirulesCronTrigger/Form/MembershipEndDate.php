@@ -17,7 +17,7 @@ class CRM_CivirulesCronTrigger_Form_MembershipEndDate extends CRM_CivirulesTrigg
     $this->add('select', 'membership_type_id', ts('Membership Type'),
       $this->getMembershipTypesWithIntervals(), TRUE, [
         'multiple' => TRUE,
-        'class' => 'crm-select2'
+        'class' => 'crm-select2',
       ]
     );
     $this->add('select', 'interval_unit', ts('Interval'), CRM_CivirulesCronTrigger_MembershipEndDate::intervals(), TRUE);
@@ -25,8 +25,8 @@ class CRM_CivirulesCronTrigger_Form_MembershipEndDate extends CRM_CivirulesTrigg
     $this->addRule('interval', ts('Interval should be a numeric value'), 'numeric');
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -39,7 +39,8 @@ class CRM_CivirulesCronTrigger_Form_MembershipEndDate extends CRM_CivirulesTrigg
     $return = [];
     if ($onlyActive) {
       $params = ['is_active' => 1];
-    } else {
+    }
+    else {
       $params = [];
     }
     $params['options'] = ['limit' => 0, 'sort' => "name ASC"];
@@ -53,7 +54,8 @@ class CRM_CivirulesCronTrigger_Form_MembershipEndDate extends CRM_CivirulesTrigg
         ]);
       }
     }
-    catch (CRM_Core_Exception $ex) {}
+    catch (CRM_Core_Exception $ex) {
+    }
     return $return;
   }
 

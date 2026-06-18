@@ -4,7 +4,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Activity_Details extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -31,14 +30,16 @@ class CRM_CivirulesConditions_Activity_Details extends CRM_Civirules_Condition {
           $isConditionValid = TRUE;
         }
         break;
+
       case 'contains':
-        if (strpos(strtolower($activity['details']), strtolower($this->conditionParams['text'] ?? '')) !== false){
+        if (strpos(strtolower($activity['details']), strtolower($this->conditionParams['text'] ?? '')) !== FALSE) {
           $isConditionValid = TRUE;
         }
         break;
     }
     return $isConditionValid;
   }
+
   /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
@@ -72,4 +73,5 @@ class CRM_CivirulesConditions_Activity_Details extends CRM_Civirules_Condition {
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Activity');
   }
+
 }
