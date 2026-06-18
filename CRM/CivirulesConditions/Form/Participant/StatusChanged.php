@@ -8,7 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 1 Oct 2019
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Participant_StatusChanged extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -27,9 +26,9 @@ class CRM_CivirulesConditions_Form_Participant_StatusChanged extends CRM_Civirul
     $this->add('select', 'original_operator', E::ts('Operator'), [E::ts('is one of'), E::ts('is NOT one of')], TRUE);
     $this->add('select', 'new_operator', E::ts('Operator'), [E::ts('is one of'), E::ts('is NOT one of')], TRUE);
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => E::ts('Cancel')],
-      ]);
+    ]);
   }
 
   /**
@@ -71,4 +70,5 @@ class CRM_CivirulesConditions_Form_Participant_StatusChanged extends CRM_Civirul
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

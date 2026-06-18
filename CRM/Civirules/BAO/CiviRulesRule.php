@@ -87,7 +87,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
     }
     $rule = new CRM_Civirules_BAO_Rule();
     $rule->id = $ruleId;
-    $rule->find(true);
+    $rule->find(TRUE);
     return $rule->label;
   }
 
@@ -123,7 +123,8 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
       // If $objectName is a Contact Type, also search for "Contact".
       if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
         $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND (t.object_name = %1 OR t.object_name = 'Contact') AND t.op LIKE %2";
-      } else {
+      }
+      else {
         $sqlWhere = " WHERE r.`is_active` = 1 AND t.cron = 0 AND t.object_name = %1 AND t.op LIKE %2";
       }
       $sql .= $sqlWhere;
@@ -147,7 +148,9 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
     // But downstream code modifies the triggers to add triggerData etc. that is specific to the instance of the rule
     // Eg. If we trigger on Activity Create and then create an Activity as an action we will trigger the same rule again
     //   but with different triggerData. So we need to return the clean triggerObject *without* any modifications.
-    $clonedTriggerObjects = array_map(function ($object) { return clone $object; }, \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op]);
+    $clonedTriggerObjects = array_map(function ($object) {
+      return clone $object;
+    }, \Civi::$statics[__CLASS__]['findRulesByObjectNameAndOp'][$objectName][$op]);
     return $clonedTriggerObjects;
   }
 
@@ -215,7 +218,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
       if (isset($dao->data)) {
         $queueItemData = @unserialize($dao->data);
         if ($queueItemData) {
-          foreach($queueItemData->arguments as $dataArgument) {
+          foreach ($queueItemData->arguments as $dataArgument) {
             if (is_subclass_of($dataArgument, 'CRM_Civirules_Action')) {
               if ($dataArgument->getRuleId() == $ruleId) {
                 return TRUE;

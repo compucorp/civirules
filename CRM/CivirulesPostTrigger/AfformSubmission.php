@@ -63,9 +63,9 @@ class CRM_CivirulesPostTrigger_AfformSubmission extends CRM_Civirules_Trigger_Po
     // But there doesn't seem to be an easy way to get that info using Afform::get()
     // For now just hardcode a few.
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Activity', 'Activity', 'CRM_Activity_DAO_Activity' , 'Activity');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ActivityContact', 'ActivityContact', 'CRM_Activity_DAO_ActivityContact' , 'ActivityContact');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case' , 'Case');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Activity', 'Activity', 'CRM_Activity_DAO_Activity', 'Activity');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ActivityContact', 'ActivityContact', 'CRM_Activity_DAO_ActivityContact', 'ActivityContact');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case', 'Case');
     return $entities;
   }
 

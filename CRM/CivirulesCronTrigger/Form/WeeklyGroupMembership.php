@@ -21,12 +21,12 @@ class CRM_CivirulesCronTrigger_Form_WeeklyGroupMembership extends CRM_CivirulesT
     $group->setMultiple(TRUE);
 
     $this->add('select', 'week_day', E::ts('Day of the week'), CRM_Utils_Date::getFullWeekdayNames(), TRUE);
-    $this->add('text', 'not_before_time', E::ts('Not before time (in 24 hours format hh:mm)'), ['size' => CRM_Utils_Type::FOUR], false);
-    $this->add('text', 'not_after_time', E::ts('Not after time (in 24 hours format hh:mm)'), ['size' => CRM_Utils_Type::FOUR], false);
+    $this->add('text', 'not_before_time', E::ts('Not before time (in 24 hours format hh:mm)'), ['size' => CRM_Utils_Type::FOUR], FALSE);
+    $this->add('text', 'not_after_time', E::ts('Not after time (in 24 hours format hh:mm)'), ['size' => CRM_Utils_Type::FOUR], FALSE);
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -69,4 +69,5 @@ class CRM_CivirulesCronTrigger_Form_WeeklyGroupMembership extends CRM_CivirulesT
     $this->triggerParams['not_after_time'] = $this->getSubmittedValue('not_after_time');
     parent::postProcess();
   }
+
 }

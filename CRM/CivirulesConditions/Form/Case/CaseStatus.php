@@ -17,13 +17,14 @@ class CRM_CivirulesConditions_Form_Case_CaseStatus extends CRM_CivirulesConditio
 
     $caseStatuses = $this->getCaseStatus();
     asort($caseStatuses);
-    $this->add('select', 'status_id', ts('Case Status(es)'), $caseStatuses, true,
-      array('id' => 'status_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'status_id', ts('Case Status(es)'), $caseStatuses, TRUE,
+      ['id' => 'status_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -57,4 +58,5 @@ class CRM_CivirulesConditions_Form_Case_CaseStatus extends CRM_CivirulesConditio
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

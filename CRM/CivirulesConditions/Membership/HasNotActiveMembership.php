@@ -17,9 +17,9 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
 
     $memberships = civicrm_api3('Membership', 'get', $params);
     if (isset($memberships['values']) && count($memberships['values']) > 0) {
-      return false;
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -36,7 +36,8 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
           'return' => 'name',
           'id' => $params['membership_type_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -56,7 +57,8 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
           'return' => 'id',
           'name' => $condition_params['membership_type_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -85,19 +87,21 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $params = array(
+    $params = [
       'is_active' => 1,
-       'options' => array('limit' => 0, 'sort' => "name ASC"),
-    );
+      'options' => ['limit' => 0, 'sort' => "name ASC"],
+    ];
     try {
       $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
       $operator = 'equals';
       foreach ($membershipTypes['values'] as $membershipType) {
         if ($membershipType['id'] == $this->conditionParams['membership_type_id']) {
-          return "Membership Type ".$operator." ".$membershipType['name'];
+          return "Membership Type " . $operator . " " . $membershipType['name'];
         }
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return '';
   }
 

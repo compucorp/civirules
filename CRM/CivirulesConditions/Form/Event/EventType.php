@@ -5,13 +5,12 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Event_EventType extends CRM_CivirulesConditions_Form_Form {
 
   protected function getEventTypes() {
-    $eventTypeList = civicrm_api3('OptionValue', 'get', array('option_group_id' => "event_type", 'options' => ['limit' => 0]));
-    $eventTypes = array();
-    foreach($eventTypeList['values'] as $eventType) {
+    $eventTypeList = civicrm_api3('OptionValue', 'get', ['option_group_id' => "event_type", 'options' => ['limit' => 0]]);
+    $eventTypes = [];
+    foreach ($eventTypeList['values'] as $eventType) {
       $eventTypes[$eventType['value']] = $eventType['label'];
     }
     return $eventTypes;
@@ -27,13 +26,14 @@ class CRM_CivirulesConditions_Form_Event_EventType extends CRM_CivirulesConditio
 
     $eventTypes = $this->getEventTypes();
     asort($eventTypes);
-    $this->add('select', 'event_type_id', ts('Event Type(s)'), $eventTypes, true,
-      array('id' => 'event_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'event_type_id', ts('Event Type(s)'), $eventTypes, TRUE,
+      ['id' => 'event_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -67,4 +67,5 @@ class CRM_CivirulesConditions_Form_Event_EventType extends CRM_CivirulesConditio
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

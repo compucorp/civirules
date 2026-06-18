@@ -20,7 +20,7 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
     if (!isset($contribution['financial_type_id']) && isset($contribution['id'])) {
       // The financial type could be empty because of an online payment.
       // So we have to look it up in the database.
-      $contribution['financial_type_id'] = CRM_Core_DAO::singleValueQuery("SELECT financial_type_id FROM civicrm_contribution WHERE id = %1", array(1=>array($contribution['id'], 'Integer')));
+      $contribution['financial_type_id'] = CRM_Core_DAO::singleValueQuery("SELECT financial_type_id FROM civicrm_contribution WHERE id = %1", [1 => [$contribution['id'], 'Integer']]);
     }
     switch ($this->conditionParams['operator']) {
       case 0:
@@ -62,13 +62,14 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['financial_type_id']) && is_array($params['financial_type_id'])) {
-      foreach($params['financial_type_id'] as $i => $gid) {
+      foreach ($params['financial_type_id'] as $i => $gid) {
         try {
           $params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -83,13 +84,14 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['financial_type_id']) && is_array($condition_params['financial_type_id'])) {
-      foreach($condition_params['financial_type_id'] as $i => $gid) {
+      foreach ($condition_params['financial_type_id'] as $i => $gid) {
         try {
           $condition_params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -111,11 +113,11 @@ class CRM_CivirulesConditions_Contribution_FinancialType extends CRM_Civirules_C
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Financial Type is NOT one of: ';
     }
-    $finText = array();
+    $finText = [];
     foreach ($this->conditionParams['financial_type_id'] as $finTypeId) {
       $financialType = new CRM_Financial_BAO_FinancialType();
       $financialType->id = $finTypeId;
-      if ($financialType->find(true)) {
+      if ($financialType->find(TRUE)) {
         $finText[] = $financialType->name;
       }
     }

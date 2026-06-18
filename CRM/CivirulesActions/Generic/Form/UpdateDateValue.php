@@ -21,13 +21,13 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
     $this->add('select',
         'source_field_id',
         E::ts('Source Field'),
-        $this->getEligibleCustomFields(true),
+        $this->getEligibleCustomFields(TRUE),
         TRUE);
 
     $this->add('select',
         'target_field_id',
         E::ts('Target Field'),
-        $this->getEligibleCustomFields(false),
+        $this->getEligibleCustomFields(FALSE),
         TRUE);
 
     $this->add('select',
@@ -43,9 +43,10 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
     // set defaults
     $this->setDefaults($this->ruleAction->unserializeParams());
 
-    $this->addButtons(array(
-      array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -76,20 +77,23 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
    * @access public
    * @static
    */
-  static function validateFields($fields) {
+  public static function validateFields($fields) {
 
     $errors = [];
 
-    $source_parts = explode('::',$fields['source_field_id']);
-    if (count($source_parts)!==2)
+    $source_parts = explode('::', $fields['source_field_id']);
+    if (count($source_parts) !== 2) {
       $errors['source_field_id'] = 'Unsupported field';
+    }
 
-    $target_parts = explode('::',$fields['target_field_id']);
-    if (count($target_parts)!==2)
+    $target_parts = explode('::', $fields['target_field_id']);
+    if (count($target_parts) !== 2) {
       $errors['target_field_id'] = 'Unsupported field';
+    }
 
-    if (count($errors))
+    if (count($errors)) {
       return $errors;
+    }
 
     // we should not trip these if dropdown is populated correctly
 
@@ -99,17 +103,20 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
     $entities = array_map('strtolower', $entity_search['values']);
 
     list($source_entity, $source_field_id) = $source_parts;
-    if (!in_array(strtolower($source_entity), $entities))
+    if (!in_array(strtolower($source_entity), $entities)) {
       $errors['source_field_id'] = 'Invalid field';
+    }
 
     list($target_entity, $target_field_id) = $target_parts;
-    if (!in_array(strtolower($target_entity), $entities))
+    if (!in_array(strtolower($target_entity), $entities)) {
       $errors['target_field_id'] = 'Invalid field';
+    }
 
-    if (count($errors))
+    if (count($errors)) {
       return $errors;
+    }
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -120,24 +127,28 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
    * @access public
    * @static
    */
-  static function validateOperation($fields) {
+  public static function validateOperation($fields) {
     $errors = [];
 
     if (empty($fields['update_operation'])) {
       $errors['update_operation'] = "'Operation' is required";
-    } elseif (in_array($fields['update_operation'],['max_modify','min_modify'])) {
-      $source_parts = explode('::',$fields['source_field_id']);
-      if (count($source_parts)===2) { // will be caught by other validation if this is not true
+    }
+    elseif (in_array($fields['update_operation'], ['max_modify', 'min_modify'])) {
+      $source_parts = explode('::', $fields['source_field_id']);
+      // will be caught by other validation if this is not true
+      if (count($source_parts) === 2) {
         list($entity_type, $field_id) = $source_parts;
-        if (!in_array(strtolower($entity_type), ['contact', 'individual', 'organization', 'household']))
+        if (!in_array(strtolower($entity_type), ['contact', 'individual', 'organization', 'household'])) {
           $errors['update_operation'] = "'Operation' is not supported for selected 'Source Field'";
+        }
       }
     }
 
-    if (count($errors))
+    if (count($errors)) {
       return $errors;
+    }
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -148,30 +159,35 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
    * @access public
    * @static
    */
-  static function validateOperand($fields) {
+  public static function validateOperand($fields) {
     $errors = [];
 
-    if ($fields['update_operation']==='set') {
+    if ($fields['update_operation'] === 'set') {
       if (empty($fields['update_operand'])) {
         $errors['update_operand'] = "Operation is required in 'Set' mode";
-      } else {
+      }
+      else {
         try {
           new DateTime($fields['update_operand']);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           $errors['update_operand'] = 'Operation is an invalid input to DateTime::__construct';
         }
       }
-    } elseif(!empty($fields['update_operand'])) {
-      $datetime = new DateTime;
+    }
+    elseif (!empty($fields['update_operand'])) {
+      $datetime = new DateTime();
       $modified = $datetime->modify($fields['update_operand']);
-      if ($modified===false)
+      if ($modified === FALSE) {
         $errors['update_operand'] = 'Operation is an invalid input to DateTime::modify';
+      }
     }
 
-    if (count($errors))
+    if (count($errors)) {
       return $errors;
+    }
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -195,7 +211,7 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
 
   /**
    * Get the list of field update operations
-   * 
+   *
    * @return array list of options
    */
   protected function getUpdateOperations() {
@@ -213,7 +229,7 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
    * @param bool also include fields that are not updatable
    * @return array list of field IDs
    */
-  protected function getEligibleCustomFields($include_readonly_fields = false) {
+  protected function getEligibleCustomFields($include_readonly_fields = FALSE) {
 
     $field_list = [];
 
@@ -238,9 +254,9 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
         'return'          => 'id,label,custom_group_id',
       ]);
       foreach ($field_query['values'] as $field) {
-        $field_list['Contact::'.$field['id']] = E::ts("Field '%1' (Group '%2')", [
+        $field_list['Contact::' . $field['id']] = E::ts("Field '%1' (Group '%2')", [
           1 => $field['label'],
-          2 => $eligible_group_ids[$field['custom_group_id']]
+          2 => $eligible_group_ids[$field['custom_group_id']],
         ]);
       }
     }
@@ -248,8 +264,8 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
     if ($include_readonly_fields && !empty($this->trigger->object_name)) {
 
       $trigger_object = strtolower($this->trigger->object_name);
-      $extends = [ $trigger_object ];
-      if ($trigger_object==='participant') {
+      $extends = [$trigger_object];
+      if ($trigger_object === 'participant') {
         $extends[] = 'Event';
       }
 
@@ -275,7 +291,7 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
           'return'          => 'id,label,custom_group_id',
         ]);
         foreach ($trigger_field_query['values'] as $field) {
-          $field_list[$trigger_object.'::'.$field['id']] = E::ts("%3 Trigger: Field '%1' (Group '%2')", [
+          $field_list[$trigger_object . '::' . $field['id']] = E::ts("%3 Trigger: Field '%1' (Group '%2')", [
             1 => $field['label'],
             2 => $eligible_trigger_group_ids[$field['custom_group_id']],
             3 => ucwords($trigger_object),
@@ -284,12 +300,13 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
       }
 
       // other available fields
-      if ($trigger_object==='activity') {
+      if ($trigger_object === 'activity') {
         $field_list['Activity::activity_date_time'] = E::ts("%2 Trigger: Field '%1'", [
           1 => 'Activity Date',
           2 => 'Activity',
-         ]);
-      } elseif (in_array($trigger_object, ['event', 'participant'])) {
+        ]);
+      }
+      elseif (in_array($trigger_object, ['event', 'participant'])) {
         $field_list['Event::start_date'] = E::ts("%2 Trigger: Field '%1'", [
           1 => 'Event Start Date',
           2 => 'Event',
@@ -298,8 +315,9 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
           1 => 'Event End Date',
           2 => 'Event',
         ]);
-        if ($trigger_object==='participant') {
-          $field_list['Participant::participant_register_date'] = E::ts("%2 Trigger: Field '%1'", [ // just register_date does not work
+        if ($trigger_object === 'participant') {
+          // just register_date does not work
+          $field_list['Participant::participant_register_date'] = E::ts("%2 Trigger: Field '%1'", [
             1 => 'Participant Register Date',
             2 => 'Participant',
           ]);
@@ -309,4 +327,5 @@ class CRM_CivirulesActions_Generic_Form_UpdateDateValue extends CRM_CivirulesAct
 
     return $field_list;
   }
+
 }

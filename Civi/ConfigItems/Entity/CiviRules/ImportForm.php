@@ -63,7 +63,7 @@ class ImportForm implements ConfigurationForm, Tab {
     $nameAttribute = $this->entityImporter->getEntityDefinition()->getNameAttribute();
     $titleAttribute = $this->entityImporter->getEntityDefinition()->getTitleAttribute();
     $elements = [];
-    foreach($groups as $group => $groupTitle) {
+    foreach ($groups as $group => $groupTitle) {
       if (!isset($entityData[$group])) {
         $entityData[$group] = [];
       }
@@ -74,7 +74,8 @@ class ImportForm implements ConfigurationForm, Tab {
           $form->addRadio($name, $data[$titleAttribute], $radioButtons, ['allowClear' => TRUE], NULL, TRUE);
           if (isset($configuration[$group][$data[$nameAttribute]])) {
             $defaults[$name] = $configuration[$group][$data[$nameAttribute]];
-          } else {
+          }
+          else {
             $defaults[$name] = $this->entityImporter->getDefaultOption($group, $data);
           }
           $elements[$group][] = $name;
@@ -84,7 +85,6 @@ class ImportForm implements ConfigurationForm, Tab {
     $form->assign('elements', $elements);
     $form->setDefaults($defaults);
   }
-
 
   /**
    * Returns the name of the template for the configuration form.
@@ -128,7 +128,7 @@ class ImportForm implements ConfigurationForm, Tab {
    * @param bool $reset
    * @return array
    */
-  public function getTabs($tabset, $configuration, $config_item_set, $reset=FALSE) {
+  public function getTabs($tabset, $configuration, $config_item_set, $reset = FALSE) {
     $entityName = $this->entityImporter->getEntityDefinition()->getName();
     $url = \CRM_Utils_System::url('civicrm/admin/civiconfig/import/entity', ['reset' => 1, 'id' => $config_item_set['id'], 'entity' => $entityName]);
     $tabset[$entityName] = [
@@ -136,10 +136,9 @@ class ImportForm implements ConfigurationForm, Tab {
       'active' => 1,
       'valid' => 1,
       'link' => $url,
-      'current' => false,
+      'current' => FALSE,
     ];
     return $tabset;
   }
-
 
 }

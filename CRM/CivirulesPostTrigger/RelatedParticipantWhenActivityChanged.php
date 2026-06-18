@@ -45,14 +45,14 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityChanged extends CRM
     }
 
     $custom_field_id = $this->triggerParams['event_id_custom_field'];
-    $event_id = civicrm_api3('Activity', 'getvalue', ['id' => $triggerData->getEntityId(), 'return' => 'custom_'.$custom_field_id]);
+    $event_id = civicrm_api3('Activity', 'getvalue', ['id' => $triggerData->getEntityId(), 'return' => 'custom_' . $custom_field_id]);
     $event = civicrm_api3('Event', 'getsingle', ['id' => $event_id]);
     $triggerData->setEntityData('Event', $event);
 
     $sql = "SELECT `p`.* FROM `civicrm_participant` `p` WHERE p.event_id = %1";
-    $params[1] = array($event_id, 'Integer');
-    $params[2] = array($this->ruleId, 'Integer');
-    $dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Event_DAO_Participant');
+    $params[1] = [$event_id, 'Integer'];
+    $params[2] = [$this->ruleId, 'Integer'];
+    $dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Event_DAO_Participant');
 
     while ($dao->fetch()) {
       $participant = [];
@@ -87,7 +87,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityChanged extends CRM
    * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/relatedparticipantwhenactivitychanged', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/relatedparticipantwhenactivitychanged', 'rule_id=' . $ruleId);
   }
 
 }

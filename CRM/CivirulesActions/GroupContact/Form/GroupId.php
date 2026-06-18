@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_GroupContact_Form_GroupId extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -33,7 +32,7 @@ class CRM_CivirulesActions_GroupContact_Form_GroupId extends CRM_CivirulesAction
 
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -51,11 +50,12 @@ class CRM_CivirulesActions_GroupContact_Form_GroupId extends CRM_CivirulesAction
    *
    * @return array|bool
    */
-  static function validateGroupFields($fields) {
+  public static function validateGroupFields($fields) {
     $errors = [];
     if ($fields['type'] == 0 && empty($fields['group_id'])) {
       $errors['group_id'] = ts('You have to select at least one group');
-    } elseif ($fields['type'] == 1 && (empty($fields['group_ids']) || count($fields['group_ids']) < 1)) {
+    }
+    elseif ($fields['type'] == 1 && (empty($fields['group_ids']) || count($fields['group_ids']) < 1)) {
       $errors['group_ids'] = ts('You have to select at least one group');
     }
 
@@ -94,7 +94,8 @@ class CRM_CivirulesActions_GroupContact_Form_GroupId extends CRM_CivirulesAction
     $data['group_ids'] = FALSE;
     if ($this->_submitValues['type'] == 0) {
       $data['group_id'] = $this->_submitValues['group_id'];
-    } else {
+    }
+    else {
       $data['group_ids'] = $this->_submitValues['group_ids'];
     }
 

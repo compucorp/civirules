@@ -39,7 +39,7 @@ class CRM_CivirulesConditions_Case_CaseActivity extends CRM_Civirules_Condition 
     $today = new DateTime();
     $diff = $today->diff($lastActivityDate)->format("%a");
 
-    if($diff >= $daysInactive) {
+    if ($diff >= $daysInactive) {
       $isConditionValid = TRUE;
     }
 

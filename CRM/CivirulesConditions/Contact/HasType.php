@@ -10,13 +10,14 @@ class CRM_CivirulesConditions_Contact_HasType extends CRM_Civirules_Condition {
    * @access public
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $isConditionValid = false;
+    $isConditionValid = FALSE;
     $contact = $triggerData->getEntityData('Contact');
 
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'is one of':
         $isConditionValid = in_array($contact['contact_type'], $this->conditionParams['type_names']);
         break;
+
       case 'is not one of':
         $isConditionValid = !in_array($contact['contact_type'], $this->conditionParams['type_names']);;
         break;
@@ -55,7 +56,7 @@ class CRM_CivirulesConditions_Contact_HasType extends CRM_Civirules_Condition {
     }
 
     $types = '';
-    foreach($this->conditionParams['type_names'] as $type) {
+    foreach ($this->conditionParams['type_names'] as $type) {
       if (strlen($types)) {
         $types .= ', ';
       }

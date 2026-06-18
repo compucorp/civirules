@@ -6,7 +6,6 @@
  * @date 13 June 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -17,13 +16,14 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'country_id', ts('Country'), $this->getCountries(), TRUE,
-      array('id' => 'country_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
+      ['id' => 'country_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'location_type_id', ts('Location Type of the Address to Test'), $this->getLocationTypes(), FALSE);
-    $this->add('checkbox','no_address_found', ts('Use CiviCRM Default Country if Contact has no Address'));
-    $this->add('checkbox','no_country_found', ts('Use CiviCRM Default Country if Address has no Country'));
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('checkbox', 'no_address_found', ts('Use CiviCRM Default Country if Contact has no Address'));
+    $this->add('checkbox', 'no_country_found', ts('Use CiviCRM Default Country if Address has no Country'));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -84,12 +84,12 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
    * @return array
    */
   private function getCountries() {
-    $countries = array();
+    $countries = [];
     try {
-      $apiCountries = civicrm_api3('Country', 'get', array(
-        'return' => array("id", "name"),
-        'options' => array('limit' => 0, 'sort' => "name"),
-        ));
+      $apiCountries = civicrm_api3('Country', 'get', [
+        'return' => ["id", "name"],
+        'options' => ['limit' => 0, 'sort' => "name"],
+      ]);
       foreach ($apiCountries['values'] as $apiCountryId => $apiCountry) {
         $countries[$apiCountryId] = $apiCountry['name'];
       }
@@ -105,13 +105,13 @@ class CRM_CivirulesConditions_Form_Contact_LivesInCountry extends CRM_CivirulesC
    * @return array
    */
   private function getLocationTypes() {
-    $locationTypes = array(0 => '-- please select --');
+    $locationTypes = [0 => '-- please select --'];
     try {
-      $apiLocationTypes = civicrm_api3('LocationType', 'get', array(
-        'return' => array("id", "display_name"),
+      $apiLocationTypes = civicrm_api3('LocationType', 'get', [
+        'return' => ["id", "display_name"],
         'is_active' => 1,
-        'options' => array('limit' => 0, 'sort' => "display_name"),
-        ));
+        'options' => ['limit' => 0, 'sort' => "display_name"],
+      ]);
       foreach ($apiLocationTypes['values'] as $apiLocationTypeId => $apiLocationType) {
         $locationTypes[$apiLocationTypeId] = $apiLocationType['display_name'];
       }

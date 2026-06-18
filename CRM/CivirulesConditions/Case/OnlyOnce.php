@@ -8,7 +8,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Case_OnlyOnce extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -27,31 +26,35 @@ class CRM_CivirulesConditions_Case_OnlyOnce extends CRM_Civirules_Condition {
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     try {
-      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', array(
+      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', [
         'option_group' => 'activity_contacts',
         'name' => 'Activity Source',
-        'return' => 'value'
-      ));
+        'return' => 'value',
+      ]);
       // if triggered from case activity we will have activity contact data
       $activityContactData = $triggerData->getEntityData('ActivityContact');
       if (!empty($activityContactData)) {
         if ($activityContactData['record_type_id'] == $sourceRecordTypeId) {
           $isConditionValid = TRUE;
         }
-      } else {
+      }
+      else {
         // if no activity contact check case data (based on fact that relationship exists
         // for all case roles apart from client)
         $caseData = $triggerData->getEntityData('Case');
         if (empty($caseData)) {
           $isConditionValid = TRUE;
-        } else {
+        }
+        else {
           $relationship = $triggerData->getEntityData('Relationship');
           if (empty($relationship)) {
             $isConditionValid = TRUE;
           }
         }
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return $isConditionValid;
   }
 
@@ -69,10 +72,12 @@ class CRM_CivirulesConditions_Case_OnlyOnce extends CRM_Civirules_Condition {
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     if ($trigger->doesProvideEntity('Case')) {
-      return true;
-    } elseif ($trigger->doesProvideEntity('ActivityContact')) {
-      return true;
+      return TRUE;
     }
-    return false;
+    elseif ($trigger->doesProvideEntity('ActivityContact')) {
+      return TRUE;
+    }
+    return FALSE;
   }
+
 }

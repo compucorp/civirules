@@ -13,8 +13,8 @@ trait CRM_CivirulesTrigger_MembershipTrait {
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contribution', 'Contribution', 'CRM_Contribute_DAO_Contribute' , 'Contribution');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ContributionRecur', 'ContributionRecur', 'CRM_Contribute_DAO_ContributionRecur' , 'ContributionRecur');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Contribution', 'Contribution', 'CRM_Contribute_DAO_Contribute', 'Contribution');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ContributionRecur', 'ContributionRecur', 'CRM_Contribute_DAO_ContributionRecur', 'ContributionRecur');
     return $entities;
   }
 
@@ -51,7 +51,8 @@ trait CRM_CivirulesTrigger_MembershipTrait {
           ->first();
         $triggerData->setEntityData('Contribution', $contribution);
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       // Do nothing. There could be an exception when the contribution does not exists in the database anymore.
       \Civi::log('civirules')->error('Error occurred loading contribution for membership: ' . $e->getMessage());
     }

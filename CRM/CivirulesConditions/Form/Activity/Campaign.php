@@ -17,12 +17,13 @@ class CRM_CivirulesConditions_Form_Activity_Campaign extends CRM_CivirulesCondit
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'campaign_id', ts('Campaign(s)'), CRM_Civirules_Utils::getCampaignList(), TRUE,
-      array('id' => 'campaign_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+      ['id' => 'campaign_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

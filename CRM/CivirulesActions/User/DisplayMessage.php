@@ -7,6 +7,7 @@
  * @license AGPL-3.0
  */
 class CRM_CivirulesActions_User_DisplayMessage extends CRM_Civirules_Action {
+
   /**
    * Method processAction to execute the action
    *
@@ -31,4 +32,5 @@ class CRM_CivirulesActions_User_DisplayMessage extends CRM_Civirules_Action {
   public function getExtraDataInputUrl($ruleActionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/display_message/', $ruleActionId);
   }
+
 }

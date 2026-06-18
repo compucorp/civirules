@@ -19,7 +19,6 @@
 namespace Civi\CiviRules\Config;
 
 use CRM_Core_Config_Runtime;
-use Civi\CiviRules\Config\Config;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 
@@ -94,7 +93,7 @@ class ConfigContainer {
     // So we cater for multisite installations and installations with one code base
     // and multiple databases.
     $envId = CRM_Core_Config_Runtime::getId();
-    return CIVICRM_TEMPLATE_COMPILEDIR."/".static::getCachedClassName().$envId.".php";
+    return CIVICRM_TEMPLATE_COMPILEDIR . "/" . static::getCachedClassName() . $envId . ".php";
   }
 
   /**

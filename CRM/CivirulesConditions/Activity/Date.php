@@ -73,26 +73,31 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
           return TRUE;
         }
         break;
+
       case 1:
         if ($activityDate > $compareDate) {
           return TRUE;
         }
         break;
+
       case 2:
         if ($activityDate >= $compareDate) {
           return TRUE;
         }
         break;
+
       case 3:
         if ($activityDate < $compareDate) {
           return TRUE;
         }
         break;
+
       case 4:
         if ($activityDate <= $compareDate) {
           return TRUE;
         }
         break;
+
       case 5:
         if ($activityDate != $compareDate) {
           return TRUE;
@@ -118,7 +123,8 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
         }
       }
       // if use_action_date, use date (only makes sense for actions with delays)
-    } elseif ($this->conditionParams['use_action_date'] && !$this->conditionParams['use_trigger_date'] && empty($this->conditionParams['activity_compare_date'])) {
+    }
+    elseif ($this->conditionParams['use_action_date'] && !$this->conditionParams['use_trigger_date'] && empty($this->conditionParams['activity_compare_date'])) {
       $dateToUse = date('YmdHis');
     }
     else {
@@ -197,4 +203,5 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Activity');
   }
+
 }

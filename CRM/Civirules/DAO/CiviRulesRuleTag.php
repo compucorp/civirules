@@ -8,9 +8,9 @@
  *
  * This stub provides compatibility. It is not intended to be modified in a
  * substantive way. Property annotations may be added, but are not required.
- * @property string $id 
- * @property string $rule_id 
- * @property string $rule_tag_id 
+ * @property string $id
+ * @property string $rule_id
+ * @property string $rule_tag_id
  */
 class CRM_Civirules_DAO_CiviRulesRuleTag extends CRM_Civirules_DAO_Base {
 

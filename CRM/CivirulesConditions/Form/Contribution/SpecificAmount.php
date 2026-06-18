@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contribution_SpecificAmount extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -20,7 +19,7 @@ class CRM_CivirulesConditions_Form_Contribution_SpecificAmount extends CRM_Civir
     $operatorList[3] = 'is more than or equal (>=)';
     $operatorList[4] = 'is less than (<)';
     $operatorList[5] = 'is less than or equal (<=)';
-    
+
     $countTypeList[0] = "do not count contributions that are part of a recurring one";
     $countTypeList[1] = "count only contributions that are part of a recurring one";
     $countTypeList[2] = "count all contributions (one-time and recurring)";
@@ -30,20 +29,21 @@ class CRM_CivirulesConditions_Form_Contribution_SpecificAmount extends CRM_Civir
     asort($financialTypes);
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'count_operator', ts('Operator'), $operatorList, true);
-    $this->add('select', 'count_type', ts('Count What?'), $countTypeList, true);
-    $this->add('select', 'amount_operator', ts('where Operator'), $operatorList, true);
-    $this->add('select', 'financial_type_id', ts('of Financial Type(s)'), $financialTypes, true,
-      array('id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('text', 'no_of_contributions', ts('Number of Contributions'), array(), true);
-    $this->addRule('no_of_contributions','Number of contributions must be a whole number','numeric');
-    $this->addRule('no_of_contributions','Number of contributions must be a whole number','nopunctuation');
-    $this->add('text', 'amount', ts('Amount'), array(), true);
-    $this->addRule('amount','Amount can only contain numbers','numeric');
+    $this->add('select', 'count_operator', ts('Operator'), $operatorList, TRUE);
+    $this->add('select', 'count_type', ts('Count What?'), $countTypeList, TRUE);
+    $this->add('select', 'amount_operator', ts('where Operator'), $operatorList, TRUE);
+    $this->add('select', 'financial_type_id', ts('of Financial Type(s)'), $financialTypes, TRUE,
+      ['id' => 'financial_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('text', 'no_of_contributions', ts('Number of Contributions'), [], TRUE);
+    $this->addRule('no_of_contributions', 'Number of contributions must be a whole number', 'numeric');
+    $this->addRule('no_of_contributions', 'Number of contributions must be a whole number', 'nopunctuation');
+    $this->add('text', 'amount', ts('Amount'), [], TRUE);
+    $this->addRule('amount', 'Amount can only contain numbers', 'numeric');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -94,4 +94,5 @@ class CRM_CivirulesConditions_Form_Contribution_SpecificAmount extends CRM_Civir
 
     parent::postProcess();
   }
+
 }

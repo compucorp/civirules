@@ -31,7 +31,9 @@ class CRM_CivirulesCronTrigger_Form_NoCaseActivitySince extends CRM_CivirulesTri
       foreach ($options as $option) {
         $return[$option['value']] = $option['label'];
       }
-    } catch (\Exception $ex) {}
+    }
+    catch (\Exception $ex) {
+    }
     return $return;
   }
 
@@ -61,12 +63,12 @@ class CRM_CivirulesCronTrigger_Form_NoCaseActivitySince extends CRM_CivirulesTri
     ], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
-    /**
+  /**
    * Overridden parent method to set default values
    *
    * @return array $defaultValues

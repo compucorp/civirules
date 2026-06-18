@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
 
   /**
@@ -17,13 +16,14 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['group_ids']) && is_array($params['group_ids'])) {
-      foreach($params['group_ids'] as $i => $gid) {
+      foreach ($params['group_ids'] as $i => $gid) {
         try {
           $params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -38,13 +38,14 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['group_ids']) && is_array($condition_params['group_ids'])) {
-      foreach($condition_params['group_ids'] as $i => $gid) {
+      foreach ($condition_params['group_ids'] as $i => $gid) {
         try {
           $condition_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -75,13 +76,15 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
         }
       }
     }
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in one of':
         $isConditionValid = $this->contactIsMemberOfOneGroup($contact_id, $checkGroupIds);
         break;
+
       case 'in all of':
         $isConditionValid = $this->contactIsMemberOfAllGroups($contact_id, $checkGroupIds);
         break;
+
       case 'not in':
         $isConditionValid = $this->contactIsNotMemberOfGroup($contact_id, $checkGroupIds);
         break;
@@ -91,7 +94,7 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
 
   protected function contactIsNotMemberOfGroup($contact_id, $group_ids) {
     $isValid = TRUE;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid, $this->getStatuses())) {
         $isValid = FALSE;
         break;
@@ -102,7 +105,7 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
 
   protected function contactIsMemberOfOneGroup($contact_id, $group_ids) {
     $isValid = FALSE;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid, $this->getStatuses())) {
         $isValid = TRUE;
         break;
@@ -113,7 +116,7 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
 
   protected function contactIsMemberOfAllGroups($contact_id, $group_ids) {
     $isValid = 0;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid, $this->getStatuses())) {
         $isValid++;
       }
@@ -154,16 +157,17 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
     }
 
     $groups = '';
-    foreach($this->conditionParams['group_ids'] as $gid) {
+    foreach ($this->conditionParams['group_ids'] as $gid) {
       if (strlen($groups)) {
         $groups .= ', ';
       }
       try {
         $groups .= civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $gid
+          'id' => $gid,
         ]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         // Do nothing.
       }
     }
@@ -195,7 +199,7 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
    * @return array
    */
   public function getStatuses(): array {
-    return (!empty($this->conditionParams['statuses']) ? $this->conditionParams['statuses']: ['Added']);
+    return (!empty($this->conditionParams['statuses']) ? $this->conditionParams['statuses'] : ['Added']);
   }
 
 }

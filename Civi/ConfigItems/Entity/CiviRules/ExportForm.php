@@ -59,17 +59,16 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
     $entities = civicrm_api3($entityName, 'get', []);
     $radioButtons = $this->entityExporter->getGroups();
 
-
     $defaults = [];
     $idAttribute = $entityDefinition->getIdAttribute();
     $nameAttribute = $entityDefinition->getNameAttribute();
     $titleAttribute = $entityDefinition->getTitleAttribute();
     $elements = [];
     $nonExistingElements = [];
-    foreach($entities['values'] as $entity) {
+    foreach ($entities['values'] as $entity) {
       $name = \CRM_Utils_String::munge($entity[$nameAttribute]);
       $elements[] = $entityName . '_' . $name;
-      $form->addRadio($entityName . '_' . $name, $entity[$titleAttribute], $radioButtons, ['allowClear' => true], NULL, FALSE, []);
+      $form->addRadio($entityName . '_' . $name, $entity[$titleAttribute], $radioButtons, ['allowClear' => TRUE], NULL, FALSE, []);
     }
     $form->assign('elements', $elements);
 
@@ -91,12 +90,13 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
           }
         }
       }
-    } catch (EntityImportDataException $ex) {
+    }
+    catch (EntityImportDataException $ex) {
       // Do nothing.
     }
     $form->assign('non_existing_elements', $nonExistingElements);
 
-    foreach($this->entityExporter->getGroups() as $group => $groupTitle) {
+    foreach ($this->entityExporter->getGroups() as $group => $groupTitle) {
       if (isset($configuration[$group])) {
         foreach ($configuration[$group] as $val) {
           $defaults[$entityName . '_' . $val] = $group;
@@ -123,7 +123,6 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
     return $count;
   }
 
-
   /**
    * Returns the name of the template for the configuration form.
    *
@@ -146,7 +145,7 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
     foreach ($this->entityExporter->getGroups() as $group => $groupTitle) {
       $config[$group] = [];
     }
-    foreach($submittedValues as $key => $val) {
+    foreach ($submittedValues as $key => $val) {
       if (str_starts_with($key, $entityName . '_') && !empty($val)) {
         $entity = substr($key, strlen($entityName . '_'));
         $config[$val][] = $entity;
@@ -165,7 +164,7 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
    * @param bool $reset
    * @return array
    */
-  public function getTabs($tabset, $configuration, $config_item_set, $reset=FALSE) {
+  public function getTabs($tabset, $configuration, $config_item_set, $reset = FALSE) {
     $entityName = $this->entityExporter->getEntityDefinition()->getName();
     $url = \CRM_Utils_System::url('civicrm/admin/civiconfig/edit/entity', ['reset' => 1, 'id' => $config_item_set['id'], 'entity' => $entityName]);
     $tabset[$entityName] = [
@@ -173,11 +172,10 @@ class ExportForm implements ConfigurationForm, ConfigurationFormCountable, Tab {
       'active' => 1,
       'valid' => 1,
       'link' => $url,
-      'current' => false,
+      'current' => FALSE,
       'count' => $this->getCount($configuration),
     ];
     return $tabset;
   }
-
 
 }

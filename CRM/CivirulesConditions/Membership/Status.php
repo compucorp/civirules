@@ -41,7 +41,9 @@ class CRM_CivirulesConditions_Membership_Status extends CRM_CivirulesConditions_
       foreach ($apiMembershipStatus as $membershipStatus) {
         $return[$membershipStatus['id']] = $membershipStatus['label'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return $return;
   }
 
@@ -54,19 +56,21 @@ class CRM_CivirulesConditions_Membership_Status extends CRM_CivirulesConditions_
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['status_id']) && is_array($params['status_id'])) {
-      foreach($params['status_id'] as $i => $j) {
+      foreach ($params['status_id'] as $i => $j) {
         $params['status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
       }
-    } elseif (!empty($params['status_id'])) {
+    }
+    elseif (!empty($params['status_id'])) {
       try {
         $params['status_id'] = civicrm_api3('MembershipStatus', 'getvalue', [
           'return' => 'name',
           'id' => $params['status_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -81,19 +85,21 @@ class CRM_CivirulesConditions_Membership_Status extends CRM_CivirulesConditions_
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['status_id']) && is_array($condition_params['status_id'])) {
-      foreach($condition_params['status_id'] as $i => $j) {
+      foreach ($condition_params['status_id'] as $i => $j) {
         $condition_params['status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
       }
-    } elseif (!empty($condition_params['status_id'])) {
+    }
+    elseif (!empty($condition_params['status_id'])) {
       try {
         $condition_params['status_id'] = civicrm_api3('MembershipStatus', 'getvalue', [
           'return' => 'id',
           'name' => $condition_params['status_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

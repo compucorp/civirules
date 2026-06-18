@@ -21,11 +21,11 @@ class CRM_CivirulesConditions_Form_Contribution_xthContribution extends CRM_Civi
     $this->add('select', 'financial_type', ts('of Financial Type(s)'), CRM_Civirules_Utils::getFinancialTypes(), TRUE,
       ['id' => 'financial_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('text', 'number_contributions', ts('Number of Contributions'), [], TRUE);
-    $this->addRule('number_contributions','Number of Contributions must be a whole number','numeric');
-    $this->addRule('number_contributions','Number of Contributions must be a whole number','nopunctuation');
+    $this->addRule('number_contributions', 'Number of Contributions must be a whole number', 'numeric');
+    $this->addRule('number_contributions', 'Number of Contributions must be a whole number', 'nopunctuation');
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -56,7 +56,7 @@ class CRM_CivirulesConditions_Form_Contribution_xthContribution extends CRM_Civi
    * @access public
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_Contribution_xthContribution', 'validateCompareZero'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_Contribution_xthContribution', 'validateCompareZero']);
   }
 
   /**
@@ -76,7 +76,6 @@ class CRM_CivirulesConditions_Form_Contribution_xthContribution extends CRM_Civi
     return TRUE;
   }
 
-
   /**
    * Overridden parent method to process form data after submission
    *
@@ -91,4 +90,5 @@ class CRM_CivirulesConditions_Form_Contribution_xthContribution extends CRM_Civi
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

@@ -3,9 +3,7 @@
  * @author Gerhard Weber (civiservice.de) <gerhard.weber@civiservice.de>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Participant_Form_UpdateRole extends CRM_CivirulesActions_Form_Form {
-
 
   /**
    * Overridden parent method to build the form
@@ -14,11 +12,12 @@ class CRM_CivirulesActions_Participant_Form_UpdateRole extends CRM_CivirulesActi
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'role_id', ts('Role'), array('' => ts('-- please select --'))
-      + CRM_Event_PseudoConstant::participantRole(), true);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('select', 'role_id', ts('Role'), ['' => ts('-- please select --')]
+      + CRM_Event_PseudoConstant::participantRole(), TRUE);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

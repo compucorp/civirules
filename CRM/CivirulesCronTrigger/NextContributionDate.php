@@ -9,7 +9,7 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Contribute_DAO_ContributionRecur $dao
+   * @var \CRM_Contribute_DAO_ContributionRecur
    */
   private $dao = NULL;
 
@@ -65,18 +65,23 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
       case '-days':
         $dateCalcStatement = 'DATE_SUB(r.next_sched_contribution_date, INTERVAL %2 DAY)';
         break;
+
       case '-weeks':
         $dateCalcStatement = 'DATE_SUB(r.next_sched_contribution_date, INTERVAL %2 WEEK)';
         break;
+
       case '-months':
         $dateCalcStatement = 'DATE_SUB(r.next_sched_contribution_date, INTERVAL %2 MONTH)';
         break;
+
       case '+days':
         $dateCalcStatement = 'DATE_ADD(r.next_sched_contribution_date, INTERVAL %2 DAY)';
         break;
+
       case '+weeks':
         $dateCalcStatement = 'DATE_ADD(r.next_sched_contribution_date, INTERVAL %2 WEEK)';
         break;
+
       case '+months':
         $dateCalcStatement = 'DATE_ADD(r.next_sched_contribution_date, INTERVAL %2 MONTH)';
         break;
@@ -125,7 +130,7 @@ class CRM_CivirulesCronTrigger_NextContributionDate extends CRM_Civirules_Trigge
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/nextcontributiondate/', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/nextcontributiondate/', 'rule_id=' . $ruleId);
   }
 
   /**

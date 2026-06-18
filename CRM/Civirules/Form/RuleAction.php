@@ -35,7 +35,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    *
    * @access public
    */
-  function buildQuickForm() {
+  public function buildQuickForm() {
     $this->setFormTitle();
     $this->createFormElements();
     parent::buildQuickForm();
@@ -46,7 +46,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    *
    * @access public
    */
-  function preProcess() {
+  public function preProcess() {
     $this->ruleId = CRM_Utils_Request::retrieve('rule_id', 'Integer');
     $this->ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
     $this->editDelay = CRM_Utils_Request::retrieveValue('editdelay', 'Boolean') ?? FALSE;
@@ -60,18 +60,18 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
     $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->rule->id = $this->ruleId;
-    $this->rule->find(true);
+    $this->rule->find(TRUE);
 
     if ($this->ruleActionId) {
       $this->ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
       $this->ruleAction->id = $this->ruleActionId;
-      if (!$this->ruleAction->find(true)) {
+      if (!$this->ruleAction->find(TRUE)) {
         throw new Exception('Civirules could not find ruleAction (RuleAction)');
       }
 
       $this->action = new CRM_Civirules_BAO_CiviRulesAction();
       $this->action->id = $this->ruleAction->action_id;
-      if (!$this->action->find(true)) {
+      if (!$this->action->find(TRUE)) {
         throw new Exception('Civirules could not find action');
       }
 
@@ -84,7 +84,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    *
    * @access public
    */
-  function postProcess() {
+  public function postProcess() {
     $saveParams = [];
     $saveParams['rule_id'] = $this->getSubmittedValue('rule_id');
     $saveParams['delay'] = NULL;
@@ -115,7 +115,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       ->first();
 
     $session = CRM_Core_Session::singleton();
-    $action = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($this->ruleAction->action_id, true);
+    $action = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($this->ruleAction->action_id, TRUE);
     $redirectUrl = $action->getExtraDataInputUrl($ruleAction['id']);
     if (empty($redirectUrl) || $this->editDelay) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->getSubmittedValue('rule_id'), TRUE);
@@ -147,7 +147,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $actionList = CiviRulesAction::get(FALSE)
       ->addSelect('id', 'label', 'name', 'class_name')
       ->addOrderBy('label', 'ASC')
-      ->addWhere('is_active', '=',TRUE)
+      ->addWhere('is_active', '=', TRUE)
       ->execute()
       ->indexBy('id');
     foreach ($actionList as $id => $detail) {
@@ -173,7 +173,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
     $delayList = [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList();
     $this->add('select', 'delay_select', E::ts('Delay action to'), $delayList);
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->addElements($this, '', $this->rule);
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
@@ -181,15 +181,15 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $this->add('checkbox', 'ignore_condition_with_delay', E::ts("Don't recheck condition upon processing of delayed action"));
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
   public function setDefaultValues() {
     $defaults['rule_id'] = $this->ruleId;
 
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaults, '', $this->rule);
     }
 
@@ -206,7 +206,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       }
       if (isset($delayClass)) {
         $defaults['delay_select'] = get_class($delayClass);
-        foreach($delayClass->getValues('', $this->rule) as $key => $val) {
+        foreach ($delayClass->getValues('', $this->rule) as $key => $val) {
           $defaults[$key] = $val;
         }
       }
@@ -223,7 +223,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    */
   protected function setFormTitle() {
     $title = 'CiviRules Add Action';
-    $this->assign('ruleActionHeader', 'Add Action to CiviRule '.CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->ruleId));
+    $this->assign('ruleActionHeader', 'Add Action to CiviRule ' . CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->ruleId));
     CRM_Utils_System::setTitle($title);
   }
 
@@ -236,12 +236,12 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     if (empty($this->ruleActionId)) {
       $this->addFormRule([
         'CRM_Civirules_Form_RuleAction',
-        'validateRuleAction'
+        'validateRuleAction',
       ]);
     }
     $this->addFormRule([
       'CRM_Civirules_Form_RuleAction',
-      'validateDelay'
+      'validateDelay',
     ]);
   }
 
@@ -253,15 +253,17 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    * @access public
    * @static
    */
-  static function validateRuleAction($fields) {
+  public static function validateRuleAction($fields) {
     $errors = [];
     if (isset($fields['rule_action_select']) && empty($fields['rule_action_select'])) {
       $errors['rule_action_select'] = E::ts('Action has to be selected, press CANCEL if you do not want to add an action');
-    } else {
-      $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($fields['rule_action_select'], false);
+    }
+    else {
+      $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($fields['rule_action_select'], FALSE);
       if (!$actionClass) {
         $errors['rule_action_select'] = E::ts('Not a valid action, action class is missing');
-      } else {
+      }
+      else {
         $rule = new CRM_Civirules_BAO_CiviRulesRule();
         $rule->id = $fields['rule_id'];
         $rule->find(TRUE);
@@ -292,16 +294,16 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    * @access public
    * @static
    */
-  static function validateDelay($fields) {
+  public static function validateDelay($fields) {
     $errors = [];
     if (!empty($fields['delay_select'])) {
       $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
       $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
       $ruleAction->id = $ruleActionId;
-      $ruleAction->find(true);
+      $ruleAction->find(TRUE);
       $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $ruleAction->rule_id;
-      $rule->find(true);
+      $rule->find(TRUE);
 
       $delayClass = CRM_Civirules_Delay_Factory::getDelayClassByName($fields['delay_select']);
       $delayClass->validate($fields, $errors, '', $rule);
@@ -313,4 +315,5 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
 
     return TRUE;
   }
+
 }

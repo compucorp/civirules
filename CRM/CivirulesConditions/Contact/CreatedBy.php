@@ -10,7 +10,7 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
-    $added_id=$triggerData->getContactId();
+    $added_id = $triggerData->getContactId();
     $contact_id = CRM_Core_DAO::singleValueQuery("SELECT modified_id contact_id FROM civicrm_log WHERE id = (SELECT MIN(id)  FROM civicrm_log WHERE entity_table like 'civicrm_contact' and entity_id = $added_id)");
     //$contact_id = $triggerData->getContactId();
     $checkGroupIds = $this->conditionParams['group_ids'];
@@ -26,22 +26,25 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
         }
       }
     }
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in one of':
         $isConditionValid = $this->contactIsMemberOfOneGroup($contact_id, $checkGroupIds);
         break;
+
       case 'in all of':
         $isConditionValid = $this->contactIsMemberOfAllGroups($contact_id, $checkGroupIds);
         break;
+
       case 'not in':
         $isConditionValid = $this->contactIsNotMemberOfGroup($contact_id, $checkGroupIds);
         break;
     }
     return $isConditionValid;
   }
+
   protected function contactIsNotMemberOfGroup($contact_id, $group_ids) {
     $isValid = TRUE;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid)) {
         $isValid = FALSE;
         break;
@@ -52,7 +55,7 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
 
   protected function contactIsMemberOfOneGroup($contact_id, $group_ids) {
     $isValid = FALSE;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid)) {
         $isValid = TRUE;
         break;
@@ -63,7 +66,7 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
 
   protected function contactIsMemberOfAllGroups($contact_id, $group_ids) {
     $isValid = 0;
-    foreach($group_ids as $gid) {
+    foreach ($group_ids as $gid) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contact_id, $gid)) {
         $isValid++;
       }
@@ -104,16 +107,17 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
     }
 
     $groups = '';
-    foreach($this->conditionParams['group_ids'] as $gid) {
+    foreach ($this->conditionParams['group_ids'] as $gid) {
       if (strlen($groups)) {
         $groups .= ', ';
       }
       try {
         $groups .= civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $gid
+          'id' => $gid,
         ]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         // Do nothing.
       }
     }
@@ -149,13 +153,14 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['group_ids']) && is_array($params['group_ids'])) {
-      foreach($params['group_ids'] as $i => $gid) {
+      foreach ($params['group_ids'] as $i => $gid) {
         try {
           $params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -170,13 +175,14 @@ class CRM_CivirulesConditions_Contact_CreatedBy extends CRM_Civirules_Condition 
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['group_ids']) && is_array($condition_params['group_ids'])) {
-      foreach($condition_params['group_ids'] as $i => $gid) {
+      foreach ($condition_params['group_ids'] as $i => $gid) {
         try {
           $condition_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }

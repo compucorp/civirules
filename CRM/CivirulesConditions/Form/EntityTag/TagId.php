@@ -6,7 +6,6 @@
  * @date 15 Nov 2017
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -16,11 +15,11 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
    * @access protected
    */
   private function getTags() {
-    $result = array();
+    $result = [];
     try {
-      $tags = civicrm_api3('Tag', 'get', array(
-        'options' => array('limit' => 0),
-      ));
+      $tags = civicrm_api3('Tag', 'get', [
+        'options' => ['limit' => 0],
+      ]);
       foreach ($tags['values'] as $tag) {
         $result[$tag['id']] = $tag['name'];
       }
@@ -39,11 +38,12 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
     $this->add('hidden', 'rule_condition_id');
 
     $this->add('select', 'tag_id', ts('Tag(s)'), $this->getTags(), FALSE,
-      array('id' => 'tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2'));
+      ['id' => 'tag_id', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -79,7 +79,7 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
    * Overridden parent method to add validation rules
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_EntityTag_TagId', 'validateTagAllowed'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_EntityTag_TagId', 'validateTagAllowed']);
   }
 
   /**
@@ -92,15 +92,16 @@ class CRM_CivirulesConditions_Form_EntityTag_TagId extends CRM_CivirulesConditio
     if (isset($fields['tag_id']) && !empty($fields['tag_id'])) {
       foreach ($fields['tag_id'] as $tagId) {
         try {
-          $tag = civicrm_api3('Tag', 'getsingle', array(
-            'id' => $tagId
-          ));
+          $tag = civicrm_api3('Tag', 'getsingle', [
+            'id' => $tagId,
+          ]);
           if (strpos($tag['used_for'], 'civicrm_contact') === FALSE) {
             $errors['tag_id'] = ts('Can not use the selected tag "%1" with contacts, condition only allowed for tags that are used for contacts.', [1 => $tag['name']]);
             return $errors;
           }
         }
-        catch (CRM_Core_Exception $ex) {}
+        catch (CRM_Core_Exception $ex) {
+        }
       }
     }
     return TRUE;

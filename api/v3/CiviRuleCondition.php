@@ -1,7 +1,8 @@
 <?php
 
 use CRM_Civirules_ExtensionUtil as E;
-require_once(E::path('api/v3/CiviRulesCondition.php'));
+
+require_once E::path('api/v3/CiviRulesCondition.php');
 
 /**
  * Notification of deprecated function.

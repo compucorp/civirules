@@ -61,7 +61,7 @@ class CRM_Civirules_Utils_HookInvoker {
       'civirules_logger'
     );
     if ($logger && !$logger instanceof \Psr\Log\LoggerInterface) {
-      $logger = null;
+      $logger = NULL;
     }
   }
 

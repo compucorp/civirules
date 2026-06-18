@@ -5,11 +5,10 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contribution_Status extends CRM_CivirulesConditions_Form_Form {
 
   protected function getContributionStatus() {
-    return array('' => ts('-- please select --')) + CRM_Core_BAO_OptionValue::getOptionValuesAssocArrayFromName('contribution_status');
+    return ['' => ts('-- please select --')] + CRM_Core_BAO_OptionValue::getOptionValuesAssocArrayFromName('contribution_status');
   }
 
   /**
@@ -20,11 +19,12 @@ class CRM_CivirulesConditions_Form_Contribution_Status extends CRM_CivirulesCond
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $this->add('select', 'contribution_status_id', ts('Status'), $this->getContributionStatus(), true);
+    $this->add('select', 'contribution_status_id', ts('Status'), $this->getContributionStatus(), TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -48,8 +48,7 @@ class CRM_CivirulesConditions_Form_Contribution_Status extends CRM_CivirulesCond
    * @throws Exception when rule condition not found
    * @access public
    */
-  public function postProcess()
-  {
+  public function postProcess() {
     $data['contribution_status_id'] = $this->_submitValues['contribution_status_id'];
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();

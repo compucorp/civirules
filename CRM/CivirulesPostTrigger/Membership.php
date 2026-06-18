@@ -4,7 +4,6 @@
  *
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesPostTrigger_Membership extends CRM_Civirules_Trigger_Post {
 
   use CRM_CivirulesTrigger_MembershipTrait;

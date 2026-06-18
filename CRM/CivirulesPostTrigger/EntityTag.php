@@ -35,7 +35,7 @@ class CRM_CivirulesPostTrigger_EntityTag extends CRM_Civirules_Trigger_Post {
       $objectId = CRM_Civirules_Utils_PreData::getEntityTagId($objectRef->entity_table, $objectRef->entity_id);
     }
 
-    $entityTags = array();
+    $entityTags = [];
     // $objectRef is either an object or an array.
     if (is_object($objectRef)) {
       $entityTags[] = [
@@ -45,8 +45,9 @@ class CRM_CivirulesPostTrigger_EntityTag extends CRM_Civirules_Trigger_Post {
         'entity_table' => $objectRef->entity_table,
         'contact_id' => $objectRef->entity_id,
       ];
-    } elseif (is_array($objectRef)) {
-      foreach($objectRef['0'] as $entity_id) {
+    }
+    elseif (is_array($objectRef)) {
+      foreach ($objectRef['0'] as $entity_id) {
         $entityTags[] = [
           'tag_id' => $objectId,
           'entity_id' => $entity_id,
@@ -56,7 +57,7 @@ class CRM_CivirulesPostTrigger_EntityTag extends CRM_Civirules_Trigger_Post {
       }
     }
 
-    foreach($entityTags as $entityTag) {
+    foreach ($entityTags as $entityTag) {
       //only execute entity tag for setting or removing tags from contacts
       //because we need to know the contact id for the trigger engine
       //and we only know this when the tag is on contact level
@@ -67,7 +68,8 @@ class CRM_CivirulesPostTrigger_EntityTag extends CRM_Civirules_Trigger_Post {
         //set also original data with an edit event
         $oldData = CRM_Civirules_Utils_PreData::getPreData($entity, $objectId, $eventID);
         $triggerData = new CRM_Civirules_TriggerData_Edit($entity, $objectId, $entityTag, $oldData, $this);
-      } else {
+      }
+      else {
         $triggerData = new CRM_Civirules_TriggerData_Post($entity, $objectId, $entityTag, $this);
       }
       $this->setTriggerData($triggerData);

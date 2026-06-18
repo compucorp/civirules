@@ -73,7 +73,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
   protected function executeApiAction($entity, $action, $parameters) {
     $action_params = $this->getActionParameters();
     if (!empty($parameters['case_id'])) {
-      $caseParams = ['id' =>$parameters['case_id']];
+      $caseParams = ['id' => $parameters['case_id']];
     }
     else {
       $caseParams['contact_id'] = $parameters['target_contact_id'];
@@ -87,9 +87,10 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
 
     try {
       $case = civicrm_api3('Case', 'getsingle', $caseParams);
-    } catch (\CRM_Core_Exception $ex) {
+    }
+    catch (\CRM_Core_Exception $ex) {
       $formattedCaseParams = '';
-      foreach($caseParams as $key => $param) {
+      foreach ($caseParams as $key => $param) {
         if (strlen($formattedCaseParams)) {
           $formattedCaseParams .= ', ';
         }
@@ -104,9 +105,10 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     try {
       $activity = civicrm_api3($entity, $action, $parameters);
       $this->activityId = $activity['id'];
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $formattedParams = '';
-      foreach($parameters as $key => $param) {
+      foreach ($parameters as $key => $param) {
         if (strlen($formattedParams)) {
           $formattedParams .= ', ';
         }
@@ -132,7 +134,8 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'value' => $action_params['case_status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['case_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -140,7 +143,8 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'value' => $action_params['case_type_id'],
         'option_group_id' => 'case_type',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -158,7 +162,8 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'name' => $action_params['case_status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['case_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -166,7 +171,8 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
         'name' => $action_params['case_type_id'],
         'option_group_id' => 'case_type',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -196,46 +202,49 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     $return = '';
     $params = $this->getActionParameters();
     if (!empty($params['activity_type_id'])) {
-      $type = civicrm_api3('OptionValue', 'getvalue', array(
+      $type = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_type',
-        'value' => $params['activity_type_id']));
-      $return .= E::ts("Type: %1", array(1 => $type));
+        'value' => $params['activity_type_id'],
+      ]);
+      $return .= E::ts("Type: %1", [1 => $type]);
     }
     if (!empty($params['status_id'])) {
-      $status = civicrm_api3('OptionValue', 'getvalue', array(
+      $status = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_status',
-        'value' => $params['status_id']));
+        'value' => $params['status_id'],
+      ]);
       $return .= "<br>";
-      $return .= E::ts("Status: %1", array(1 => $status));
+      $return .= E::ts("Status: %1", [1 => $status]);
     }
     $subject = $params['subject'];
     if (!empty($subject)) {
       $return .= "<br>";
-      $return .= E::ts("Subject: %1", array(1 => $subject));
+      $return .= E::ts("Subject: %1", [1 => $subject]);
     }
     if (!empty($params['assignee_contact_id'])) {
       if (!is_array($params['assignee_contact_id'])) {
-        $params['assignee_contact_id'] = array($params['assignee_contact_id']);
+        $params['assignee_contact_id'] = [$params['assignee_contact_id']];
       }
       $assignees = '';
-      foreach($params['assignee_contact_id'] as $cid) {
+      foreach ($params['assignee_contact_id'] as $cid) {
         try {
-          $assignee = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $cid));
+          $assignee = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $cid]);
           if ($assignee) {
             if (strlen($assignees)) {
               $assignees .= ', ';
             }
             $assignees .= $assignee;
           }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           //do nothing
         }
       }
 
       $return .= '<br>';
-      $return .= E::ts("Assignee(s): %1", array(1 => $assignees));
+      $return .= E::ts("Assignee(s): %1", [1 => $assignees]);
 
     }
 
@@ -243,7 +252,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
       if ($params['activity_date_time'] != 'null') {
         $delayClass = unserialize(($params['activity_date_time']));
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
-          $return .= '<br>'.E::ts('Activity date time').': '.$delayClass->getDelayExplanation();
+          $return .= '<br>' . E::ts('Activity date time') . ': ' . $delayClass->getDelayExplanation();
         }
       }
     }
@@ -251,15 +260,15 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
       $case_type = civicrm_api3('CaseType', 'getvalue', [
         'id' => $params['case_type_id'],
         'return' => 'title',
-        'options' => ['limit' => 1]
+        'options' => ['limit' => 1],
       ]);
       $case_statuses = CRM_Core_OptionGroup::values('case_status');
       if (!empty($params['case_status_id'])) {
         $case_status = $case_statuses[$params['case_status_id']];
         $return .= '<br>' . E::ts('Add to case with type %1 and status %2', [
-            1 => $case_type,
-            2 => $case_status
-          ]);
+          1 => $case_type,
+          2 => $case_status,
+        ]);
       }
       else {
         $return .= '<br>' . E::ts('Add to case with type %1', [1 => $case_type]);
@@ -270,7 +279,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     }
 
     if (!empty($params['send_email'])) {
-      $return .= '<br>'.E::ts('Send notification');
+      $return .= '<br>' . E::ts('Send notification');
     }
 
     return $return;

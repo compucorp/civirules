@@ -5,7 +5,7 @@
  */
 /**
  * Trigger when an Organization Custom Data changes.
-
+ *
  */
 class CRM_CivirulesPostTrigger_OrganizationCustomDataChanged extends CRM_CivirulesPostTrigger_ContactCustomDataChanged {
 

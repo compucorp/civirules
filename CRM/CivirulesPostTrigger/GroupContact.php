@@ -52,7 +52,8 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       $triggerData->setEntityData('Group', $group);
       $this->setTriggerData($triggerData);
       parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
-    } else {
+    }
+    else {
       // We are dealing with an array of contact ids.
       $sql = "SELECT MAX(`id`) AS id, `group_id`, `contact_id`, `status`, `location_id`, `email_id`
             FROM `civicrm_group_contact`
@@ -68,4 +69,5 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       }
     }
   }
+
 }

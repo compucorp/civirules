@@ -7,9 +7,8 @@
  * @date 26 May 2021
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
-
 class CRM_CivirulesConditions_Generic_Campaign {
+
   /**
    * Method to get campaign data with API3 or API4
    *

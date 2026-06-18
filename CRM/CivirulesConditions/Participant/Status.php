@@ -34,8 +34,8 @@ class CRM_CivirulesConditions_Participant_Status extends CRM_CivirulesConditions
       $params['is_active'] = 0;
     }
     $participantStatusList = civicrm_api3('ParticipantStatusType', 'get', $params);
-    $statuses = array();
-    foreach($participantStatusList['values'] as $status) {
+    $statuses = [];
+    foreach ($participantStatusList['values'] as $status) {
       $statuses[$status['id']] = $status['label'];
     }
     return $statuses;
@@ -50,19 +50,21 @@ class CRM_CivirulesConditions_Participant_Status extends CRM_CivirulesConditions
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['status_id']) && is_array($params['status_id'])) {
-      foreach($params['status_id'] as $i => $j) {
+      foreach ($params['status_id'] as $i => $j) {
         $params['status_id'][$i] = civicrm_api3('ParticipantStatusType', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
       }
-    } elseif (!empty($params['status_id'])) {
+    }
+    elseif (!empty($params['status_id'])) {
       try {
         $params['status_id'] = civicrm_api3('ParticipantStatusType', 'getvalue', [
           'return' => 'name',
           'id' => $params['status_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -77,19 +79,21 @@ class CRM_CivirulesConditions_Participant_Status extends CRM_CivirulesConditions
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['status_id']) && is_array($condition_params['status_id'])) {
-      foreach($condition_params['status_id'] as $i => $j) {
+      foreach ($condition_params['status_id'] as $i => $j) {
         $condition_params['status_id'][$i] = civicrm_api3('ParticipantStatusType', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
       }
-    } elseif (!empty($condition_params['status_id'])) {
+    }
+    elseif (!empty($condition_params['status_id'])) {
       try {
         $condition_params['status_id'] = civicrm_api3('ParticipantStatusType', 'getvalue', [
           'return' => 'id',
           'name' => $condition_params['status_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -105,7 +109,7 @@ class CRM_CivirulesConditions_Participant_Status extends CRM_CivirulesConditions
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $entityData = $triggerData->getEntityData($this->getEntity());
-    $statusId = $entityData['status_id'] ?? $entityData['participant_status_id'] ;
+    $statusId = $entityData['status_id'] ?? $entityData['participant_status_id'];
     switch ($this->conditionParams['operator']) {
       case 0:
         if (in_array($statusId, $this->conditionParams['status_id'])) {

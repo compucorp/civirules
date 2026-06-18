@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class CRM_CivirulesConditions_Contact_HasRecur
  */
@@ -110,24 +111,27 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
 
     $params = parent::exportConditionParameters();
     if (!empty($params['status_id']) && is_array($params['status_id'])) {
-      foreach($params['status_id'] as $i => $j) {
+      foreach ($params['status_id'] as $i => $j) {
         try {
           $params['status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'name',
             'value' => $j,
             'option_group_id' => 'contribution_status',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
-    } elseif (!empty($params['status_id'])) {
+    }
+    elseif (!empty($params['status_id'])) {
       try {
         $params['status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $params;
@@ -141,24 +145,27 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['status_id']) && is_array($condition_params['status_id'])) {
-      foreach($condition_params['status_id'] as $i => $j) {
+      foreach ($condition_params['status_id'] as $i => $j) {
         try {
           $condition_params['status_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'value',
             'name' => $j,
             'option_group_id' => 'contribution_status',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
-    } elseif (!empty($condition_params['status_id'])) {
+    }
+    elseif (!empty($condition_params['status_id'])) {
       try {
         $condition_params['status_id'] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $condition_params['status_id'],
           'option_group_id' => 'contribution_status',
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importConditionParameters($condition_params);

@@ -38,4 +38,3 @@ class CRM_CivirulesPostTrigger_ActionLog extends CRM_Civirules_Trigger_Post {
   }
 
 }
-

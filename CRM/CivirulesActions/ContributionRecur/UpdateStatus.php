@@ -129,5 +129,4 @@ class CRM_CivirulesActions_ContributionRecur_UpdateStatus extends CRM_CivirulesA
     }
   }
 
-
 }

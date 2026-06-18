@@ -11,13 +11,14 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['financial_type_id']) && is_array($params['financial_type_id'])) {
-      foreach($params['financial_type_id'] as $i => $gid) {
+      foreach ($params['financial_type_id'] as $i => $gid) {
         try {
           $params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -32,13 +33,14 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['financial_type_id']) && is_array($condition_params['financial_type_id'])) {
-      foreach($condition_params['financial_type_id'] as $i => $gid) {
+      foreach ($condition_params['financial_type_id'] as $i => $gid) {
         try {
           $condition_params['financial_type_id'][$i] = civicrm_api3('FinancialType', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -51,7 +53,6 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contributionRecur = $triggerData->getEntityData('ContributionRecur');
@@ -60,12 +61,13 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
         if (in_array($contributionRecur['financial_type_id'], $this->conditionParams['financial_type_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
+
       case 1:
         if (!in_array($contributionRecur['financial_type_id'], $this->conditionParams['financial_type_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
     }
     return $isConditionValid;
   }
@@ -99,11 +101,11 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Financial Type is NOT one of: ';
     }
-    $finText = array();
+    $finText = [];
     foreach ($this->conditionParams['financial_type_id'] as $finTypeId) {
       $financialType = new CRM_Financial_BAO_FinancialType();
       $financialType->id = $finTypeId;
-      if ($financialType->find(true)) {
+      if ($financialType->find(TRUE)) {
         $finText[] = $financialType->name;
       }
     }

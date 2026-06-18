@@ -12,13 +12,14 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
   protected function getFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $entity = $this->conditionParams['entity'];
     $field = $this->conditionParams['field'];
-    $dataIsOriginalData = false;
+    $dataIsOriginalData = FALSE;
 
     if ($triggerData instanceof CRM_Civirules_TriggerData_Interface_OriginalData &&
         !empty($this->conditionParams['original_data'])) {
       $data = $triggerData->getOriginalData($entity);
-      $dataIsOriginalData = true;
-    } else {
+      $dataIsOriginalData = TRUE;
+    }
+    else {
       $data = $triggerData->getEntityData($entity);
     }
 
@@ -26,32 +27,35 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
     // When it is original data, the custom data should be present in the $data array.
     // If it is not original data then we have to retrieve the custom field from the database.
     // This is because the custom data is not available in the trigger data.
-    if (strpos($field, 'custom_')===0 && !$dataIsOriginalData) {
+    if (strpos($field, 'custom_') === 0 && !$dataIsOriginalData) {
       $custom_field_id = str_replace("custom_", "", $field);
       try {
-        $params['entityID'] = (isset($data['id']) ? $data['id'] : null);
+        $params['entityID'] = (isset($data['id']) ? $data['id'] : NULL);
         $params[$field] = 1;
         $values = CRM_Core_BAO_CustomValueTable::getValues($params);
 
-        $value = null;
+        $value = NULL;
         if (isset($values[$field])) {
           $value = $this->normalizeValue($values[$field]);
-        } elseif (!empty($values['error_message'])) {
+        }
+        elseif (!empty($values['error_message'])) {
           $value = $triggerData->getCustomFieldValue($custom_field_id);
         }
 
-        if ($value !== null) {
+        if ($value !== NULL) {
           $value = $this->convertMultiselectCustomfieldToArray($custom_field_id, $value);
           return $this->normalizeValue($value);
         }
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         //do nothing
       }
-    } elseif (isset($data[$field])) {
+    }
+    elseif (isset($data[$field])) {
       return $this->normalizeValue($data[$field]);
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -82,10 +86,12 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
     $value = parent::getComparisonValue();
     if (is_array($value)) {
       return $this->normalizeValue($value);
-    } elseif (strlen($value) != 0) {
+    }
+    elseif (strlen($value) != 0) {
       return $this->normalizeValue($value);
-    } else {
-      return null;
+    }
+    else {
+      return NULL;
     }
   }
 
@@ -95,15 +101,15 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
    * @return mixed|null
    */
   protected function normalizeValue($value) {
-    if ($value === null) {
-      return null;
+    if ($value === NULL) {
+      return NULL;
     }
     //@todo normalize value based on the field
 
     $entity = $this->conditionParams['entity'];
-    $field = $this->conditionParams['field'];  
-    if ( $this->isDateField( $entity, $field ) ) {
-      $value = Date('Ymd', strtotime($value));
+    $field = $this->conditionParams['field'];
+    if ($this->isDateField($entity, $field)) {
+      $value = date('Ymd', strtotime($value));
     }
 
     return $value;
@@ -139,13 +145,14 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
       try {
         $field = civicrm_api3('CustomField', 'getvalue', ['id' => $fieldID, 'return' => 'label']);
       }
-      catch (Exception $e) {}
+      catch (Exception $e) {
+      }
     }
 
     if (!empty($this->conditionParams['original_data'])) {
       $field .= ' (original value)';
     }
-    return htmlentities($this->conditionParams['entity']. '.' . $field . ' ' . ($this->getOperator())) . ' ' . htmlentities($value);
+    return htmlentities($this->conditionParams['entity'] . '.' . $field . ' ' . ($this->getOperator())) . ' ' . htmlentities($value);
   }
 
   /**
@@ -168,7 +175,8 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
         unset($params['field']);
         $params['custom_field'] = $customGroup['name'];
         $params['custom_group'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -189,11 +197,11 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
           'custom_group_id' => $condition_params['custom_group'],
         ]);
 
-
-        $condition_params['field'] = 'custom_'.$customField['id'];
+        $condition_params['field'] = 'custom_' . $customField['id'];
         unset($condition_params['custom_field']);
         unset($condition_params['custom_group']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

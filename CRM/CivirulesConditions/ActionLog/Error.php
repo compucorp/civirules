@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_ActionLog_Error extends CRM_Civirules_Condition {
 
   /**
@@ -56,4 +55,5 @@ class CRM_CivirulesConditions_ActionLog_Error extends CRM_Civirules_Condition {
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('ActionLog');
   }
+
 }

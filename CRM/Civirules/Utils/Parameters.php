@@ -19,10 +19,10 @@ class CRM_Civirules_Utils_Parameters {
    * @return array
    */
   public static function convertFromMultiline($parameters) {
-    $converted_parameters = array();
+    $converted_parameters = [];
 
     $parameters_per_line = preg_split('/\r\n|\r|\n/', $parameters);
-    foreach($parameters_per_line as $line) {
+    foreach ($parameters_per_line as $line) {
       $parameter = preg_split('/=/', $line);
       if (isset($parameter[0]) && isset($parameter[1])) {
         $field = trim($parameter[0]);
@@ -53,13 +53,14 @@ class CRM_Civirules_Utils_Parameters {
    */
   public static function convertToMultiline($parameters) {
     $converted_parameters = '';
-    foreach($parameters as $key => $value) {
+    foreach ($parameters as $key => $value) {
       if (strlen($converted_parameters)) {
         $converted_parameters .= "\r\n";
-      } else {
+      }
+      else {
         $converted_parameters .= "";
       }
-      $converted_parameters .= htmlentities($key).'='.htmlentities($value);
+      $converted_parameters .= htmlentities($key) . '=' . htmlentities($value);
     }
     return $converted_parameters;
   }

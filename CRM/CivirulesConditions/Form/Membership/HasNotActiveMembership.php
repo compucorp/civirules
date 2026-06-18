@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Membership_HasNotActiveMembership extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -19,11 +18,12 @@ class CRM_CivirulesConditions_Form_Membership_HasNotActiveMembership extends CRM
     $membershipTypes = CRM_Civirules_Utils::getMembershipTypes();
     $membershipTypes[0] = ts('- select -');
     asort($membershipTypes);
-    $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, true);
+    $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -53,4 +53,5 @@ class CRM_CivirulesConditions_Form_Membership_HasNotActiveMembership extends CRM
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

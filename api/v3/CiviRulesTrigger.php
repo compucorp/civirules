@@ -35,7 +35,8 @@ function civicrm_api3_civi_rules_trigger_create($params) {
   if (isset($params['id'])) {
     $params['modified_date'] = date('Ymd');
     $params['modified_user_id'] = $userId;
-  } else {
+  }
+  else {
     $params['created_date'] = date('Ymd');
     $params['created_user_id'] = $userId;
   }
@@ -54,10 +55,10 @@ function _validateParams($params) {
   $errorMessage = '';
   // If this create is actually an update, load in the existing values.
   if (isset($params['id'])) {
-    $result = civicrm_api3('CiviRuleTrigger', 'get', array(
+    $result = civicrm_api3('CiviRuleTrigger', 'get', [
       'sequential' => 1,
       'id' => $params['id'],
-    ));
+    ]);
 
     if ($result['count']) {
       $params = array_merge($result['values'][0], $params);
@@ -70,8 +71,8 @@ function _validateParams($params) {
     return ts('Either class_name or a combination of object_name and op is mandatory');
   }
   if (isset($params['cron']) && $params['cron'] == 1) {
-    $params['object_name'] = null;
-    $params['op'] = null;
+    $params['object_name'] = NULL;
+    $params['op'] = NULL;
     if (!isset($params['class_name']) || empty($params['class_name'])) {
       return ts('For a cron type trigger the class_name is mandatory');
     }
@@ -79,15 +80,15 @@ function _validateParams($params) {
   if (isset($params['object_name']) && !empty($params['object_name'])) {
     $extensionConfig = CRM_Civirules_Config::singleton();
     if (!in_array($params['object_name'], $extensionConfig->getValidTriggerObjectNames())) {
-      return ts('ObjectName passed in parameters ('.$params['object_name']
-        .')is not a valid object for a CiviRule Trigger');
+      return ts('ObjectName passed in parameters (' . $params['object_name']
+        . ')is not a valid object for a CiviRule Trigger');
     }
   }
   if (isset($params['op']) && !empty($params['op'])) {
     $extensionConfig = CRM_Civirules_Config::singleton();
     if (!in_array($params['op'], $extensionConfig->getValidTriggerOperations())) {
-      return ts('Operation passed in parameters ('.$params['op']
-        .')is not a valid operation for a CiviRule Trigger');
+      return ts('Operation passed in parameters (' . $params['op']
+        . ')is not a valid operation for a CiviRule Trigger');
     }
   }
   if (!isset($params['id']) && CRM_Civirules_BAO_CiviRulesTrigger::triggerExists($params) == TRUE) {
@@ -108,7 +109,8 @@ function _checkClassNameObjectNameOperation($params) {
   if (isset($params['class_name']) && !empty($params['class_name'])) {
     if (!isset($params['object_name']) && !isset($params['op'])) {
       return TRUE;
-    } else {
+    }
+    else {
       if (empty($params['object_name']) && empty($params['op'])) {
         return TRUE;
       }
@@ -174,7 +176,7 @@ function _civicrm_api3_civi_rules_trigger_cleanup_spec(&$spec) {
   $spec['dry_run'] = [
     'title' => 'Dry run (do not actually make any changes)',
     'type' => CRM_Utils_Type::T_BOOLEAN,
-    'api.default' => TRUE
+    'api.default' => TRUE,
   ];
 }
 

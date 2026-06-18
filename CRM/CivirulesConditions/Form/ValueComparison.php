@@ -25,7 +25,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
    * Function to add validation condition rules (overrides parent function)
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_ValueComparison', 'validateOperatorAndComparisonValue'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_ValueComparison', 'validateOperatorAndComparisonValue']);
   }
 
   public static function validateOperatorAndComparisonValue($fields) {
@@ -40,9 +40,10 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
       case 'contains string':
       case 'not contains string':
         if (!isset($fields['value']) || strlen($fields['value']) === 0) {
-          return array('value' => ts('Compare value is required'));
+          return ['value' => ts('Compare value is required')];
         }
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -50,11 +51,11 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
       case 'contains all of':
       case 'not contains all of':
         if (empty($fields['multi_value'])) {
-          return array('multi_value' => 'Compare values is a required field');
+          return ['multi_value' => 'Compare values is a required field'];
         }
         break;
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -65,16 +66,17 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
 
     $this->add('hidden', 'rule_condition_id');
 
-    $this->add('select', 'operator', ts('Operator'), $this->conditionClass->getOperators(), true, array('class' => 'crm-select2 huge'));
+    $this->add('select', 'operator', ts('Operator'), $this->conditionClass->getOperators(), TRUE, ['class' => 'crm-select2 huge']);
     $this->add('text', 'value', ts('Compare value'));
     $this->add('textarea', 'multi_value', ts('Compare values'));
 
     $this->assign('field_options', $this->conditionClass->getFieldOptions());
     $this->assign('is_field_option_multiple', $this->conditionClass->isMultiple());
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -83,12 +85,12 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
    * @return array $defaultValues
    */
   public function setDefaultValues() {
-    $data = array();
-    $defaultValues = array();
+    $data = [];
+    $defaultValues = [];
     $defaultValues['rule_condition_id'] = $this->ruleConditionId;
     $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $ruleCondition->id = $this->ruleConditionId;
-    if ($ruleCondition->find(true)) {
+    if ($ruleCondition->find(TRUE)) {
       $data = $ruleCondition->unserializeParams();
     }
     if (!empty($data['operator'])) {
@@ -119,11 +121,11 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
     $this->ruleCondition->save();
 
     $session = CRM_Core_Session::singleton();
-    $session->setStatus('Condition '.$this->condition->label.' parameters updated to CiviRule '
-      .CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleCondition->rule_id),
+    $session->setStatus('Condition ' . $this->condition->label . ' parameters updated to CiviRule '
+      . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleCondition->rule_id),
       'Condition parameters updated', 'success');
 
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleCondition->rule_id, TRUE);
+    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->ruleCondition->rule_id, TRUE);
     CRM_Utils_System::redirect($redirectUrl);
   }
 
@@ -134,19 +136,19 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
     $conditionLabel = '';
     $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $ruleCondition->id = $this->ruleConditionId;
-    if ($ruleCondition->find(true)) {
+    if ($ruleCondition->find(TRUE)) {
       $condition = new CRM_Civirules_BAO_Condition();
       $condition->id = $ruleCondition->condition_id;
-      if ($condition->find(true)) {
+      if ($condition->find(TRUE)) {
         $conditionLabel = $condition->label;
       }
     }
 
     $title = 'CiviRules Edit Condition parameters';
     $this->assign('ruleConditionHeader', E::ts("Edit Condition '%1' for CiviRule '%2'", [
-        1 => $conditionLabel,
-        2 => CRM_Civirules_BAO_Rule::getRuleLabelWithId($ruleCondition->rule_id)
-      ])
+      1 => $conditionLabel,
+      2 => CRM_Civirules_BAO_Rule::getRuleLabelWithId($ruleCondition->rule_id),
+    ])
     );
     CRM_Utils_System::setTitle($title);
   }

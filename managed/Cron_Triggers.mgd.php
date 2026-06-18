@@ -1,11 +1,11 @@
 <?php
 
 return [
-  0 => 
+  0 =>
   [
     'name' => 'Cron:Civirules.Cron',
     'entity' => 'Job',
-    'params' => 
+    'params' =>
     [
       'version' => 3,
       'name' => 'Civirules cron',

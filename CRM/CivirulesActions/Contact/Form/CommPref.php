@@ -6,9 +6,8 @@
  * @date 10 Nov 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Form_Form {
-  private $_commPrefs = array();
+  private $_commPrefs = [];
 
   /**
    * Overridden parent method to build the form
@@ -18,27 +17,28 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
   public function buildQuickForm() {
     $this->getCommPrefs();
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'on_or_off', ts('Switch On or Off'), array('switch ON', 'switch OFF'), TRUE);
+    $this->add('select', 'on_or_off', ts('Switch On or Off'), ['switch ON', 'switch OFF'], TRUE);
     $this->add('select', 'comm_pref', ts('Communication Preference(s)'), $this->_commPrefs, FALSE,
-      array('id' => 'comm_pref', 'multiple' => 'multiple', 'class' => 'crm-select2'));
+      ['id' => 'comm_pref', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
    * Method to get the communication preferences from the option group
    */
   private function getCommPrefs() {
-    $this->_commPrefs = array();
+    $this->_commPrefs = [];
     try {
-      $optionValues = civicrm_api3('OptionValue', 'get', array(
+      $optionValues = civicrm_api3('OptionValue', 'get', [
         'option_group_id' => 'preferred_communication_method',
         'is_active' => 1,
-        'options' => array('limit' => 0),
-      ));
-      foreach($optionValues['values'] as $optionValue) {
+        'options' => ['limit' => 0],
+      ]);
+      foreach ($optionValues['values'] as $optionValue) {
         $this->_commPrefs[$optionValue['value']] = $optionValue['label'];
       }
     }
@@ -59,7 +59,8 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
     if (isset($data['on_or_off'])) {
       if ($data['on_or_off'] == 1) {
         $defaultValues['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $defaultValues['on_or_off'] = 1;
       }
     }
@@ -75,11 +76,12 @@ class CRM_CivirulesActions_Contact_Form_CommPref extends CRM_CivirulesActions_Fo
    * @access public
    */
   public function postProcess() {
-    $data = array();
+    $data = [];
     if (isset($this->_submitValues['on_or_off'])) {
       if ($this->_submitValues['on_or_off'] == 1) {
         $data['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $data['on_or_off'] = 1;
       }
     }

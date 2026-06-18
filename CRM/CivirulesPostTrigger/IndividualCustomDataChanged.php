@@ -5,11 +5,12 @@
  */
 /**
  * Trigger when an Individual Custom Data changes.
-
+ *
  */
 class CRM_CivirulesPostTrigger_IndividualCustomDataChanged extends CRM_CivirulesPostTrigger_ContactCustomDataChanged {
 
   protected static function getObjectName() {
     return 'Individual';
   }
+
 }

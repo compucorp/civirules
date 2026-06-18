@@ -6,7 +6,6 @@
  * @date 19 May 2016
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_Condition {
 
   /**
@@ -21,9 +20,10 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
       try {
         $params['campaign_id'] = civicrm_api3('Campaign', 'getvalue', [
           'return' => 'name',
-          'id' => $params['campaign_id']
+          'id' => $params['campaign_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -41,9 +41,10 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
       try {
         $condition_params['campaign_id'] = civicrm_api3('Campaign', 'getvalue', [
           'return' => 'id',
-          'name' => $condition_params['campaign_id']
+          'name' => $condition_params['campaign_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -56,7 +57,6 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contributionRecur = $triggerData->getEntityData('ContributionRecur');
@@ -65,12 +65,13 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
         if (in_array($contributionRecur['campaign_id'], $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
+
       case 1:
         if (!in_array($contributionRecur['campaign_id'], $this->conditionParams['campaign_id'])) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
     }
     return $isConditionValid;
   }
@@ -104,11 +105,13 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Is NOT in of these campaigns: ';
     }
-    $campaignText = array();
+    $campaignText = [];
     foreach ($this->conditionParams['campaign_id'] as $campaignId) {
       try {
-        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', array('id' => $campaignId, 'return' => 'title'));
-      } catch (CRM_Core_Exception $ex) {}
+        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', ['id' => $campaignId, 'return' => 'title']);
+      }
+      catch (CRM_Core_Exception $ex) {
+      }
     }
     if (!empty($campaignText)) {
       $friendlyText .= implode(", ", $campaignText);

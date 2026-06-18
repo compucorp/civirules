@@ -8,12 +8,12 @@
  *
  * This stub provides compatibility. It is not intended to be modified in a
  * substantive way. Property annotations may be added, but are not required.
- * @property string $id 
- * @property string $rule_id 
- * @property string $contact_id 
- * @property string $entity_table 
- * @property string $entity_id 
- * @property string $log_date 
+ * @property string $id
+ * @property string $rule_id
+ * @property string $contact_id
+ * @property string $entity_table
+ * @property string $entity_id
+ * @property string $log_date
  */
 class CRM_Civirules_DAO_CiviRulesRuleLog extends CRM_Civirules_DAO_Base {
 

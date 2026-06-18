@@ -6,7 +6,6 @@
  * @date 18 May 2016
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_ContributionRecur_Campaign extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -16,20 +15,23 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Campaign extends CRM_Civiru
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
-    $campaignList = array();
-    $campaigns = civicrm_api3('Campaign', 'Get', array(
-      'is_active' => 1, 'options' => array('limit' => 99999)));
+    $campaignList = [];
+    $campaigns = civicrm_api3('Campaign', 'Get', [
+      'is_active' => 1,
+      'options' => ['limit' => 99999],
+    ]);
     foreach ($campaigns['values'] as $campaign) {
       $campaignList[$campaign['id']] = $campaign['title'];
     }
     asort($campaignList);
-    $this->add('select', 'campaign_id', ts('Campaign(s)'), $campaignList, true,
-      array('id' => 'campaign_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'campaign_id', ts('Campaign(s)'), $campaignList, TRUE,
+      ['id' => 'campaign_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -63,4 +65,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Campaign extends CRM_Civiru
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

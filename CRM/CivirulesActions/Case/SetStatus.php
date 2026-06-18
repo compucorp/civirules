@@ -37,7 +37,8 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
         ];
         CRM_Core_DAO::executeQuery($relQuery, $relParams);
       }
-    } else {
+    }
+    else {
       $params['end_date'] = '';
 
       // Update the case roles
@@ -66,16 +67,17 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
   protected function executeApiAction($entity, $action, $parameters) {
     try {
       civicrm_api3($entity, $action, $parameters);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       \Civi::log('civirules')->error('Set the Status of a Case: executeApiAction failed: ' . $e->getMessage());
       $formattedParams = '';
-      foreach($parameters as $key => $param) {
+      foreach ($parameters as $key => $param) {
         if (strlen($formattedParams)) {
           $formattedParams .= ', ';
         }
-        $formattedParams .= $key.' = '.$param;
+        $formattedParams .= $key . ' = ' . $param;
       }
-      throw new Exception('Civirules api action exception '.$entity.'.'.$action.' ('.$formattedParams.')');
+      throw new Exception('Civirules api action exception ' . $entity . '.' . $action . ' (' . $formattedParams . ')');
     }
   }
 
@@ -104,7 +106,8 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
         'value' => $action_params['status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       \Civi::log('civirules')->error('"Set the Status of a Case":  export error: ' . $e->getMessage());
     }
     return $action_params;
@@ -123,12 +126,12 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
         'name' => $action_params['status_id'],
         'option_group_id' => 'case_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
       \Civi::log('civirules')->error('"Set the Status of a Case":  import error: ' . $e->getMessage());
     }
     return parent::importActionParameters($action_params);
   }
-
 
   /**
    * Returns a user friendly text explaining the condition params
@@ -142,7 +145,6 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
     return E::ts('Set case status to: %1', [1 => $status[$params['status_id']]]);
   }
 
-
   /**
    * Validates whether this action works with the selected trigger.
    *
@@ -155,4 +157,5 @@ class CRM_CivirulesActions_Case_SetStatus extends CRM_Civirules_Action {
     $entities = $trigger->getProvidedEntities();
     return isset($entities['Case']);
   }
+
 }

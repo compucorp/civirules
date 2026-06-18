@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirules_Condition {
 
   /**
@@ -36,30 +35,34 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     //not the right trigger. The trigger data should contain also
     if (!$triggerData instanceof CRM_Civirules_TriggerData_Interface_OriginalData) {
-      return false;
+      return FALSE;
     }
     $entity = $this->getEntity();
-    if ( strtolower($entity) != strtolower($triggerData->getOriginalEntity()) ) {
-      return false;
+    if (strtolower($entity) != strtolower($triggerData->getOriginalEntity())) {
+      return FALSE;
     }
     // we need to check to see if the data being submitted actually contains the field we are comparing. if not, return false, no change
     $compareField = $this->getField();
     $compareEntityData = $triggerData->getEntityData($entity);
     $compareEntityCustomData = $triggerData->getEntityCustomData();
-    if ( array_key_exists($compareField, $compareEntityData) || array_key_exists($compareField, $compareEntityCustomData) ) {
+    if (array_key_exists($compareField, $compareEntityData) || array_key_exists($compareField, $compareEntityCustomData)) {
       $fieldData = $this->getFieldData($triggerData);
-    } else {
-      return false;
+    }
+    else {
+      return FALSE;
     }
     $originalData = $this->getOriginalFieldData($triggerData);
 
     if (empty($fieldData) && empty($originalData)) {
-      return false; //both original and new data are null so assume not changed
-    } elseif ($fieldData == $originalData) {
-      return false; //both data are equal so assume not changed
+      //both original and new data are null so assume not changed
+      return FALSE;
+    }
+    elseif ($fieldData == $originalData) {
+      //both data are equal so assume not changed
+      return FALSE;
     }
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -87,7 +90,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
    * @access public
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -106,12 +109,12 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
       return $this->transformFieldData($data[$field]);
     }
     $customFieldId = str_replace("custom_", '', $field, $customField);
-    if ( $customField ) {
+    if ($customField) {
       $value = $triggerData->getCustomFieldValue($customFieldId);
       return $this->transformFieldData($value);
     }
 
-    return null;
+    return NULL;
   }
 
   /**
@@ -123,8 +126,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
    */
   protected function getOriginalFieldData(CRM_Civirules_TriggerData_Interface_OriginalData $triggerData) {
     $entity = $this->getEntity();
-    if ( strtolower($triggerData->getOriginalEntity()) != strtolower($entity) ) {
-      return null;
+    if (strtolower($triggerData->getOriginalEntity()) != strtolower($entity)) {
+      return NULL;
     }
 
     $data = $triggerData->getOriginalData();
@@ -132,9 +135,8 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
     if (isset($data[$field])) {
       return $this->transformFieldData($data[$field]);
     }
-    return null;
+    return NULL;
   }
-
 
   /**
    * This function validates whether this condition works with the selected trigger.
@@ -153,6 +155,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
     if (in_array('CRM_Civirules_TriggerData_Interface_OriginalData', class_implements($triggerDataClassName))) {
       return $trigger->doesProvideEntity($this->getEntity());
     }
-    return false;
+    return FALSE;
   }
+
 }

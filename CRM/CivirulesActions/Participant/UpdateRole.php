@@ -3,7 +3,6 @@
  * @author Gerhard Weber (civiservice.de) <gerhard.weber@civiservice.de>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Participant_UpdateRole extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -56,7 +55,8 @@ class CRM_CivirulesActions_Participant_UpdateRole extends CRM_CivirulesActions_G
           'return' => 'name',
           'id' => $action_params['role_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -75,7 +75,8 @@ class CRM_CivirulesActions_Participant_UpdateRole extends CRM_CivirulesActions_G
           'return' => 'id',
           'name' => $action_params['role_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);
@@ -109,7 +110,8 @@ class CRM_CivirulesActions_Participant_UpdateRole extends CRM_CivirulesActions_G
     $role = civicrm_api3('OptionValue', 'getvalue', [
       'return' => 'label',
       'option_group_id' => 'participant_role',
-      'value' => $params['role_id']],
+      'value' => $params['role_id'],
+    ],
     );
     $return .= ts('Role: %1', [1 => $role]);
     return $return;
@@ -128,9 +130,9 @@ class CRM_CivirulesActions_Participant_UpdateRole extends CRM_CivirulesActions_G
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     $entities = $trigger->getProvidedEntities();
     if (isset($entities['Participant'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }

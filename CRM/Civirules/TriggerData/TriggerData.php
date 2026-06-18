@@ -86,9 +86,11 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   public function getEntityId() {
     if ($this->entity_id) {
       return $this->entity_id;
-    } else if ($this->entity_data[$this->entity_name]['id'] ?? false) {
+    }
+    elseif ($this->entity_data[$this->entity_name]['id'] ?? FALSE) {
       return $this->entity_data[$this->entity_name]['id'];
-    } else {
+    }
+    else {
       return NULL;
     }
   }
@@ -101,7 +103,6 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
   public function setEntity($entity_name) {
     $this->entity_name = $entity_name;
   }
-
 
   /**
    * For triggers that have a "primary" entity return the EntityName (eg. Contact).
@@ -142,12 +143,12 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     if (!empty($this->entity_data['Contact']['id'])) {
       return $this->entity_data['Contact']['id'];
     }
-    foreach($this->entity_data as $entity => $data) {
+    foreach ($this->entity_data as $entity => $data) {
       if (!empty($data['contact_id'])) {
         return $data['contact_id'];
       }
     }
-    return null;
+    return NULL;
   }
 
   public function setContactId($contact_id) {
@@ -166,13 +167,15 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     $validContacts = ['Contact', 'Organization', 'Individual', 'Household'];
     if (isset($this->entity_data[$entity]) && is_array($this->entity_data[$entity])) {
       return $this->entity_data[$entity];
-    } elseif (isset($this->entity_data[strtolower($entity)]) && is_array($this->entity_data[strtolower($entity)])) {
+    }
+    elseif (isset($this->entity_data[strtolower($entity)]) && is_array($this->entity_data[strtolower($entity)])) {
       return $this->entity_data[strtolower($entity)];
-    } elseif (in_array($entity, $validContacts) && $this->getContactId()) {
+    }
+    elseif (in_array($entity, $validContacts) && $this->getContactId()) {
       $contactObject = new CRM_Contact_BAO_Contact();
       $contactObject->id = $this->getContactId();
       $contactData = [];
-      if ($contactObject->find(true)) {
+      if ($contactObject->find(TRUE)) {
         CRM_Core_DAO::storeValues($contactObject, $contactData);
       }
       return $contactData;
@@ -203,7 +206,6 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     }
   }
 
-
   /**
    * Returns an array of custom fields in param format
    *
@@ -213,15 +215,15 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     $customFields = [];
     if (!isset($this->custom_data)) {
       return $customFields;
-    } elseif (!is_array($this->custom_data) ) {
+    }
+    elseif (!is_array($this->custom_data)) {
       return $customFields;
     }
-    foreach ($this->custom_data as $custom_field_id => $custom_field_value ) {
+    foreach ($this->custom_data as $custom_field_id => $custom_field_value) {
       $customFields['custom_' . $custom_field_id] = $this->getCustomFieldValue($custom_field_id);
     }
     return $customFields;
   }
-
 
   /**
    * Sets data for an entity
@@ -230,7 +232,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
    * @param array $data
    * @param bool $is_primary
    */
-  public function setEntityData($entity, $data, $is_primary = false) {
+  public function setEntityData($entity, $data, $is_primary = FALSE) {
     if (is_array($data)) {
       $this->entity_data[$entity] = $data;
     }
@@ -277,7 +279,7 @@ abstract class CRM_Civirules_TriggerData_TriggerData {
     if (!empty($this->custom_data[$custom_field_id])) {
       return reset($this->custom_data[$custom_field_id]);
     }
-    return null;
+    return NULL;
   }
 
 }

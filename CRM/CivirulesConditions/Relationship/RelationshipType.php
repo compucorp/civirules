@@ -21,6 +21,7 @@ class CRM_CivirulesConditions_Relationship_RelationshipType extends CRM_Civirule
           $isConditionValid = TRUE;
         }
         break;
+
       case 1:
         if (!in_array($relationship['relationship_type_id'], $this->conditionParams['relationship_type_id'])) {
           $isConditionValid = TRUE;
@@ -39,13 +40,14 @@ class CRM_CivirulesConditions_Relationship_RelationshipType extends CRM_Civirule
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['relationship_type_id']) && is_array($params['relationship_type_id'])) {
-      foreach($params['relationship_type_id'] as $i => $gid) {
+      foreach ($params['relationship_type_id'] as $i => $gid) {
         try {
           $params['relationship_type_id'][$i] = civicrm_api3('RelationshipType', 'getvalue', [
             'return' => 'name_a_b',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -60,13 +62,14 @@ class CRM_CivirulesConditions_Relationship_RelationshipType extends CRM_Civirule
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['relationship_type_id']) && is_array($condition_params['relationship_type_id'])) {
-      foreach($condition_params['relationship_type_id'] as $i => $gid) {
+      foreach ($condition_params['relationship_type_id'] as $i => $gid) {
         try {
           $condition_params['relationship_type_id'][$i] = civicrm_api3('RelationshipType', 'getvalue', [
             'return' => 'id',
             'name_a_b' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -103,7 +106,7 @@ class CRM_CivirulesConditions_Relationship_RelationshipType extends CRM_Civirule
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Relationship Type is NOT one of: ';
     }
-    $relationshipText = array();
+    $relationshipText = [];
     foreach ($this->conditionParams['relationship_type_id'] as $relationshipTypeId) {
       $relationshipText[] = $relationshipTypes[$relationshipTypeId];
     }
@@ -114,10 +117,10 @@ class CRM_CivirulesConditions_Relationship_RelationshipType extends CRM_Civirule
   }
 
   public static function getRelationshipTypes() {
-    $return = array();
-    $relationshipTypes = civicrm_api3('RelationshipType', 'Get', array('is_active' => 1, 'options' => array('limit' => 0)));
+    $return = [];
+    $relationshipTypes = civicrm_api3('RelationshipType', 'Get', ['is_active' => 1, 'options' => ['limit' => 0]]);
     foreach ($relationshipTypes['values'] as $relationshipType) {
-      $return[$relationshipType['id']] = $relationshipType['label_a_b'].' - '.$relationshipType['label_b_a'];
+      $return[$relationshipType['id']] = $relationshipType['label_a_b'] . ' - ' . $relationshipType['label_b_a'];
     }
     return $return;
   }

@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civirules_Condition {
 
   /**
@@ -20,7 +19,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return bool
    */
   public function getFieldOptions() {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -35,7 +34,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return bool
    */
   public function getFieldOptionsNames() {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -45,7 +44,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return bool
    */
   public function isMultiple() {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -71,7 +70,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
       return '';
     }
 
-    $key = false;
+    $key = FALSE;
     switch ($this->getOperator()) {
       case '=':
       case '!=':
@@ -85,6 +84,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
       case 'not matches regex':
         $key = 'value';
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -97,7 +97,8 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
 
     if ($key && isset($this->conditionParams[$key])) {
       return $this->conditionParams[$key];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -130,12 +131,12 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
         ]
       );
 
-      foreach( $fields['values'] as $field ) {
+      foreach ($fields['values'] as $field) {
         if (!isset($field['name'])) {
           continue;
         }
         // Certain fields don't have types (eg. Contact group/tag).
-        switch($field['type'] ?? '') {
+        switch ($field['type'] ?? '') {
           case $dateType:
           case $timeType:
           case $dateTimeType:
@@ -165,7 +166,8 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
   protected function getOperator() {
     if (!empty($this->conditionParams['operator'])) {
       return $this->conditionParams['operator'];
-    } else {
+    }
+    else {
       return '';
     }
   }
@@ -197,136 +199,160 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
     switch ($operator) {
       case '=':
         if ($leftValue == $rightValue) {
-          return true;
-        } else {
-          return false;
+          return TRUE;
+        }
+        else {
+          return FALSE;
         }
         break;
+
       case '>':
         if ($leftValue > $rightValue) {
-          return true;
-        } else {
-          return false;
+          return TRUE;
+        }
+        else {
+          return FALSE;
         }
         break;
+
       case '<':
         if ($leftValue < $rightValue) {
-          return true;
-        } else {
-          return false;
+          return TRUE;
+        }
+        else {
+          return FALSE;
         }
         break;
+
       case '>=':
         if ($leftValue >= $rightValue) {
-          return true;
-        } else {
-          return false;
+          return TRUE;
+        }
+        else {
+          return FALSE;
         }
         break;
+
       case '<=':
         if ($leftValue <= $rightValue) {
-          return true;
-        } else {
-          false;
+          return TRUE;
+        }
+        else {
+          FALSE;
         }
         break;
+
       case '!=':
         if ($leftValue != $rightValue) {
-          return true;
-        } else {
-          return false;
+          return TRUE;
+        }
+        else {
+          return FALSE;
         }
         break;
+
       case 'is one of':
         $rightArray = $this->convertValueToArray($rightValue);
         if (in_array($leftValue, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'is not one of':
         $rightArray = $this->convertValueToArray($rightValue);
         if (!in_array($leftValue, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'contains string':
-        return stripos($leftValue ?? '',  $rightValue) !== FALSE;
-        break;
+        return stripos($leftValue ?? '', $rightValue) !== FALSE;
+
+      break;
       case 'not contains string':
-        return stripos($leftValue ?? '',  $rightValue) === FALSE;
-        break;
+        return stripos($leftValue ?? '', $rightValue) === FALSE;
+
+      break;
       case 'contains one of':
         $leftArray = $this->convertValueToArray($leftValue);
         $rightArray = $this->convertValueToArray($rightValue);
         if ($this->containsOneOf($leftArray, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'not contains one of':
         $leftArray = $this->convertValueToArray($leftValue);
         $rightArray = $this->convertValueToArray($rightValue);
         if (!$this->containsOneOf($leftArray, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'contains all of':
         $leftArray = $this->convertValueToArray($leftValue);
         $rightArray = $this->convertValueToArray($rightValue);
         if ($this->containsAllOf($leftArray, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'not contains all of':
         $leftArray = $this->convertValueToArray($leftValue);
         $rightArray = $this->convertValueToArray($rightValue);
         if ($this->notContainsAllOf($leftArray, $rightArray)) {
-          return true;
+          return TRUE;
         }
-        return false;
-        break;
+        return FALSE;
+
+      break;
       case 'is empty':
         if (empty($leftValue)) {
-          return true;
+          return TRUE;
         }
-        else if (is_array($leftValue)){
-          foreach ($leftValue as $item){
-            if (!empty($item)){
-              return false;
+        elseif (is_array($leftValue)) {
+          foreach ($leftValue as $item) {
+            if (!empty($item)) {
+              return FALSE;
             }
           }
-          return true;
+          return TRUE;
         }
-        return false;
+        return FALSE;
+
       case 'is not empty':
         if (empty($leftValue)) {
-          return false;
+          return FALSE;
         }
-        else if(is_array($leftValue)){
-          foreach ($leftValue as $item){
-            if (empty($item)){
-              return false;
+        elseif (is_array($leftValue)) {
+          foreach ($leftValue as $item) {
+            if (empty($item)) {
+              return FALSE;
             }
           }
         }
-        return true;
+        return TRUE;
+
       case 'matches regex':
         preg_match('/' . $rightValue . '/', $leftValue ?? '', $matches);
         return (!empty($matches));
-        break;
+
+      break;
       case 'not matches regex':
         preg_match('/' . $rightValue . '/', $leftValue ?? '', $matches);
         return (empty($matches));
-        break;
+
+      break;
       default:
-        return false;
-        break;
+        return FALSE;
+      break;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -336,12 +362,12 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return bool
    */
   protected function containsOneOf($leftValues, $rightValues) {
-    foreach($leftValues as $leftvalue) {
+    foreach ($leftValues as $leftvalue) {
       if (in_array($leftvalue, $rightValues)) {
-        return true;
+        return TRUE;
       }
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -352,15 +378,15 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    */
   protected function containsAllOf($leftValues, $rightValues) {
     $foundValues = [];
-    foreach($leftValues as $leftVaue) {
+    foreach ($leftValues as $leftVaue) {
       if (in_array($leftVaue, $rightValues)) {
         $foundValues[] = $leftVaue;
       }
     }
     if (count($foundValues) > 0 && count($foundValues) == count($rightValues)) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -370,12 +396,12 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return bool
    */
   protected function notContainsAllOf($leftValues, $rightValues) {
-    foreach($rightValues as $rightValue) {
+    foreach ($rightValues as $rightValue) {
       if (in_array($rightValue, $leftValues)) {
-        return false;
+        return FALSE;
       }
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -416,7 +442,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
    * @return string
    */
   public function userFriendlyConditionParams() {
-    return htmlentities(($this->getOperator())).' '.htmlentities($this->getComparisonValue());
+    return htmlentities(($this->getOperator())) . ' ' . htmlentities($this->getComparisonValue());
   }
 
   /**

@@ -65,7 +65,7 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
       return;
     }
 
-    if (in_array($event->action, ['create' , 'edit'])) {
+    if (in_array($event->action, ['create', 'edit'])) {
       CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleCondition');
     }
     if (property_exists($event->object, 'rule_id') && !empty($event->object->rule_id)) {
@@ -112,7 +112,8 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
         if (empty($condition['condition_link'])) {
           $records[] = [
             'id' => $condition['id'],
-            'condition_link' => 'AND', // Default to AND if not set.
+          // Default to AND if not set.
+            'condition_link' => 'AND',
           ];
         }
       }

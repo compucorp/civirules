@@ -8,27 +8,28 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
 
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $actionParams = $this->getActionParameters();
-    $groupIds = array();
+    $groupIds = [];
     if (!empty($actionParams['group_id'])) {
-      $groupIds = array($actionParams['group_id']);
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+      $groupIds = [$actionParams['group_id']];
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       $groupIds = $actionParams['group_ids'];
     }
 
-    foreach($groupIds as $groupId) {
+    foreach ($groupIds as $groupId) {
       try {
         $email = civicrm_api3('Email', 'getvalue', ['contact_id' => $triggerData->getContactId(), 'is_primary' => 1, 'return' => 'email']);
         civicrm_api3('MailingEventSubscribe', 'create', [
           'contact_id' => $triggerData->getContactId(),
           'email' => $email,
-          'group_id' => $groupId
+          'group_id' => $groupId,
         ]);
-      } catch (\CRM_Core_Exception $ex) {
+      }
+      catch (\CRM_Core_Exception $ex) {
         // Do nothing.
       }
     }
@@ -48,16 +49,19 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
           'return' => 'name',
           'id' => $action_params['group_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       foreach ($action_params['group_ids'] as $i => $j) {
         try {
           $action_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'name',
             'id' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -77,16 +81,19 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
           'return' => 'id',
           'name' => $action_params['group_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       foreach ($action_params['group_ids'] as $i => $j) {
         try {
           $action_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'id',
             'name' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -119,32 +126,34 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
       try {
         $group = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $params['group_id']
+          'id' => $params['group_id'],
         ]);
-        return ts('Subscribe contact to group(s): %1', array(1 => $group));
-      } catch (Exception $e) {
+        return ts('Subscribe contact to group(s): %1', [1 => $group]);
+      }
+      catch (Exception $e) {
         return '';
       }
-    } elseif (!empty($params['group_ids']) && is_array($params['group_ids'])) {
+    }
+    elseif (!empty($params['group_ids']) && is_array($params['group_ids'])) {
       $groups = '';
-      foreach($params['group_ids'] as $group_id) {
+      foreach ($params['group_ids'] as $group_id) {
         try {
           $group = civicrm_api3('Group', 'getvalue', [
             'return' => 'title',
-            'id' => $group_id
+            'id' => $group_id,
           ]);
           if (strlen($groups)) {
             $groups .= ', ';
           }
           $groups .= $group;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           // Do nothing.
         }
       }
-      return ts('Subscribe contact to group(s): %1', array(1 => $groups));
+      return ts('Subscribe contact to group(s): %1', [1 => $groups]);
     }
     return '';
   }
-
 
 }

@@ -13,7 +13,7 @@
  */
 class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigger {
 
-  private static $triggers = false;
+  private static $triggers = FALSE;
 
   private static function getTriggers() {
     if (!self::$triggers) {
@@ -33,7 +33,7 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Relationship', 'Relationship', 'CRM_Contact_DAO_Relationship' , 'Relationship');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Relationship', 'Relationship', 'CRM_Contact_DAO_Relationship', 'Relationship');
     return $entities;
   }
 
@@ -52,8 +52,8 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
     if ($custom_group['extends'] != 'Case') {
       return;
     }
-    $case = civicrm_api3('Case', 'getsingle', array('id' => $entityID));
-    foreach($params as $field) {
+    $case = civicrm_api3('Case', 'getsingle', ['id' => $entityID]);
+    foreach ($params as $field) {
       if (!empty($field['custom_field_id'])) {
         $value = $field['value'];
         if ($field['type'] == 'Timestamp') {
@@ -69,22 +69,22 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
 
     //trigger for each client
     $clients = CRM_Case_BAO_Case::getCaseClients($entityID);
-    foreach($clients as $client) {
+    foreach ($clients as $client) {
       $triggerData = clone $t;
-      $triggerData->setEntityData('Relationship', null);
+      $triggerData->setEntityData('Relationship', NULL);
       $triggerData->setContactId((int) $client);
       self::trigger($triggerData);
     }
 
     //trigger for each case role
     $relatedContacts = CRM_Case_BAO_Case::getRelatedContacts($entityID);
-    foreach($relatedContacts as $contact) {
+    foreach ($relatedContacts as $contact) {
       $triggerData = clone $t;
-      $relationshipData = null;
+      $relationshipData = NULL;
       $relationship = new CRM_Contact_BAO_Relationship();
       $relationship->contact_id_b = $contact['contact_id'];
       $relationship->case_id = $entityID;
-      if ($relationship->find(true)) {
+      if ($relationship->find(TRUE)) {
         CRM_Core_DAO::storeValues($relationship, $relationshipData);
       }
       $triggerData->setEntityData('Relationship', $relationshipData);
@@ -96,7 +96,7 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
   protected static function trigger(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     //find matching rules for this objectName and op
     $triggers = self::getTriggers();
-    foreach($triggers as $trigger) {
+    foreach ($triggers as $trigger) {
       CRM_Civirules_Engine::triggerRule($trigger, $triggerData);
     }
   }

@@ -20,9 +20,11 @@ class CRM_CivirulesConditions_Contribution_IsRecurring extends CRM_Civirules_Con
     $contribution = $triggerData->getEntityData('Contribution');
     if ($this->conditionParams['test'] == 'is recurring') {
       return !empty($contribution['contribution_recur_id']);
-    } elseif ($this->conditionParams['test'] == 'is not recurring') {
+    }
+    elseif ($this->conditionParams['test'] == 'is not recurring') {
       return empty($contribution['contribution_recur_id']);
-    } else {
+    }
+    else {
       throw new Exception("Invalid operator in 'Is Recurring' Condition", 1);
     }
   }

@@ -6,7 +6,6 @@
  * @date 9 Dec 2019
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -33,6 +32,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
           $isConditionValid = TRUE;
         }
         break;
+
       case '1':
         if (!in_array($campaignData['campaign_type_id'], $this->conditionParams['campaign_type_id'])) {
           $isConditionValid = TRUE;
@@ -41,6 +41,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
     }
     return $isConditionValid;
   }
+
   /**
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
@@ -62,7 +63,7 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
         $campaignText[] = civicrm_api3('OptionValue', 'getvalue', [
           'option_group_id' => 'campaign_type',
           'value' => $campaignTypeId,
-          'return' => 'label'
+          'return' => 'label',
         ]);
 
       }
@@ -90,7 +91,8 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
           'value' => $params['campaign_type_id'],
           'option_group_id' => 'campaign_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -111,7 +113,8 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
           'name' => $condition_params['campaign_type_id'],
           'option_group_id' => 'campaign_type',
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -133,4 +136,5 @@ class CRM_CivirulesConditions_Campaign_Type extends CRM_Civirules_Condition {
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Campaign');
   }
+
 }

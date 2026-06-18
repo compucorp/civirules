@@ -12,14 +12,14 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $case = $triggerData->getEntityData('Case');
     $actionParameters = $this->getActionParameters();
-    $isCustomField = false;
+    $isCustomField = FALSE;
     $field = $actionParameters['field'];
-    if (stripos($field, 'custom_')===0) {
-      $isCustomField = true;
+    if (stripos($field, 'custom_') === 0) {
+      $isCustomField = TRUE;
     }
 
     $date = new DateTime();
-    $params = array();
+    $params = [];
     if (!empty($actionParameters['date'])) {
       $delayClass = unserialize(($actionParameters['date']));
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
@@ -51,7 +51,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    if (!empty($action_params['field']) && stripos($action_params['field'], 'custom_') !== false) {
+    if (!empty($action_params['field']) && stripos($action_params['field'], 'custom_') !== FALSE) {
       try {
         $fieldId = substr($action_params['field'], 7);
         $customField = civicrm_api3('CustomField', 'getsingle', [
@@ -63,7 +63,8 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
         unset($action_params['field']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -83,10 +84,11 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
           'name' => $action_params['custom_field'],
           'custom_group_id' => $action_params['custom_group'],
         ]);
-        $action_params['field'] = 'custom_'.$customField['id'];
+        $action_params['field'] = 'custom_' . $customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -94,29 +96,32 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
   }
 
   public static function getFields() {
-    $return = array();
-    $fields = civicrm_api3('Case', 'getfields', array('limit' => 99999));
+    $return = [];
+    $fields = civicrm_api3('Case', 'getfields', ['limit' => 99999]);
     foreach ($fields['values'] as $field) {
       if (!isset($field['type'])) {
         continue;
       }
       if (!($field['type'] & CRM_Utils_Type::T_DATE)) {
-        continue; //Field is not a Date field.
+        //Field is not a Date field.
+        continue;
       }
 
       $fieldKey = $field['name'];
       if (isset($field['title'])) {
         $label = trim($field['title']);
-      } elseif (isset($field['label'])) {
+      }
+      elseif (isset($field['label'])) {
         $label = trim($field['label']);
-      } else {
+      }
+      else {
         $label = "";
       }
       if (empty($label)) {
         $label = $field['name'];
       }
       if (!empty($field['groupTitle'])) {
-        $label = $field['groupTitle'].': '.$label;
+        $label = $field['groupTitle'] . ': ' . $label;
       }
       $return[$fieldKey] = $label;
     }
@@ -127,13 +132,14 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
     $actionParameters = $this->getActionParameters();
     $fields = self::getFields();
     $field = $actionParameters['field'];
-    $label = 'Set '.$fields[$field].' to ';
+    $label = 'Set ' . $fields[$field] . ' to ';
     if (!empty($actionParameters['date'])) {
       $delayClass = unserialize(($actionParameters['date']));
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
         $label .= $delayClass->getDelayExplanation();
       }
-    } else {
+    }
+    else {
       $label .= ' the date of processing of the action';
     }
     return $label;
@@ -152,9 +158,9 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     $providedEntities = $trigger->getProvidedEntities();
     if (isset($providedEntities['Case'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }

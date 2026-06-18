@@ -11,35 +11,34 @@ class CRM_CivirulesPostTrigger_DataSpecification_CaseRole {
    *
    * @var array
    */
-  static $_fields = null;
+  static $_fields = NULL;
   /**
    * static instance to hold the keys used in $_fields for each field.
    *
    * @var array
    */
-  static $_fieldKeys = null;
+  static $_fieldKeys = NULL;
 
   /**
    * Returns all the column names of this table
    *
    * @return array
    */
-  static function &fields()
-  {
+  public static function &fields() {
     if (!(self::$_fields)) {
-      self::$_fields = array(
-        'contact_id' => array(
+      self::$_fields = [
+        'contact_id' => [
           'name' => 'contact_id',
           'type' => CRM_Utils_Type::T_INT,
           'description' => 'Contact ID of contact record given case belongs to.',
-          'required' => true,
+          'required' => TRUE,
           'FKClassName' => 'CRM_Contact_DAO_Contact',
-        ),
-        'is_client' => array(
+        ],
+        'is_client' => [
           'name' => 'is_client',
           'type' => CRM_Utils_Type::T_BOOLEAN,
-        ),
-      );
+        ],
+      ];
     }
     return self::$_fields;
   }
@@ -50,13 +49,12 @@ class CRM_CivirulesPostTrigger_DataSpecification_CaseRole {
    *
    * @return array
    */
-  static function &fieldKeys()
-  {
+  public static function &fieldKeys() {
     if (!(self::$_fieldKeys)) {
-      self::$_fieldKeys = array(
+      self::$_fieldKeys = [
         'contact_id' => 'contact_id',
         'is_client' => 'is_client',
-      );
+      ];
     }
     return self::$_fieldKeys;
   }

@@ -11,7 +11,7 @@ namespace Civi\Api4;
  * @package Civi\Api4
  */
 class CiviRulesAction extends Generic\DAOEntity {
-    use Generic\Traits\ManagedEntity;
+  use Generic\Traits\ManagedEntity;
 
   /**
    * @inheritDoc

@@ -47,7 +47,7 @@ class CRM_CivirulesPostTrigger_Event extends CRM_Civirules_Trigger_Post {
    * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/event', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/event', 'rule_id=' . $ruleId);
   }
 
   /**
@@ -58,7 +58,8 @@ class CRM_CivirulesPostTrigger_Event extends CRM_Civirules_Trigger_Post {
   public function getTriggerDescription(): string {
     if (isset($this->triggerParams['contact_id']) && $this->triggerParams['contact_id'] == 1) {
       return E::ts('Trigger uses the logged in user as the contact.');
-    } else {
+    }
+    else {
       return E::ts('Trigger does not use a contact.');
     }
   }

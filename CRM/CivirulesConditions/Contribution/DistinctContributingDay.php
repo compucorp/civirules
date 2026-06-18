@@ -9,7 +9,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @link http://redmine.civicoop.org/projects/civirules/wiki/Tutorial_create_a_more_complicated_condition_with_its_own_form_processing
  */
-
 class CRM_CivirulesConditions_Contribution_DistinctContributingDay extends CRM_Civirules_Condition {
 
   /**
@@ -18,9 +17,7 @@ class CRM_CivirulesConditions_Contribution_DistinctContributingDay extends CRM_C
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
-  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
-  {
+  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contact_id = $triggerData->getContactId();
     /*
@@ -29,17 +26,18 @@ class CRM_CivirulesConditions_Contribution_DistinctContributingDay extends CRM_C
     $query = 'SELECT COUNT(DISTINCT CONCAT(EXTRACT(YEAR FROM receive_date),
 EXTRACT(MONTH FROM receive_date), EXTRACT(DAY FROM receive_date))) AS distinctDates
 FROM civicrm_contribution WHERE contact_id = %1 AND civicrm_contribution.contribution_status_id = %2';
-    $params = array(
-      1 => array($contact_id, 'Positive'),
-      2 => array(CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'Positive'));
+    $params = [
+      1 => [$contact_id, 'Positive'],
+      2 => [CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'Positive'],
+    ];
 
     $periodStartDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToStartDate($this->conditionParams);
     $periodEndDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToEndDate($this->conditionParams);
     if ($periodStartDate) {
-      $query .= " AND DATE(`receive_date`) >= '".$periodStartDate->format('Y-m-d')."'";
+      $query .= " AND DATE(`receive_date`) >= '" . $periodStartDate->format('Y-m-d') . "'";
     }
     if ($periodEndDate) {
-      $query .= " AND DATE(`receive_date`) <= '".$periodEndDate->format('Y-m-d')."'";
+      $query .= " AND DATE(`receive_date`) <= '" . $periodEndDate->format('Y-m-d') . "'";
     }
 
     $dao = CRM_Core_DAO::executeQuery($query, $params);
@@ -50,32 +48,37 @@ FROM civicrm_contribution WHERE contact_id = %1 AND civicrm_contribution.contrib
           if ($dao->distinctDates != $this->conditionParams['no_of_days']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
+
         case 2:
           if ($dao->distinctDates > $this->conditionParams['no_of_days']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
+
         case 3:
           if ($dao->distinctDates >= $this->conditionParams['no_of_days']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         case 4:
           if ($dao->distinctDates < $this->conditionParams['no_of_days']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         case 5:
           if ($dao->distinctDates <= $this->conditionParams['no_of_days']) {
-          $isConditionValid = TRUE;
-        }
-        break;
+            $isConditionValid = TRUE;
+          }
+          break;
+
         default:
           if ($dao->distinctDates == $this->conditionParams['no_of_days']) {
             $isConditionValid = TRUE;
           }
-        break;
+          break;
       }
     }
     return $isConditionValid;
@@ -103,23 +106,28 @@ FROM civicrm_contribution WHERE contact_id = %1 AND civicrm_contribution.contrib
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $operator = null;
+    $operator = NULL;
     switch ($this->conditionParams['operator']) {
       case 1:
         $operator = 'is not equal to';
         break;
+
       case 2:
         $operator = 'bigger than';
         break;
+
       case 3:
         $operator = 'bigger than or equal to';
         break;
+
       case 4:
         $operator = 'less than';
         break;
+
       case 5:
         $operator = 'less than or equal to';
         break;
+
       default:
         $operator = 'is equal to';
         break;
@@ -127,6 +135,7 @@ FROM civicrm_contribution WHERE contact_id = %1 AND civicrm_contribution.contrib
 
     $period = CRM_CivirulesConditions_Utils_Period::userFriendlyConditionParams($this->conditionParams);
 
-    return 'Distinct number of contributing days '.$operator.' '.$this->conditionParams['no_of_days'].' '.$period;
+    return 'Distinct number of contributing days ' . $operator . ' ' . $this->conditionParams['no_of_days'] . ' ' . $period;
   }
+
 }

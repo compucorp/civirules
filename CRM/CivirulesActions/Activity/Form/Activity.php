@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -15,23 +14,23 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'activity_type_id', ts('Activity type'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_type'), true);
-    $this->add('select', 'status_id', ts('Status'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_status'), true);
+    $this->add('select', 'activity_type_id', ts('Activity type'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_type'), TRUE);
+    $this->add('select', 'status_id', ts('Status'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_status'), TRUE);
     $this->add('text', 'subject', ts('Subject'));
     $this->add('wysiwyg', 'details', ts('Details'));
 
     $attributes = [
       'multiple' => TRUE,
       'create' => TRUE,
-      'api' => ['params' => ['is_deceased' => 0]]
+      'api' => ['params' => ['is_deceased' => 0]],
     ];
-    $this->addEntityRef('assignee_contact_id', ts('Assigned to'), $attributes, false);
+    $this->addEntityRef('assignee_contact_id', ts('Assigned to'), $attributes, FALSE);
 
-    $this->addYesNo('send_email', 'Send Email to Assigned Contacts', false, true);
+    $this->addYesNo('send_email', 'Send Email to Assigned Contacts', FALSE, TRUE);
 
     $delayList = ['' => ts(' - Use system date (default) - ')] + CRM_Civirules_Delay_Factory::getOptionList();
     $this->add('select', 'activity_date_time', ts('Set activity date'), $delayList);
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->addElements($this, 'activity_date_time', $this->rule);
     }
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
@@ -42,19 +41,19 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
       $this->add('select', 'relationship_contact', ts('Relationship Contact (activity target)'), [
         'both' => ts('Both Contacts'),
         'contact_id_a' => ts('Contact A'),
-        'contact_id_b' => ts('Contact B')
+        'contact_id_b' => ts('Contact B'),
       ], TRUE);
 
       $this->add('select', 'relationship_contact_assignee', ts('Relationship Contact Assignee'), [
         '' => ts('-- please select --'),
         'contact_id_a' => ts('Contact A'),
-        'contact_id_b' => ts('Contact B')
+        'contact_id_b' => ts('Contact B'),
       ], FALSE);
     }
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -92,7 +91,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
       $defaultValues['relationship_contact_assignee'] = $data['relationship_contact_assignee'];
     }
     $defaultValues['send_email'] = $data['send_email'] ?? '';
-    foreach(CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaultValues, 'activity_date_time', $this->rule);
     }
     if (!empty($data['activity_date_time']) && $data['activity_date_time'] != 'null') {
@@ -117,7 +116,7 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
     parent::addRules();
     $this->addFormRule([
       'CRM_CivirulesActions_Activity_Form_Activity',
-      'validateActivityDateTime'
+      'validateActivityDateTime',
     ]);
   }
 
@@ -129,16 +128,16 @@ class CRM_CivirulesActions_Activity_Form_Activity extends CRM_CivirulesActions_F
    * @access public
    * @static
    */
-  static function validateActivityDateTime($fields) {
+  public static function validateActivityDateTime($fields) {
     $errors = [];
     if (!empty($fields['activity_date_time'])) {
       $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
       $ruleAction = new CRM_Civirules_BAO_RuleAction();
       $ruleAction->id = $ruleActionId;
-      $ruleAction->find(true);
+      $ruleAction->find(TRUE);
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $ruleAction->rule_id;
-      $rule->find(true);
+      $rule->find(TRUE);
 
       $activityDateClass = CRM_Civirules_Delay_Factory::getDelayClassByName($fields['activity_date_time']);
       $activityDateClass->validate($fields, $errors, 'activity_date_time', $rule);

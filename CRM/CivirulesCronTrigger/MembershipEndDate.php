@@ -11,7 +11,7 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
   use CRM_CivirulesTrigger_MembershipTrait;
 
   /**
-   * @var \CRM_Member_DAO_Membership $dao
+   * @var \CRM_Member_DAO_Membership
    */
   private $dao = NULL;
 
@@ -64,7 +64,7 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
    */
   private function queryForTriggerEntities() {
     if (empty($this->triggerParams['membership_type_id'])) {
-      return false;
+      return FALSE;
     }
 
     // membership_type_id used to be a single value, but now we can have multiple membership types
@@ -81,22 +81,27 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
         $end_date_statement = "AND DATE_SUB(m.end_date, INTERVAL %2 DAY) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-weeks':
         $end_date_statement = "AND DATE_SUB(m.end_date, INTERVAL %2 WEEK) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-months':
         $end_date_statement = "AND DATE_SUB(m.end_date, INTERVAL %2 MONTH) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+days':
         $end_date_statement = "AND DATE_ADD(m.end_date, INTERVAL %2 DAY) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+weeks':
         $end_date_statement = "AND DATE_ADD(m.end_date, INTERVAL %2 WEEK) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+months':
         $end_date_statement = "AND DATE_ADD(m.end_date, INTERVAL %2 MONTH) = CURRENT_DATE()";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
@@ -120,9 +125,9 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
               WHERE `rule_log2`.`rule_id` = %3 AND DATE(`rule_log2`.`log_date`) = DATE(NOW()) and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
             )";
     $params[3] = [$this->ruleId, 'Integer'];
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Member_DAO_Membership');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Member_DAO_Membership');
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -134,7 +139,7 @@ class CRM_CivirulesCronTrigger_MembershipEndDate extends CRM_Civirules_Trigger_C
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/membershipenddate/', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/membershipenddate/', 'rule_id=' . $ruleId);
   }
 
   /**

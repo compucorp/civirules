@@ -17,8 +17,8 @@ class CRM_CivirulesCronTrigger_Form_NextContributionDate extends CRM_CivirulesTr
     $this->add('text', 'interval', ts('Interval'), [], TRUE);
     $this->addRule('interval', ts('Interval should be a numeric value'), 'numeric');
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

@@ -18,7 +18,7 @@ class CRM_CivirulesActions_Generic_Form_SetField extends CRM_CivirulesActions_Fo
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), TRUE, array('class' => 'crm-select2 huge'));
+    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), TRUE, ['class' => 'crm-select2 huge']);
 
     $this->add('select',
         'field',
@@ -90,7 +90,7 @@ class CRM_CivirulesActions_Generic_Form_SetField extends CRM_CivirulesActions_Fo
   }
 
   protected function getEntityOptions() {
-    $return = array();
+    $return = [];
     foreach ($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->label;
@@ -98,4 +98,5 @@ class CRM_CivirulesActions_Generic_Form_SetField extends CRM_CivirulesActions_Fo
     }
     return $return;
   }
+
 }

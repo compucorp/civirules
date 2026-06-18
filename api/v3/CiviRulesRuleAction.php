@@ -10,9 +10,9 @@ use CRM_Civirules_ExtensionUtil as E;
  * @return void
  */
 function _civicrm_api3_civi_rules_rule_action_create_spec(&$spec) {
- $spec['rule_id']['api.required'] = 1;
- $spec['action_id']['api.required'] = 1;
- $spec['action_params']['api.required'] = 0;
+  $spec['rule_id']['api.required'] = 1;
+  $spec['action_id']['api.required'] = 1;
+  $spec['action_params']['api.required'] = 0;
 }
 
 /**
@@ -70,5 +70,3 @@ function _civicrm_api3_civi_rules_rule_action_delete_spec(&$spec) {
 function civicrm_api3_civi_rules_rule_action_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
-
-

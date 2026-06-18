@@ -14,9 +14,9 @@ class CRM_CivirulesConditions_Relationship_IsContactA extends CRM_Civirules_Cond
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $relationship = $triggerData->getEntityData('Relationship');
     if (!empty($relationship) && !empty($relationship['contact_id_a']) && $relationship['contact_id_a'] == $triggerData->getContactId()) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -30,7 +30,7 @@ class CRM_CivirulesConditions_Relationship_IsContactA extends CRM_Civirules_Cond
    * @abstract
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return false;
+    return FALSE;
   }
 
   /**

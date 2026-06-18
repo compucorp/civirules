@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_ContributionRecur_Count extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -22,14 +21,15 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Count extends CRM_Civirules
     $operatorList[5] = 'is less than or equal (<=)';
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'no_of_recurring', ts('Number of Recurring Contribution Collections'), array(), true);
-    $this->addRule('no_of_recurring','Number of Recurring Contribution Collections must be a whole number','numeric');
-    $this->addRule('no_of_recurring','Number of Recurring Contribution Collections must be a whole number','nopunctuation');
+    $this->add('select', 'operator', ts('Operator'), $operatorList, TRUE);
+    $this->add('text', 'no_of_recurring', ts('Number of Recurring Contribution Collections'), [], TRUE);
+    $this->addRule('no_of_recurring', 'Number of Recurring Contribution Collections must be a whole number', 'numeric');
+    $this->addRule('no_of_recurring', 'Number of Recurring Contribution Collections must be a whole number', 'nopunctuation');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -64,4 +64,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Count extends CRM_Civirules
 
     parent::postProcess();
   }
+
 }

@@ -4,11 +4,10 @@
  * @date 30 Aug 2018
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Core_DAO_EntityTag $dao
+   * @var \CRM_Core_DAO_EntityTag
    */
   private $dao = NULL;
 
@@ -26,15 +25,15 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
   protected function getNextEntityTriggerData() {
     if (!$this->dao) {
       if (!$this->queryForTriggerEntities()) {
-        return false;
+        return FALSE;
       }
     }
     if ($this->dao->fetch()) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
       return new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'EntityTag', $data, NULL, $this);
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -54,15 +53,15 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
   private function queryForTriggerEntities() {
 
     if (empty($this->triggerParams['tag_id'])) {
-      return false;
+      return FALSE;
     }
-
 
     if (is_array($this->triggerParams['group_id'])) {
       $this->triggerParams['tag_id'] = CRM_Utils_Type::escapeAll($this->triggerParams['tag_id'], 'Integer');
-      $tagWhereStatement = "`c`.`group_id` IN (".implode(", ", $this->triggerParams['group_id']).")";
-    } else {
-      $groupWhereStatement = "`c`.`group_id` = '".CRM_Utils_Type::escape($this->triggerParams['group_id'], 'Integer', true)."'";
+      $tagWhereStatement = "`c`.`group_id` IN (" . implode(", ", $this->triggerParams['group_id']) . ")";
+    }
+    else {
+      $groupWhereStatement = "`c`.`group_id` = '" . CRM_Utils_Type::escape($this->triggerParams['group_id'], 'Integer', TRUE) . "'";
     }
 
     $sql = "SELECT c.*
@@ -74,10 +73,10 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
               WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
             )";
 
-    $params[1] = array($this->ruleId, 'Integer');
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_DAO_GroupContact');
+    $params[1] = [$this->ruleId, 'Integer'];
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_DAO_GroupContact');
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -91,7 +90,7 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
    * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/hastag/', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/hastag/', 'rule_id=' . $ruleId);
   }
 
   /**
@@ -102,26 +101,29 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
   public function getTriggerDescription(): string {
     $groupName = ts('Unknown');
     if (is_array($this->triggerParams['group_id'])) {
-      $groupApi = civicrm_api3('Group', 'get', array('id' => array('IN' => $this->triggerParams['group_id']), 'options' => array('limit' => 0)));
-      $groupNames = array();
-      foreach($groupApi['values'] as $group) {
+      $groupApi = civicrm_api3('Group', 'get', ['id' => ['IN' => $this->triggerParams['group_id']], 'options' => ['limit' => 0]]);
+      $groupNames = [];
+      foreach ($groupApi['values'] as $group) {
         $groupNames[] = $group['title'];
       }
       if (!empty($groupNames)) {
         $groupName = implode(", ", $groupNames);
       }
-    } else {
+    }
+    else {
       try {
         $groupName = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $this->triggerParams['group_id']
+          'id' => $this->triggerParams['group_id'],
         ]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         //do nothing
       }
     }
-    return ts('Daily trigger for all members of group %1', array(
-      1 => $groupName
-    ));
+    return ts('Daily trigger for all members of group %1', [
+      1 => $groupName,
+    ]);
   }
+
 }

@@ -22,7 +22,7 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
     $return = [];
     try {
       $actionParams = $this->getActionParameters();
-      foreach($actionParams['rel_type_ids'] as $rel_type_id) {
+      foreach ($actionParams['rel_type_ids'] as $rel_type_id) {
         $params['relationship_type_id'] = substr($rel_type_id, 4);
         $params['is_active'] = '1';
         $params['options']['limit'] = '0';
@@ -39,7 +39,8 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
           $return[] = $value[$return_field];
         }
       }
-    } catch (\Exception $ex) {
+    }
+    catch (\Exception $ex) {
       // Do nothing
     }
     return $return;
@@ -58,10 +59,11 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
     $groupIds = [];
     if (!empty($actionParams['group_id'])) {
       $groupIds = [$actionParams['group_id']];
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       $groupIds = $actionParams['group_ids'];
     }
-    foreach($groupIds as $groupId) {
+    foreach ($groupIds as $groupId) {
       $params = [];
       $params['group_id'] = $groupId;
 
@@ -99,7 +101,7 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
     $relationshipTypes = $groupName = '';
 
     $relationshipTypeOptions = CRM_Civirules_Utils::getRelationshipTypes();
-    foreach($params['rel_type_ids'] as $rel_type_id) {
+    foreach ($params['rel_type_ids'] as $rel_type_id) {
       if (strlen($relationshipTypes)) {
         $relationshipTypes .= ', ';
       }
@@ -110,9 +112,10 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
       try {
         $groupName = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $params['group_id']
+          'id' => $params['group_id'],
         ]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         $groupName = 'INVALID GROUP';
       }
     }
@@ -136,16 +139,17 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['tag_ids'] as $i=>$j) {
+    foreach ($action_params['tag_ids'] as $i => $j) {
       try {
         $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
-    foreach($action_params['rel_type_ids'] as $i=>$j) {
+    foreach ($action_params['rel_type_ids'] as $i => $j) {
       $rel_dir = substr($j, 0, 4);
       $rel_type = substr($j, 4);
       try {
@@ -153,7 +157,8 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
           'return' => 'name_a_b',
           'id' => $rel_type,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -166,24 +171,26 @@ abstract class CRM_CivirulesActions_GroupContact_RelatedGroupContact extends CRM
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['tag_ids'] as $i=>$j) {
+    foreach ($action_params['tag_ids'] as $i => $j) {
       try {
         $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
-    foreach($action_params['rel_type_ids'] as $i=>$j) {
+    foreach ($action_params['rel_type_ids'] as $i => $j) {
       $rel_dir = substr($j, 0, 4);
       $rel_type = substr($j, 4);
       try {
         $action_params['rel_type_ids'][$i] = $rel_dir . civicrm_api3('Tag', 'getvalue', [
-            'return' => 'id',
-            'name_a_b' => $rel_type,
-          ]);
-      } catch (CRM_Core_Exception $e) {
+          'return' => 'id',
+          'name_a_b' => $rel_type,
+        ]);
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

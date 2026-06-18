@@ -11,9 +11,9 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesConditions_Form_Event_UpcomingEvents extends CRM_CivirulesConditions_Form_Form {
 
   protected function getEventTypes() {
-    $eventTypeList = civicrm_api3('OptionValue', 'get', array('option_group_id' => "event_type", 'options' => ['limit' => 0]));
-    $eventTypes = array();
-    foreach($eventTypeList['values'] as $eventType) {
+    $eventTypeList = civicrm_api3('OptionValue', 'get', ['option_group_id' => "event_type", 'options' => ['limit' => 0]]);
+    $eventTypes = [];
+    foreach ($eventTypeList['values'] as $eventType) {
       $eventTypes[$eventType['value']] = $eventType['label'];
     }
     return $eventTypes;
@@ -29,15 +29,15 @@ class CRM_CivirulesConditions_Form_Event_UpcomingEvents extends CRM_CivirulesCon
 
     $eventTypes = $this->getEventTypes();
     asort($eventTypes);
-    $this->add('select', 'event_type_id', E::ts('Event Type(s)'), $eventTypes, false,
-      array('id' => 'event_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
+    $this->add('select', 'event_type_id', E::ts('Event Type(s)'), $eventTypes, FALSE,
+      ['id' => 'event_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
-    $this->add('textarea', 'additional_wheres', E::ts('Additional where clauses (in JSON format for the Event API 4)'), ['cols' => 50, 'rows' => 6]);  
-      
+    $this->add('textarea', 'additional_wheres', E::ts('Additional where clauses (in JSON format for the Event API 4)'), ['cols' => 50, 'rows' => 6]);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -71,4 +71,5 @@ class CRM_CivirulesConditions_Form_Event_UpcomingEvents extends CRM_CivirulesCon
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

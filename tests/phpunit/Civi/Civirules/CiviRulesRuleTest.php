@@ -28,7 +28,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
 
   public function setUp(): void {
     parent::setUp();
-    
+
     // Create option value for rule tags
     $this->tagOptionValueId = \Civi\Api4\OptionValue::create(FALSE)
       ->setValues([
@@ -53,7 +53,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues([
         'label' => 'PHPUnit Test Rule',
         'name' => 'phpunit_test_rule',
-        'trigger_id' => 1, // Activity is added
+        'trigger_id' => 1, /* Activity is added */
         'is_active' => TRUE,
         'tag_id' => [10],
       ])

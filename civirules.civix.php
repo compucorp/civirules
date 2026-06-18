@@ -89,7 +89,6 @@ class CRM_Civirules_ExtensionUtil {
 
 use CRM_Civirules_ExtensionUtil as E;
 
-pathload()->addSearchDir(__DIR__ . '/mixin/lib');
 spl_autoload_register('_civirules_civix_class_loader', TRUE, TRUE);
 
 function _civirules_civix_class_loader($class) {

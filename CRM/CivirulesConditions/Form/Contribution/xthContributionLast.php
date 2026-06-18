@@ -21,15 +21,15 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
     $this->add('select', 'financial_type', ts('of Financial Type(s)'), CRM_Civirules_Utils::getFinancialTypes(), TRUE,
       ['id' => 'financial_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('text', 'number_contributions', ts('Number of Contributions'), [], TRUE);
-    $this->addRule('number_contributions','Number of Contributions must be a whole number','numeric');
-    $this->addRule('number_contributions','Number of Contributions must be a whole number','nopunctuation');
+    $this->addRule('number_contributions', 'Number of Contributions must be a whole number', 'numeric');
+    $this->addRule('number_contributions', 'Number of Contributions must be a whole number', 'nopunctuation');
     $status = CRM_Civirules_Utils_OptionGroup::getActiveValues(CRM_Civirules_Utils::getOptionGroupIdWithName('contribution_status'));
     $this->add('select', 'contribution_status', ts('Contribution status'), $status, TRUE, ['multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('text', 'interval', ts('in the last'), [], TRUE);
     $this->add('select', 'interval_unit', ts('interval'), self::getIntervalUnits(), TRUE);
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -38,8 +38,7 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
    *
    * @return array
    */
-  public static function getIntervalUnits(): array
-  {
+  public static function getIntervalUnits(): array {
     return [
       'days' => ts('days'),
       'months' => ts('months'),
@@ -83,7 +82,7 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
    * @access public
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_Contribution_xthContributionLast', 'validateCompareZero'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_Contribution_xthContributionLast', 'validateCompareZero']);
   }
 
   /**
@@ -103,7 +102,6 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
     return TRUE;
   }
 
-
   /**
    * Overridden parent method to process form data after submission
    *
@@ -121,4 +119,5 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

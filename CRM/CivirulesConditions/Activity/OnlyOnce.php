@@ -8,7 +8,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Activity_OnlyOnce extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -32,16 +31,18 @@ class CRM_CivirulesConditions_Activity_OnlyOnce extends CRM_Civirules_Condition 
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     try {
-      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', array(
+      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', [
         'option_group' => 'activity_contacts',
         'name' => 'Activity Source',
-        'return' => 'value'
-      ));
+        'return' => 'value',
+      ]);
       $activityContactData = $triggerData->getEntityData('ActivityContact');
       if (empty($activityContactData) || $activityContactData['record_type_id'] == $sourceRecordTypeId) {
         $isConditionValid = TRUE;
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
     return $isConditionValid;
   }
 
@@ -60,4 +61,5 @@ class CRM_CivirulesConditions_Activity_OnlyOnce extends CRM_Civirules_Condition 
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('ActivityContact');
   }
+
 }

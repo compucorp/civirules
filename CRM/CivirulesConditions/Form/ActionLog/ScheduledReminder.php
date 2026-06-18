@@ -17,15 +17,16 @@ class CRM_CivirulesConditions_Form_ActionLog_ScheduledReminder extends CRM_Civir
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $remindersList = array('- select -') + CRM_Civirules_Utils::getScheduledReminderList();
+    $remindersList = ['- select -'] + CRM_Civirules_Utils::getScheduledReminderList();
     asort($remindersList);
-    $this->add('select', 'scheduledreminder_ids', ts('Schedule Reminder(s)'), $remindersList, true,
-      array('id' => 'scheduledreminder_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'scheduledreminder_ids', ts('Schedule Reminder(s)'), $remindersList, TRUE,
+      ['id' => 'scheduledreminder_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

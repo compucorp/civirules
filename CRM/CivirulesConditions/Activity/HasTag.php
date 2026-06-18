@@ -1,5 +1,6 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Activity HasTag condition
  *
@@ -7,7 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 17 May 2021
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Activity_HasTag extends CRM_Civirules_Condition {
 
   /**
@@ -25,13 +25,15 @@ class CRM_CivirulesConditions_Activity_HasTag extends CRM_Civirules_Condition {
     }
     $generic = new CRM_CivirulesConditions_Generic_HasTag();
     $generic->setEntityTable('civicrm_activity');
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in one of':
         $isConditionValid = $generic->entityHasOneOfTags($entityID, $this->conditionParams['tag_ids']);
         break;
+
       case 'in all of':
         $isConditionValid = $generic->entityHasAllTags($entityID, $this->conditionParams['tag_ids']);
         break;
+
       case 'not in':
         $isConditionValid = $generic->entityHasNotTag($entityID, $this->conditionParams['tag_ids']);
         break;
@@ -72,13 +74,13 @@ class CRM_CivirulesConditions_Activity_HasTag extends CRM_Civirules_Condition {
       }
     }
     $tags = '';
-    foreach($this->conditionParams['tag_ids'] as $tid) {
+    foreach ($this->conditionParams['tag_ids'] as $tid) {
       if (strlen($tags)) {
         $tags .= ', ';
       }
       $tags .= civicrm_api3('Tag', 'getvalue', ['return' => 'name', 'id' => $tid]);
     }
-    return $operatorLabel .' tags (' . $tags . ')';
+    return $operatorLabel . ' tags (' . $tags . ')';
   }
 
   /**

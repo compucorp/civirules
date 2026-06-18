@@ -8,6 +8,7 @@
  * @license AGPL-3.0
  */
 class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Action {
+
   /**
    * Method processAction to execute the action
    *
@@ -18,13 +19,15 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contribution = $triggerData->getEntityData('Contribution');
     $actionParams = $this->getActionParameters();
-    $params = array(
+    $params = [
       'id' => $contribution['id'],
-      'financial_type_id' => $actionParams['financial_type_id']
-    );
+      'financial_type_id' => $actionParams['financial_type_id'],
+    ];
     try {
       civicrm_api3('Contribution', 'Create', $params);
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
   }
 
   /**
@@ -40,7 +43,8 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
         'return' => 'name',
         'id' => $action_params['financial_type_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -57,7 +61,8 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
         'return' => 'id',
         'name' => $action_params['financial_type_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -86,4 +91,5 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
     $financialTypeLabel = CRM_Core_Pseudoconstant::getLabel('CRM_Contribute_BAO_Contribution', 'financial_type_id', $actionParams['financial_type_id']);
     return 'Financial Type of Contribution will be set to "' . $financialTypeLabel . '"';
   }
+
 }

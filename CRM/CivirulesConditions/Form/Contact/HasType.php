@@ -11,13 +11,14 @@ class CRM_CivirulesConditions_Form_Contact_HasType extends CRM_CivirulesConditio
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'type_names', ts('Type(s)'), CRM_Civirules_Utils::getContactTypes(), true,
-      array('id' => 'contact_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), CRM_CivirulesConditions_Contact_HasType::getOperatorOptions(), true);
+    $this->add('select', 'type_names', ts('Type(s)'), CRM_Civirules_Utils::getContactTypes(), TRUE,
+      ['id' => 'contact_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), CRM_CivirulesConditions_Contact_HasType::getOperatorOptions(), TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

@@ -19,8 +19,8 @@ class CRM_CivirulesConditions_Form_Case_CaseActivity extends CRM_CivirulesCondit
     $this->add('hidden', 'rule_condition_id');
     $this->add('text', 'days_inactive', E::ts('Number of days'), [], TRUE);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

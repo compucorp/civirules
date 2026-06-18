@@ -158,7 +158,7 @@ abstract class CRM_Civirules_Trigger {
     if (!isset($this->ruleTitle) && !empty($this->ruleId)) {
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $this->ruleId;
-      if ($rule->find(true)) {
+      if ($rule->find(TRUE)) {
         $this->ruleTitle = $rule->label;
       }
     }
@@ -172,7 +172,7 @@ abstract class CRM_Civirules_Trigger {
     if (!isset($this->ruleDebugEnabled) && !empty($this->ruleId)) {
       $rule = new CRM_Civirules_BAO_Rule();
       $rule->id = $this->ruleId;
-      if ($rule->find(true)) {
+      if ($rule->find(TRUE)) {
         $this->ruleDebugEnabled = $rule->is_debug;
       }
     }
@@ -261,7 +261,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function doesProvideEntities(array $entities): bool {
     $availableEntities = $this->getProvidedEntities();
-    foreach($entities as $entity) {
+    foreach ($entities as $entity) {
       $entityPresent = FALSE;
       foreach ($availableEntities as $providedEntity) {
         if (strtolower($providedEntity->entity) == strtolower($entity)) {

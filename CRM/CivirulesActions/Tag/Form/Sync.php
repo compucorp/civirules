@@ -14,7 +14,6 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
     return CRM_CivirulesActions_Tag_EntityTag::getApi4Tags('civicrm_contact');
   }
 
-
   /**
    * Overridden parent method to build the form
    *
@@ -22,25 +21,26 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'type', ts('Type'), array('' => ts('-- please select --'), 'sync' => E::ts('Synchronize'), 'copy' => E::ts('Copy')), true,[
+    $this->add('select', 'type', ts('Type'), ['' => ts('-- please select --'), 'sync' => E::ts('Synchronize'), 'copy' => E::ts('Copy')], TRUE, [
       'style' => 'min-width:250px',
       'class' => 'crm-select2 huge',
     ]);
-    $this->add('select', 'tag_ids', ts('Tags'), $this->getTags(), true,[
+    $this->add('select', 'tag_ids', ts('Tags'), $this->getTags(), TRUE, [
       'multiple' => 'multiple',
       'style' => 'min-width:250px',
       'class' => 'crm-select2 huge',
       'placeholder' => E::ts('--- select tag(s) ---'),
     ]);
-    $this->add('select', 'rel_type_ids', ts('Related contacts'), CRM_Civirules_Utils::getRelationshipTypes(), true,[
+    $this->add('select', 'rel_type_ids', ts('Related contacts'), CRM_Civirules_Utils::getRelationshipTypes(), TRUE, [
       'multiple' => 'multiple',
       'style' => 'min-width:250px',
       'class' => 'crm-select2 huge',
       'placeholder' => E::ts('--- select relationship type(s) ---'),
     ]);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

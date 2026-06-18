@@ -34,8 +34,8 @@ class CRM_CivirulesConditions_Form_ContributionRecur_PaymentProcessor extends CR
     $this->add('select', 'payment_processor_id_operator', ts('Operator'), $this->getOperators(), TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -84,4 +84,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_PaymentProcessor extends CR
     $help .= '</ul>';
     return $help;
   }
+
 }

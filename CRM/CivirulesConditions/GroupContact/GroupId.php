@@ -5,9 +5,9 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $groupContact = $triggerData->getEntityData('GroupContact');
     if (($groupContact['group_id'] ?? 0) == $this->conditionParams['group_id']) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -36,10 +36,11 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
       try {
         $group = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $this->conditionParams['group_id']
+          'id' => $this->conditionParams['group_id'],
         ]);
         return ts('Group is %1', [1 => $group]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         return '';
       }
     }
@@ -60,7 +61,8 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
           'return' => 'name',
           'id' => $params['group_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -80,7 +82,8 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
           'return' => 'id',
           'name' => $condition_params['group_id'],
         ]);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

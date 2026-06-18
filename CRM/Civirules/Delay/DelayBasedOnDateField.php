@@ -3,7 +3,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Delay {
 
   protected $modifier;
@@ -26,7 +25,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
   public function delayTo(DateTime $date, CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $data = $triggerData->getEntityData($this->entity);
     // issue 163 ()
-    $field = substr($this->field, strlen($this->entity)+1);
+    $field = substr($this->field, strlen($this->entity) + 1);
     $entity = $triggerData->getEntity();
     $data = $this->addInCustomField($field, $data, $entity);
     if (isset($data[$field]) && !empty($data[$field])) {
@@ -36,6 +35,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
     }
     return $date;
   }
+
   /**
    * Add custom data if needed and relevant
    *
@@ -69,6 +69,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
                 catch (CRM_Core_Exception $ex) {
                 }
                 break;
+
               default:
                 try {
                   $customData = Civi\Api4\Contact::get()
@@ -93,9 +94,8 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
     return $data;
   }
 
-
   protected function getModifyString() {
-    $modify = $this->modifier.$this->amount.' '.$this->unit;
+    $modify = $this->modifier . $this->amount . ' ' . $this->unit;
     return $modify;
   }
 
@@ -104,26 +104,25 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
   }
 
   public function getDelayExplanation() {
-    $field = substr($this->field, strlen($this->entity)+1);
-    return ts('%1 of %2.%3', array(1 => $this->getModifyString(), 2=>$this->entity,3=>$field));
+    $field = substr($this->field, strlen($this->entity) + 1);
+    return ts('%1 of %2.%3', [1 => $this->getModifyString(), 2 => $this->entity, 3 => $field]);
   }
 
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $form->add('select', $prefix.'modifier', ts('Modifier'), array('-' => ts('Before'), '+' => ts('After')));
-    $form->add('text', $prefix.'amount', ts('Amount'));
-    $form->add('select', $prefix.'unit', ts('Unit'), array(
+    $form->add('select', $prefix . 'modifier', ts('Modifier'), ['-' => ts('Before'), '+' => ts('After')]);
+    $form->add('text', $prefix . 'amount', ts('Amount'));
+    $form->add('select', $prefix . 'unit', ts('Unit'), [
       'days' => ts('Day(s)'),
       'months' => ts('Month(s)'),
       'weeks' => ts('Week(s)'),
-    ));
+    ]);
 
-    $triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($rule->trigger_id, true);
+    $triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($rule->trigger_id, TRUE);
     $triggerClass->setTriggerId($rule->trigger_id);
     $triggerClass->setTriggerParams($rule->trigger_params ?? '');
 
-
-    $form->add('select', $prefix.'entity', ts('Entity'), $this->getEntityOptions($triggerClass), true);
-    $form->add('select', $prefix.'field', ts('Field'), $this->getFields($triggerClass), true, array('class' => 'crm-select2'));
+    $form->add('select', $prefix . 'entity', ts('Entity'), $this->getEntityOptions($triggerClass), TRUE);
+    $form->add('select', $prefix . 'field', ts('Field'), $this->getFields($triggerClass), TRUE, ['class' => 'crm-select2']);
   }
 
   /**
@@ -136,20 +135,20 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * @return void
    */
   public function validate($values, &$errors, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    if (empty($values[$prefix.'modifier'])) {
-      $errors[$prefix.'modifier'] = ts('You need to select before or after');
+    if (empty($values[$prefix . 'modifier'])) {
+      $errors[$prefix . 'modifier'] = ts('You need to select before or after');
     }
-    if (empty($values[$prefix.'amount'])) {
-      $errors[$prefix.'amount'] = ts('You need to specify');
+    if (empty($values[$prefix . 'amount'])) {
+      $errors[$prefix . 'amount'] = ts('You need to specify');
     }
-    if (empty($values[$prefix.'unit'])) {
-      $errors[$prefix.'unit'] = ts('You need to select an unit');
+    if (empty($values[$prefix . 'unit'])) {
+      $errors[$prefix . 'unit'] = ts('You need to select an unit');
     }
-    if (empty($values[$prefix.'entity'])) {
-      $errors[$prefix.'entity'] = ts('You need to select an entity');
+    if (empty($values[$prefix . 'entity'])) {
+      $errors[$prefix . 'entity'] = ts('You need to select an entity');
     }
-    if (empty($values[$prefix.'field'])) {
-      $errors[$prefix.'field'] = ts('You need to select a field');
+    if (empty($values[$prefix . 'field'])) {
+      $errors[$prefix . 'field'] = ts('You need to select a field');
     }
   }
 
@@ -162,11 +161,11 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * @return void
    */
   public function setValues($values, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $this->modifier = $values[$prefix.'modifier'];
-    $this->amount = $values[$prefix.'amount'];
-    $this->unit = $values[$prefix.'unit'];
-    $this->entity = $values[$prefix.'entity'];
-    $this->field = $values[$prefix.'field'];
+    $this->modifier = $values[$prefix . 'modifier'];
+    $this->amount = $values[$prefix . 'amount'];
+    $this->unit = $values[$prefix . 'unit'];
+    $this->entity = $values[$prefix . 'entity'];
+    $this->field = $values[$prefix . 'field'];
   }
 
   /**
@@ -177,18 +176,18 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * @return array
    */
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $values = array();
-    $values[$prefix.'modifier'] = $this->modifier;
-    $values[$prefix.'amount'] = $this->amount;
-    $values[$prefix.'unit'] = $this->unit;
-    $values[$prefix.'entity'] = $this->entity;
-    $values[$prefix.'field'] = $this->field;
+    $values = [];
+    $values[$prefix . 'modifier'] = $this->modifier;
+    $values[$prefix . 'amount'] = $this->amount;
+    $values[$prefix . 'unit'] = $this->unit;
+    $values[$prefix . 'entity'] = $this->entity;
+    $values[$prefix . 'field'] = $this->field;
     return $values;
   }
 
   protected function getEntityOptions(CRM_Civirules_Trigger $triggerClass) {
-    $return = array();
-    foreach($triggerClass->getProvidedEntities() as $entityDef) {
+    $return = [];
+    foreach ($triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->label;
       }
@@ -197,24 +196,26 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
   }
 
   protected function getFields(CRM_Civirules_Trigger $triggerClass) {
-    $return = array();
-    foreach($triggerClass->getProvidedEntities() as $entityDef) {
+    $return = [];
+    foreach ($triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $key = $entityDef->entity . '_';
         $className = $entityDef->daoClass;
-        if (!is_callable(array($className, 'fields'))) {
+        if (!is_callable([$className, 'fields'])) {
           continue;
         }
-        $fields = call_user_func(array($className, 'fields'));
+        $fields = call_user_func([$className, 'fields']);
         foreach ($fields as $field) {
           if (!($field['type'] & CRM_Utils_Type::T_DATE)) {
-            continue; //Field is not a Date field.
+            //Field is not a Date field.
+            continue;
           }
 
           $fieldKey = $key . $field['name'];
           if (isset($field['title'])) {
             $label = trim($field['title']);
-          } else {
+          }
+          else {
             $label = "";
           }
           if (empty($label)) {
@@ -223,8 +224,8 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
           $return[$fieldKey] = $label;
         }
         $customFields = $this->getCustomDatefieldsForEntity($entityDef->entity);
-        foreach($customFields as $customFieldKey => $customFieldLabel) {
-          $return[$key.$customFieldKey] = $customFieldLabel;
+        foreach ($customFields as $customFieldKey => $customFieldLabel) {
+          $return[$key . $customFieldKey] = $customFieldLabel;
         }
       }
     }
@@ -232,19 +233,19 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
   }
 
   protected function getCustomDatefieldsForEntity($entity) {
-    $extends = array($entity);
+    $extends = [$entity];
     if ($entity == 'Contact') {
-      $contact_types = civicrm_api3('ContactType', 'get', array());
-      foreach($contact_types['values'] as $type) {
+      $contact_types = civicrm_api3('ContactType', 'get', []);
+      foreach ($contact_types['values'] as $type) {
         $extends[] = $type['name'];
       }
     }
 
-    $return = array();
-    $processedGroups = array();
-    foreach($extends as $extend) {
-      $customGroups = civicrm_api3('CustomGroup', 'get', array('extends' => $extend));
-      foreach($customGroups['values'] as $customGroup) {
+    $return = [];
+    $processedGroups = [];
+    foreach ($extends as $extend) {
+      $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => $extend]);
+      foreach ($customGroups['values'] as $customGroup) {
         if (in_array($customGroup['id'], $processedGroups)) {
           continue;
         }
