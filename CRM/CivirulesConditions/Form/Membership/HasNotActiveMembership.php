@@ -21,9 +21,9 @@ class CRM_CivirulesConditions_Form_Membership_HasNotActiveMembership extends CRM
     asort($membershipTypes);
     $this->add('select', 'membership_type_id', ts('Membership Type'), $membershipTypes, true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

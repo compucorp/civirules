@@ -10,7 +10,7 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
    */
   protected function getSubtypes() {
     $types = CRM_Contact_BAO_ContactType::contactTypeInfo();
-    $options = array();
+    $options = [];
     foreach($types as $name => $type) {
       if(!empty($type['parent_id'])) {
         $options[$name] = $type['parent_label'].' - '.$type['label'];
@@ -27,29 +27,29 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('select', 'type', ts('Single/Multiple'), array(
+    $this->add('select', 'type', ts('Single/Multiple'), [
       0 => ts('Remove one subtype'),
       1 => ts('Remove multiple subtypes'),
-    ));
+    ]);
 
-    $this->add('select', 'subtype', ts('Contact sub type'), array('' => ts('-- please select --')) + $this->getSubtypes());
+    $this->add('select', 'subtype', ts('Contact sub type'), ['' => ts('-- please select --')] + $this->getSubtypes());
 
-    $multiGroup = $this->addElement('advmultiselect', 'subtypes', ts('Contact sub types'), $this->getSubtypes(), array(
+    $multiGroup = $this->addElement('advmultiselect', 'subtypes', ts('Contact sub types'), $this->getSubtypes(), [
       'size' => 5,
       'style' => 'width:250px',
       'class' => 'advmultiselect',
-    ));
+    ]);
 
-    $multiGroup->setButtonAttributes('add', array('value' => ts('Add >>')));
-    $multiGroup->setButtonAttributes('remove', array('value' => ts('<< Remove')));
+    $multiGroup->setButtonAttributes('add', ['value' => ts('Add >>')]);
+    $multiGroup->setButtonAttributes('remove', ['value' => ts('<< Remove')]);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesActions_Contact_Form_RemoveSubtype', 'validateSubtype'));
+    $this->addFormRule(['CRM_CivirulesActions_Contact_Form_RemoveSubtype', 'validateSubtype']);
   }
 
   /**
@@ -61,7 +61,7 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
    * @static
    */
   static function validateSubtype($fields) {
-    $errors = array();
+    $errors = [];
     if ($fields['type'] == 0 && empty($fields['subtype'])) {
       $errors['subtype'] = ts('You have to select at least one subtype');
     } elseif ($fields['type'] == 1 && (empty($fields['subtypes']) || count($fields['subtypes']) < 1)) {
@@ -101,9 +101,9 @@ class CRM_CivirulesActions_Contact_Form_RemoveSubtype extends CRM_CivirulesActio
    * @access public
    */
   public function postProcess() {
-    $data['sub_type'] = array();
+    $data['sub_type'] = [];
     if ($this->_submitValues['type'] == 0) {
-      $data['sub_type'] = array($this->_submitValues['subtype']);
+      $data['sub_type'] = [$this->_submitValues['subtype']];
     } else {
       $data['sub_type'] = $this->_submitValues['subtypes'];
     }

@@ -18,10 +18,10 @@ class CRM_CivirulesActions_Contribution_FinancialType extends CRM_Civirules_Acti
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contribution = $triggerData->getEntityData('Contribution');
     $actionParams = $this->getActionParameters();
-    $params = array(
+    $params = [
       'id' => $contribution['id'],
       'financial_type_id' => $actionParams['financial_type_id']
-    );
+    ];
     try {
       civicrm_api3('Contribution', 'Create', $params);
     } catch (CRM_Core_Exception $ex) {}

@@ -19,7 +19,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
     }
 
     $date = new DateTime();
-    $params = array();
+    $params = [];
     if (!empty($actionParameters['date'])) {
       $delayClass = unserialize(($actionParameters['date']));
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
@@ -94,8 +94,8 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
   }
 
   public static function getFields() {
-    $return = array();
-    $fields = civicrm_api3('Case', 'getfields', array('limit' => 99999));
+    $return = [];
+    $fields = civicrm_api3('Case', 'getfields', ['limit' => 99999]);
     foreach ($fields['values'] as $field) {
       if (!isset($field['type'])) {
         continue;

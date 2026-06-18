@@ -31,7 +31,7 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
     }
 
     if ($case->id && $case->find(TRUE)) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($case, $data);
       $triggerData->setEntityData('Case', $data);
     }

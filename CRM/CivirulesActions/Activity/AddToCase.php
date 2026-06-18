@@ -196,33 +196,33 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
     $return = '';
     $params = $this->getActionParameters();
     if (!empty($params['activity_type_id'])) {
-      $type = civicrm_api3('OptionValue', 'getvalue', array(
+      $type = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_type',
-        'value' => $params['activity_type_id']));
-      $return .= E::ts("Type: %1", array(1 => $type));
+        'value' => $params['activity_type_id']]);
+      $return .= E::ts("Type: %1", [1 => $type]);
     }
     if (!empty($params['status_id'])) {
-      $status = civicrm_api3('OptionValue', 'getvalue', array(
+      $status = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_status',
-        'value' => $params['status_id']));
+        'value' => $params['status_id']]);
       $return .= "<br>";
-      $return .= E::ts("Status: %1", array(1 => $status));
+      $return .= E::ts("Status: %1", [1 => $status]);
     }
     $subject = $params['subject'];
     if (!empty($subject)) {
       $return .= "<br>";
-      $return .= E::ts("Subject: %1", array(1 => $subject));
+      $return .= E::ts("Subject: %1", [1 => $subject]);
     }
     if (!empty($params['assignee_contact_id'])) {
       if (!is_array($params['assignee_contact_id'])) {
-        $params['assignee_contact_id'] = array($params['assignee_contact_id']);
+        $params['assignee_contact_id'] = [$params['assignee_contact_id']];
       }
       $assignees = '';
       foreach($params['assignee_contact_id'] as $cid) {
         try {
-          $assignee = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $cid));
+          $assignee = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $cid]);
           if ($assignee) {
             if (strlen($assignees)) {
               $assignees .= ', ';
@@ -235,7 +235,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
       }
 
       $return .= '<br>';
-      $return .= E::ts("Assignee(s): %1", array(1 => $assignees));
+      $return .= E::ts("Assignee(s): %1", [1 => $assignees]);
 
     }
 

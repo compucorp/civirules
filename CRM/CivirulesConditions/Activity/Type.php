@@ -116,13 +116,13 @@ class CRM_CivirulesConditions_Activity_Type extends CRM_Civirules_Condition {
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Activity Type is NOT one of: ';
     }
-    $actText = array();
+    $actText = [];
     foreach ($this->conditionParams['activity_type_id'] as $actTypeId) {
-      $actText[] = civicrm_api3('OptionValue', 'getvalue', array(
+      $actText[] = civicrm_api3('OptionValue', 'getvalue', [
         'option_group_id' => 'activity_type',
         'value' => $actTypeId,
         'return' => 'label'
-      ));
+      ]);
     }
     if (!empty($actText)) {
       $friendlyText .= implode(", ", $actText);

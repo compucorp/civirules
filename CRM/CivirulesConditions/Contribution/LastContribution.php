@@ -23,8 +23,8 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
     ])['value'];
     $contact_id = $triggerData->getContactId();
 
-    $params[1] = array($completed_status_id, 'Integer');
-    $params[2] = array($contact_id, 'Integer');
+    $params[1] = [$completed_status_id, 'Integer'];
+    $params[2] = [$contact_id, 'Integer'];
 
     $last_date = CRM_Core_DAO::singleValueQuery("SELECT MAX(`receive_date`) FROM `civicrm_contribution` WHERE `contribution_status_id` = %1 AND `contact_id` = %2", $params);
     if ($last_date) {
@@ -65,7 +65,7 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
         return '';
         break;
     }
-    return ts($label, array(1 => $this->getComparisonValue()));
+    return ts($label, [1 => $this->getComparisonValue()]);
   }
 
   /**
@@ -74,14 +74,14 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
    * @return array
    */
   public function getOperators() {
-    return array(
+    return [
       '=' => ts('Last contribution is n days ago'),
       '!=' => ts('Last contribution is not n days ago'),
       '>' => ts('Last contribution is more than n days ago'),
       '<' => ts('Last contribution is less than n days ago'),
       '>=' => ts('Last contribution is more than n days ago or is n days ago'),
       '<=' => ts('Last contribution is less than n days ago or is n days ago'),
-    );
+    ];
   }
   
   /**

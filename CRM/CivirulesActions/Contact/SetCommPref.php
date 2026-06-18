@@ -27,13 +27,13 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
     } else {
       $params['id'] = $contactId;
     }
-    $params['preferred_communication_method'] = array();
+    $params['preferred_communication_method'] = [];
     try {
       //retrieve current settings for contact
-      $currentCommPrefs = civicrm_api3('Contact', 'getvalue', array(
+      $currentCommPrefs = civicrm_api3('Contact', 'getvalue', [
         'id' => $params['id'],
         'return' => 'preferred_communication_method'
-      ));
+      ]);
       if (!empty($currentCommPrefs) && !is_array($currentCommPrefs)) {
         $currentCommPrefs = [$currentCommPrefs];
       }
@@ -82,12 +82,12 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $commPrefs = civicrm_api3('OptionValue', 'get', array(
+    $commPrefs = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'preferred_communication_method',
       'is_active' => 1,
-      'options' => array('limit' => 0)
-    ));
-    $actionLabels = array();
+      'options' => ['limit' => 0]
+    ]);
+    $actionLabels = [];
     $actionParams = $this->getActionParameters();
     if (isset($actionParams['comm_pref'])) {
       foreach ($actionParams['comm_pref'] as $key => $actionParam) {

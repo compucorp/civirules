@@ -11,8 +11,8 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
     parent::setRuleConditionData($ruleCondition);
     // Backwards compatibility: if contribution status is not set, assume it is the completed status.
     if (!isset($this->conditionParams['contribution_status_id'])) {
-      $completed_status_id = civicrm_api3('OptionValue', 'getvalue', array('name' => 'completed', 'return' => 'value', 'option_group_id' => 'contribution_status'));
-      $this->conditionParams['contribution_status_id'] = array($completed_status_id);
+      $completed_status_id = civicrm_api3('OptionValue', 'getvalue', ['name' => 'completed', 'return' => 'value', 'option_group_id' => 'contribution_status']);
+      $this->conditionParams['contribution_status_id'] = [$completed_status_id];
     }
   }
 
@@ -169,7 +169,7 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
             {$period_start_statement}
             {$period_end_statement}
             ";
-    $params[1] = array($contact_id, 'Integer');
+    $params[1] = [$contact_id, 'Integer'];
 
     $total_amount = (float) CRM_Core_DAO::singleValueQuery($sql, $params);
     return $total_amount;
@@ -235,7 +235,7 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
     $userFriendlyConditionParams = parent::userFriendlyConditionParams();
     $period = CRM_CivirulesConditions_Utils_Period::userFriendlyConditionParams($this->conditionParams);
 
-    $strParams = array();
+    $strParams = [];
 
     if (isset($this->conditionParams['financial_type_id']) && is_array($this->conditionParams['financial_type_id']) && count($this->conditionParams['financial_type_id']) >0) {
       $financial_types = self::getFinancialTypes();
@@ -284,8 +284,8 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
   }
 
   public static function getPaymentInstruments() {
-    $optionValues = civicrm_api3('OptionValue', 'Get', array('option_group_id' => 'payment_instrument', 'options' => array('limit' => 0)));
-    $paymentInstruments = array();
+    $optionValues = civicrm_api3('OptionValue', 'Get', ['option_group_id' => 'payment_instrument', 'options' => ['limit' => 0]]);
+    $paymentInstruments = [];
     foreach ($optionValues['values'] as $paymentInstrument) {
       $paymentInstruments[$paymentInstrument['value']] = $paymentInstrument['label'];
     }
@@ -297,8 +297,8 @@ class CRM_CivirulesConditions_Contribution_TotalContributedAmount extends CRM_Ci
   }
 
   public static function getContributionStatus() {
-    $optionValues = civicrm_api3('OptionValue', 'Get', array('option_group_id' => 'contribution_status', 'options' => array('limit' => 0)));
-    $statuses = array();
+    $optionValues = civicrm_api3('OptionValue', 'Get', ['option_group_id' => 'contribution_status', 'options' => ['limit' => 0]]);
+    $statuses = [];
     foreach ($optionValues['values'] as $status) {
       $statuses[$status['value']] = $status['label'];
     }

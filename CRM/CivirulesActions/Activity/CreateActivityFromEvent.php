@@ -49,7 +49,7 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
     }
 
     if (!empty($action_params['assignee_contact_id'])) {
-      $assignee = array();
+      $assignee = [];
       if (is_array($action_params['assignee_contact_id'])) {
         foreach($action_params['assignee_contact_id'] as $contact_id) {
           if($contact_id) {
@@ -319,28 +319,28 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
     $return = '';
     $params = $this->getActionParameters();
     if (!empty($params['activity_type_id'])) {
-      $type = civicrm_api3('OptionValue', 'getvalue', array(
+      $type = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_type',
-        'value' => $params['activity_type_id']));
-      $return .= ts("Type: %1", array(1 => $type));
+        'value' => $params['activity_type_id']]);
+      $return .= ts("Type: %1", [1 => $type]);
     }
     if (!empty($params['status_id'])) {
-      $status = civicrm_api3('OptionValue', 'getvalue', array(
+      $status = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_status',
-        'value' => $params['status_id']));
+        'value' => $params['status_id']]);
       $return .= "<br>";
-      $return .= ts("Status: %1", array(1 => $status));
+      $return .= ts("Status: %1", [1 => $status]);
     }
     if (!empty($params['assignee_contact_id'])) {
       if (!is_array($params['assignee_contact_id'])) {
-        $params['assignee_contact_id'] = array($params['assignee_contact_id']);
+        $params['assignee_contact_id'] = [$params['assignee_contact_id']];
       }
       $assignees = '';
       foreach($params['assignee_contact_id'] as $cid) {
         try {
-          $assignee = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $cid));
+          $assignee = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $cid]);
           if ($assignee) {
             if (strlen($assignees)) {
               $assignees .= ', ';
@@ -353,7 +353,7 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
       }
 
       $return .= '<br>';
-      $return .= ts("Assignee(s): %1", array(1 => $assignees));
+      $return .= ts("Assignee(s): %1", [1 => $assignees]);
 
     }
 

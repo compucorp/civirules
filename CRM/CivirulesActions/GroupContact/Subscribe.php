@@ -13,9 +13,9 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
 
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $actionParams = $this->getActionParameters();
-    $groupIds = array();
+    $groupIds = [];
     if (!empty($actionParams['group_id'])) {
-      $groupIds = array($actionParams['group_id']);
+      $groupIds = [$actionParams['group_id']];
     } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       $groupIds = $actionParams['group_ids'];
     }
@@ -121,7 +121,7 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
           'return' => 'title',
           'id' => $params['group_id']
         ]);
-        return ts('Subscribe contact to group(s): %1', array(1 => $group));
+        return ts('Subscribe contact to group(s): %1', [1 => $group]);
       } catch (Exception $e) {
         return '';
       }
@@ -141,7 +141,7 @@ class CRM_CivirulesActions_GroupContact_Subscribe extends CRM_Civirules_Action {
           // Do nothing.
         }
       }
-      return ts('Subscribe contact to group(s): %1', array(1 => $groups));
+      return ts('Subscribe contact to group(s): %1', [1 => $groups]);
     }
     return '';
   }

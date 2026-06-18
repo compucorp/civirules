@@ -43,7 +43,7 @@ class CRM_CivirulesActions_Activity_AssignNemail extends CRM_CivirulesActions_Ac
         $this->apiParams = $params;
         $action_params = $this->getActionParameters();
         $this->useTriggerContact = boolval($params['use_contact_trigger']);
-        $assignee = array();
+        $assignee = [];
 
         $params['id'] = ($triggerData->getEntityData('Activity'))['id'];
         if ($this->useTriggerContact === true || empty($action_params['assignee_contact_id']) || !is_array($action_params['assignee_contact_id'])) {

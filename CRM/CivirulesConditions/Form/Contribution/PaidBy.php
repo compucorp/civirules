@@ -16,11 +16,11 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
    * @access protected
    */
   protected function getPaymentInstruments() {
-    $paymentInstruments = array();
+    $paymentInstruments = [];
     try {
-      $optionGroupId = civicrm_api3('OptionGroup', 'Getvalue', array('name' => 'payment_instrument', 'return' => 'id'));
+      $optionGroupId = civicrm_api3('OptionGroup', 'Getvalue', ['name' => 'payment_instrument', 'return' => 'id']);
       try {
-        $optionValues = civicrm_api3('OptionValue', 'Get', array('option_group_id' => $optionGroupId));
+        $optionValues = civicrm_api3('OptionValue', 'Get', ['option_group_id' => $optionGroupId]);
         foreach ($optionValues['values'] as $paymentInstrument) {
           $paymentInstruments[$paymentInstrument['value']] = $paymentInstrument['label'];
         }
@@ -42,21 +42,21 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $this->addEntityRef('payment_instrument_id', ts('Payment Method'), array(
+    $this->addEntityRef('payment_instrument_id', ts('Payment Method'), [
       'entity' => 'option_value',
-      'api' => array(
-        'params' => array('option_group_id' => 'payment_instrument'),
-      ),
-      'select' => array('minimumInputLength' => 0),
+      'api' => [
+        'params' => ['option_group_id' => 'payment_instrument'],
+      ],
+      'select' => ['minimumInputLength' => 0],
       'multiple' => TRUE,
-    ));
-    $this->add('select', 'operator', ts('Operator'), array(
+    ]);
+    $this->add('select', 'operator', ts('Operator'), [
       'is one of',
-      'is not one of'), true);
+      'is not one of'], true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

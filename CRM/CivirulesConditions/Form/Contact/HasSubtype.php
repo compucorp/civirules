@@ -45,9 +45,9 @@ class CRM_CivirulesConditions_Form_Contact_HasSubtype extends CRM_CivirulesCondi
     $subtype->setMultiple(TRUE);
     $this->add('select', 'operator', ts('Operator'), $this->getOperators(), true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

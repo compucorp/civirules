@@ -29,7 +29,7 @@ class CRM_CivirulesConditions_Case_IsClient extends CRM_Civirules_Condition {
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    return $trigger->doesProvideEntities(array('Case', 'Relationship'));
+    return $trigger->doesProvideEntities(['Case', 'Relationship']);
   }
 
 }

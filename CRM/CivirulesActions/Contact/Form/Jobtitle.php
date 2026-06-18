@@ -17,9 +17,9 @@ class CRM_CivirulesActions_Contact_Form_Jobtitle extends CRM_CivirulesActions_Fo
 
     $this->add('text', 'job_title', ts('Job title'), true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

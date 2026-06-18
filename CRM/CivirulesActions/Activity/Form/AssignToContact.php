@@ -18,18 +18,18 @@ class CRM_CivirulesActions_Activity_Form_AssignToContact extends CRM_CivirulesAc
     {
         $this->add('hidden', 'rule_action_id');
         $this->addYesNo('use_contact_trigger', 'Assign to contact from trigger', false, true);
-        $attributes = array(
+        $attributes = [
           'multiple' => true,
           'create' => true,
-          'api' => array('params' => array('is_deceased' => 0)),
-        );
+          'api' => ['params' => ['is_deceased' => 0]],
+        ];
         $this->addEntityRef('assignee_contact_id', ts('Assign to'), $attributes, false);
 
         $this->addYesNo('send_email', 'Send Email to Assigned Contacts', false, true);
 
-        $this->addButtons(array(
-            array('type' => 'next', 'name' => ts('Save'), 'isDefault' => true),
-            array('type' => 'cancel', 'name' => ts('Cancel'))));
+        $this->addButtons([
+            ['type' => 'next', 'name' => ts('Save'), 'isDefault' => true],
+            ['type' => 'cancel', 'name' => ts('Cancel')]]);
 
     }
 
@@ -65,10 +65,10 @@ class CRM_CivirulesActions_Activity_Form_AssignToContact extends CRM_CivirulesAc
     public function addRules()
     {
         parent::addRules();
-        $this->addFormRule(array(
+        $this->addFormRule([
             'CRM_CivirulesActions_Activity_Form_AssignToContact',
             'validateActivityAssignedContact',
-        ));
+        ]);
     }
 
     /**
@@ -81,7 +81,7 @@ class CRM_CivirulesActions_Activity_Form_AssignToContact extends CRM_CivirulesAc
      */
     public static function validateActivityAssignedContact($fields)
     {
-        $errors = array();
+        $errors = [];
         if (empty($fields['use_contact_trigger']) || $fields['use_contact_trigger'] === '0') {
             if (empty($fields['assignee_contact_id'])) {
                 $errors['assignee_contact_id'] = ts("Assign a contact or choose the 'Assign to contact from trigger' option");

@@ -9,8 +9,8 @@
 class CRM_CivirulesConditions_Form_Participant_ParticipantRole extends CRM_CivirulesConditions_Form_Form {
 
   protected function getRoles() {
-    $participantRoleList = civicrm_api3('OptionValue', 'get', array('option_group_id' => "participant_role", 'options' => ['limit' => 0]));
-    $roles = array();
+    $participantRoleList = civicrm_api3('OptionValue', 'get', ['option_group_id' => "participant_role", 'options' => ['limit' => 0]]);
+    $roles = [];
     foreach($participantRoleList['values'] as $role) {
       $roles[$role['value']] = $role['label'];
     }
@@ -28,12 +28,12 @@ class CRM_CivirulesConditions_Form_Participant_ParticipantRole extends CRM_Civir
     $roles = $this->getRoles();
     asort($roles);
     $this->add('select', 'participant_role_id', ts('Participant Role(s)'), $roles, true,
-      array('id' => 'participant_role_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+      ['id' => 'participant_role_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

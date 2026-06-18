@@ -26,12 +26,12 @@ class CRM_Civirules_Utils_OptionGroup {
       if (empty($title)) {
         $title = CRM_Civirules_Utils::buildLabelFromName($name);
       }
-      $params = array(
+      $params = [
         'name' => trim($name),
         'title' => trim($title),
         'description' => $description,
         'is_active' => 1,
-        'is_reserved' => 1);
+        'is_reserved' => 1];
       try {
         $optionGroup = civicrm_api3('OptionGroup', 'create', $params);
       } catch (CRM_Core_Exception $ex) {
@@ -47,7 +47,7 @@ class CRM_Civirules_Utils_OptionGroup {
    * @return bool
    */
   public static function exists($name) {
-    $count = civicrm_api3('OptionGroup', 'getcount', array('name' => $name));
+    $count = civicrm_api3('OptionGroup', 'getcount', ['name' => $name]);
     if ($count > 0) {
       return TRUE;
     } else {
@@ -64,12 +64,12 @@ class CRM_Civirules_Utils_OptionGroup {
    */
   public static function getSingleWithName($name) {
     if (empty($name)) {
-      return array();
+      return [];
     }
     try {
-      return civicrm_api3('OptionGroup', 'getsingle', array('name' => $name));
+      return civicrm_api3('OptionGroup', 'getsingle', ['name' => $name]);
     } catch (CRM_Core_Exception $ex) {
-      return array();
+      return [];
     }
   }
 
@@ -80,9 +80,9 @@ class CRM_Civirules_Utils_OptionGroup {
    * @return array
    */
     public static function getActiveValues($optionGroupId) {
-      $result = array();
+      $result = [];
       try {
-        $optionValues = civicrm_api3('OptionValue', 'get', array('option_group_id' => $optionGroupId));
+        $optionValues = civicrm_api3('OptionValue', 'get', ['option_group_id' => $optionGroupId]);
         foreach ($optionValues['values'] as $optionValue) {
           $result[$optionValue['value']] = $optionValue['label'];
         }

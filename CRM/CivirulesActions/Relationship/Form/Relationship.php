@@ -20,9 +20,9 @@ class CRM_CivirulesActions_Relationship_Form_Relationship extends CRM_CivirulesA
       'Swap contact_a and contact_b' => $defaultValues['reverse_relationship'],
     ]);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
 
   }
 

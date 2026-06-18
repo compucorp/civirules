@@ -49,17 +49,17 @@ class CRM_CivirulesConditions_Contact_HasPhone extends CRM_Civirules_Condition {
     $phoneTypes = CRM_Core_OptionGroup::values('phone_type', false, false, false, false, 'label', false);
     $phoneTypeLabel = ts('Any phone type');
     if ($phoneType && isset($phoneTypes[$phoneType])) {
-      $phoneTypeLabel = ts('Phone type is %1', array(
+      $phoneTypeLabel = ts('Phone type is %1', [
         1 => $phoneTypes[$phoneType],
-      ));
+      ]);
     }
     $locationType = $this->conditionParams['location_type'];
     $locationTypeLabel = ts('Any location');
     if ($locationType) {
       try {
-        $locationTypeLabel = ts('Location is %1', array(
-          1 => civicrm_api3('LocationType', 'getvalue', array('id' => $locationType, 'return' => 'display_name'))
-        ));
+        $locationTypeLabel = ts('Location is %1', [
+          1 => civicrm_api3('LocationType', 'getvalue', ['id' => $locationType, 'return' => 'display_name'])
+        ]);
       } catch (Exception $e) {
         //do nothing
       }

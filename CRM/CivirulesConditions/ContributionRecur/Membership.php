@@ -169,10 +169,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
     $label = $inclusionOperators[$selectedInclusionOperator] . "<ul>";
 
     try {
-      $params = array(
+      $params = [
         'is_active' => 1,
-        'options' => array('limit' => 0, 'sort' => "name ASC"),
-      );
+        'options' => ['limit' => 0, 'sort' => "name ASC"],
+      ];
       $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
       if (isset($this->conditionParams['membership_type_id']) && count($this->conditionParams['membership_type_id'])) {
         $operator = $operator_options[$this->conditionParams['type_operator']];
@@ -253,10 +253,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    * @access protected
    */
   public static function getOperatorOptions() {
-    return array(
+    return [
       'in' => ts('Is one of'),
       'not in' => ts('Is not one of'),
-    );
+    ];
   }
 
   /**
@@ -267,10 +267,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    */
   public static function getInclusionOptions() {
     // Contact HAS Membership is value '0', for backwards-compatibility for existing rules where this condition will be empty
-    return array(
+    return [
       '0' => ts('Recurring Contribution pays for Membership'),
       '1' => ts('Recurring Contribution does not pay for Membership'),
-    );
+    ];
   }
 
 }

@@ -83,7 +83,7 @@ class CRM_CivirulesConditions_Form_Contribution_xthContributionLast extends CRM_
    * @access public
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_Contribution_xthContributionLast', 'validateCompareZero'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_Contribution_xthContributionLast', 'validateCompareZero']);
   }
 
   /**

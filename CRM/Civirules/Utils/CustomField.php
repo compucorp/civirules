@@ -11,7 +11,7 @@ class CRM_Civirules_Utils_CustomField {
      * @return array
      */
     public static function getMultiselectTypes() {
-        return array('CheckBox', 'Multi-Select', 'AdvMulti-Select');
+        return ['CheckBox', 'Multi-Select', 'AdvMulti-Select'];
     }
 
     /**
@@ -24,7 +24,7 @@ class CRM_Civirules_Utils_CustomField {
         //var_dump($customfield_id); exit();
         $multi_select_types = self::getMultiselectTypes();
 
-        $custom_field = civicrm_api3('CustomField', 'getsingle', array('id' => $customfield_id));
+        $custom_field = civicrm_api3('CustomField', 'getsingle', ['id' => $customfield_id]);
         if (in_array($custom_field['html_type'], $multi_select_types)) {
             return true;
         }

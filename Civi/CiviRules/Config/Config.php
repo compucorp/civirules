@@ -46,8 +46,8 @@ class Config extends Container {
    * @param \Symfony\Component\DependencyInjection\ContainerBuilder $containerBuilder
    */
   public static function buildConfigContainer(ContainerBuilder $containerBuilder) {
-    $customGroups = array();
-    $customFields = array();
+    $customGroups = [];
+    $customFields = [];
     try {
       $customGroupApi = civicrm_api3('CustomGroup', 'get', [
         'options' => ['limit' => 0],

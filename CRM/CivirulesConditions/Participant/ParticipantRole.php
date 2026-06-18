@@ -120,12 +120,12 @@ class CRM_CivirulesConditions_Participant_ParticipantRole extends CRM_Civirules_
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Participant Role is NOT one of: ';
     }
-    $roleText = array();
-    $participantRoles = civicrm_api3('OptionValue', 'get', array(
-      'value' => array('IN' => $this->conditionParams['participant_role_id']),
+    $roleText = [];
+    $participantRoles = civicrm_api3('OptionValue', 'get', [
+      'value' => ['IN' => $this->conditionParams['participant_role_id']],
       'option_group_id' => 'participant_role',
-      'options' => array('limit' => 0)
-    ));
+      'options' => ['limit' => 0]
+    ]);
     foreach($participantRoles['values'] as $role) {
       $roleText[] = $role['label'];
     }

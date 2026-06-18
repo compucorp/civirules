@@ -34,7 +34,7 @@ class CRM_CivirulesConditions_Participant_Status extends CRM_CivirulesConditions
       $params['is_active'] = 0;
     }
     $participantStatusList = civicrm_api3('ParticipantStatusType', 'get', $params);
-    $statuses = array();
+    $statuses = [];
     foreach($participantStatusList['values'] as $status) {
       $statuses[$status['id']] = $status['label'];
     }

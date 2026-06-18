@@ -24,13 +24,13 @@ class CRM_CivirulesConditions_Form_ContributionRecur_FailureCount extends CRM_Ci
 
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'operator', E::ts('Operator'), $operatorList, true);
-    $this->add('text', 'failure_count', E::ts('Number of Failed Attempts'), array(), true);
+    $this->add('text', 'failure_count', E::ts('Number of Failed Attempts'), [], true);
     $this->addRule('failure_count','Number of Recurring Contribution Collections must be a whole number','numeric');
     $this->addRule('failure_count','Number of Recurring Contribution Collections must be a whole number','nopunctuation');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
   }
 
   /**

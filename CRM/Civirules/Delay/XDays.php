@@ -14,7 +14,7 @@ class CRM_Civirules_Delay_XDays extends CRM_Civirules_Delay_Delay {
   }
 
   public function getDelayExplanation() {
-    return ts('Delay by %1 days', array(1 => $this->dayOffset));
+    return ts('Delay by %1 days', [1 => $this->dayOffset]);
   }
 
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
@@ -32,7 +32,7 @@ class CRM_Civirules_Delay_XDays extends CRM_Civirules_Delay_Delay {
   }
 
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $values = array();
+    $values = [];
     $values[$prefix.'xdays_dayOffset'] = $this->dayOffset;
     return $values;
   }

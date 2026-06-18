@@ -39,9 +39,9 @@ class CRM_CivirulesActions_Contact_SetPrivacyOptions extends CRM_Civirules_Actio
         UPDATE civicrm_contact
         SET {$sqlUpdStr}
         WHERE id = %1
-      ", array(
-        1 => array($triggerData->getContactId(), 'Positive')
-      ));
+      ", [
+        1 => [$triggerData->getContactId(), 'Positive']
+      ]);
     }
     catch (CRM_Core_Exception $ex) {
       throw new Exception('Could not update contact with privacy options in '.__METHOD__

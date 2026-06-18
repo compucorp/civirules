@@ -38,10 +38,10 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
     if (empty($actionParams['thank_you_time']) && empty($actionParams['thank_you_time_radio'])) {
       $thankYouDate->setTime(0, 0, 0);
     }
-    $params = array(
+    $params = [
       'id' => $contribution['id'],
       'thankyou_date' => $thankYouDate->format('YmdHis')
-    );
+    ];
     try {
       civicrm_api3('Contribution', 'Create', $params);
     } catch (CRM_Core_Exception $ex) {}

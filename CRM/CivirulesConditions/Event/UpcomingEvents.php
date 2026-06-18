@@ -59,13 +59,13 @@ class CRM_CivirulesConditions_Event_UpcomingEvents extends CRM_Civirules_Conditi
    */
   public function userFriendlyConditionParams() {
     $friendlyText = "";
-    $typeText = array();
+    $typeText = [];
       if (!empty($this->conditionParams['event_type_id'])) {
-      $eventTypes = civicrm_api3('OptionValue', 'get', array(
-        'value' => array('IN' => $this->conditionParams['event_type_id']),
+      $eventTypes = civicrm_api3('OptionValue', 'get', [
+        'value' => ['IN' => $this->conditionParams['event_type_id']],
         'option_group_id' => 'event_type',
-        'options' => array('limit' => 0)
-      ));
+        'options' => ['limit' => 0]
+      ]);
       foreach($eventTypes['values'] as $eventType) {
         $typeText[] = $eventType['label'];
       }

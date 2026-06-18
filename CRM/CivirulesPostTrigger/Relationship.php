@@ -38,7 +38,7 @@ class CRM_CivirulesPostTrigger_Relationship extends CRM_Civirules_Trigger_Post {
     $relationship = $triggerData->getEntityData('Relationship');
     if (!empty($relationship['case_id'])) {
       try {
-        $case = civicrm_api3('Case', 'getsingle', array('id' => $relationship['case_id']));
+        $case = civicrm_api3('Case', 'getsingle', ['id' => $relationship['case_id']]);
         $triggerData->setEntityData('Case', $case);
       } catch (Exception $e) {
         // Do nothing.

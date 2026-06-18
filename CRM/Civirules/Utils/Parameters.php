@@ -19,7 +19,7 @@ class CRM_Civirules_Utils_Parameters {
    * @return array
    */
   public static function convertFromMultiline($parameters) {
-    $converted_parameters = array();
+    $converted_parameters = [];
 
     $parameters_per_line = preg_split('/\r\n|\r|\n/', $parameters);
     foreach($parameters_per_line as $line) {

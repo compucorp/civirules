@@ -15,7 +15,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
    * @static
    */
   public static function getValues($params) {
-    $result = array();
+    $result = [];
     $action = new CRM_Civirules_BAO_Action();
     if (!empty($params)) {
       $fields = self::fields();
@@ -27,7 +27,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
     }
     $action->find();
     while ($action->fetch()) {
-      $row = array();
+      $row = [];
       self::storeValues($action, $row);
       $result[$row['id']] = $row;
     }
@@ -52,7 +52,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
     }
 
     //delete rows from rule_action to prevent a foreign key constraint error
-    CRM_Core_DAO::executeQuery("DELETE FROM `civirule_rule_action` where `action_id` = %1", array(1 => array($actionId, 'Integer')));
+    CRM_Core_DAO::executeQuery("DELETE FROM `civirule_rule_action` where `action_id` = %1", [1 => [$actionId, 'Integer']]);
 
     $action = new CRM_Civirules_BAO_Action();
     $action->id = $actionId;
@@ -113,7 +113,7 @@ class CRM_Civirules_BAO_CiviRulesAction extends CRM_Civirules_DAO_CiviRulesActio
       return false;
     }
 
-    $actionData = array();
+    $actionData = [];
     CRM_Core_DAO::storeValues($action, $actionData);
     $object->setActionData($actionData);
 

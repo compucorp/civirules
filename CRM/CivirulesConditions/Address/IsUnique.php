@@ -21,14 +21,14 @@ class CRM_CivirulesConditions_Address_IsUnique extends CRM_Civirules_Condition {
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
   {
-    $uniqueAddressFields = array("street_address", "city", "state_province_id", "postal_code", "country_id");
+    $uniqueAddressFields = ["street_address", "city", "state_province_id", "postal_code", "country_id"];
     $addressData = $triggerData->getEntityData('Address');
-    $address = civicrm_api3('Address', 'getsingle', array(
+    $address = civicrm_api3('Address', 'getsingle', [
       'return' => $uniqueAddressFields,
       'id' => $addressData['id'],
-    ));
+    ]);
     if (!$address['is_error']) {
-      $addressCountParams = array();
+      $addressCountParams = [];
       foreach ($uniqueAddressFields as $field) {
         $addressCountParams[$field] = $address[$field];
       }

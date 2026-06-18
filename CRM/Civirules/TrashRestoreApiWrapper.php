@@ -10,9 +10,9 @@ require_once 'api/Wrapper.php';
 class CRM_Civirules_TrashRestoreApiWrapper implements API_Wrapper {
 
   private function isDeleted($contactId){
-    return CRM_Core_DAO::singleValueQuery('select `is_deleted` from `civicrm_contact` where `id`=%1',array(
-      1 => array($contactId,'Integer')
-    ));
+    return CRM_Core_DAO::singleValueQuery('select `is_deleted` from `civicrm_contact` where `id`=%1', [
+      1 => [$contactId,'Integer']
+    ]);
 
   }
 

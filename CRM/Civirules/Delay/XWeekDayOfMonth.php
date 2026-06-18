@@ -30,12 +30,12 @@ class CRM_Civirules_Delay_XWeekDayOfMonth extends CRM_Civirules_Delay_Delay {
 
   public function getDelayExplanation() {
     return ts('Delay to %1 %2 at %3:%4',
-      array(
+      [
         1 => ts($this->week_offset),
         2 => ts($this->day),
         3 => $this->time_hour,
         4 => $this->time_minute < 10 && strlen($this->time_minute) <= 1 ? '0'.$this->time_minute : $this->time_minute,
-      ));
+      ]);
   }
 
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
@@ -46,7 +46,7 @@ class CRM_Civirules_Delay_XWeekDayOfMonth extends CRM_Civirules_Delay_Delay {
   }
 
   protected function getDays() {
-    return array(
+    return [
       'sunday' => ts('Sunday'),
       'monday' => ts('Monday'),
       'tuesday' => ts('Tuesday'),
@@ -54,18 +54,18 @@ class CRM_Civirules_Delay_XWeekDayOfMonth extends CRM_Civirules_Delay_Delay {
       'thursday' => ts('Thursday'),
       'friday' => ts('Friday'),
       'saturday' => ts('Saturday'),
-    );
+    ];
   }
 
   protected function getWeekOffset() {
-    return array(
+    return [
       'first' => ts('First'),
       'second' => ts('Second'),
       'third' => ts('Third'),
       'fourth' => ts('Fourth'),
       'fifth' => ts('Fifth'),
       'last' => ts('Last'),
-    );
+    ];
   }
 
   public function validate($values, &$errors, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
@@ -85,7 +85,7 @@ class CRM_Civirules_Delay_XWeekDayOfMonth extends CRM_Civirules_Delay_Delay {
   }
 
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $values = array();
+    $values = [];
     $values[$prefix.'XWeekDayOfMonth_week_offset'] = $this->week_offset;
     $values[$prefix.'XWeekDayOfMonth_day'] = $this->day;
     $values[$prefix.'XWeekDayOfMonth_time_hour'] = $this->time_hour;

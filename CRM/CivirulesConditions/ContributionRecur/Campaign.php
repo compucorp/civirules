@@ -104,10 +104,10 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Is NOT in of these campaigns: ';
     }
-    $campaignText = array();
+    $campaignText = [];
     foreach ($this->conditionParams['campaign_id'] as $campaignId) {
       try {
-        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', array('id' => $campaignId, 'return' => 'title'));
+        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', ['id' => $campaignId, 'return' => 'title']);
       } catch (CRM_Core_Exception $ex) {}
     }
     if (!empty($campaignText)) {

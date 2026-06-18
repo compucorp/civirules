@@ -15,16 +15,16 @@ class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesA
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $dateRadioOptions = array('Date of Action Execution', 'xxx days after Action Execution', 'Specific Date');
+    $dateRadioOptions = ['Date of Action Execution', 'xxx days after Action Execution', 'Specific Date'];
     $this->addRadio('thank_you_date_radio', ts('Thank You Date will be set to : '), $dateRadioOptions);
     $this->add('text', 'number_of_days', ts('Number of Days after Action Execution'));
-    $this->add('datepicker', 'thank_you_date', ts('Thank You Date'), [], FALSE, array('time' => FALSE));
-    $timeRadioOptions = array('Specific Time', 'Time of Action Execution');
+    $this->add('datepicker', 'thank_you_date', ts('Thank You Date'), [], FALSE, ['time' => FALSE]);
+    $timeRadioOptions = ['Specific Time', 'Time of Action Execution'];
     $this->addRadio('thank_you_time_radio', ts('Thank You Time will be set to : '), $timeRadioOptions);
-    $this->add('datepicker', 'thank_you_time', ts('Thank You Time'), [], FALSE, array('date' => FALSE));
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('datepicker', 'thank_you_time', ts('Thank You Time'), [], FALSE, ['date' => FALSE]);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

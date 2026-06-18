@@ -58,12 +58,12 @@ class CRM_CivirulesConditions_Event_EventType extends CRM_Civirules_Condition {
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Event Type is NOT one of: ';
     }
-    $typeText = array();
-    $eventTypes = civicrm_api3('OptionValue', 'get', array(
-      'value' => array('IN' => $this->conditionParams['event_type_id']),
+    $typeText = [];
+    $eventTypes = civicrm_api3('OptionValue', 'get', [
+      'value' => ['IN' => $this->conditionParams['event_type_id']],
       'option_group_id' => 'event_type',
-      'options' => array('limit' => 0)
-    ));
+      'options' => ['limit' => 0]
+    ]);
     foreach($eventTypes['values'] as $eventType) {
       $typeText[] = $eventType['label'];
     }

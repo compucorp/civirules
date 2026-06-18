@@ -95,7 +95,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     $params['details'] = $action_params['details'];
 
     if (!empty($action_params['assignee_contact_id'])) {
-      $assignee = array();
+      $assignee = [];
       if (is_array($action_params['assignee_contact_id'])) {
         foreach($action_params['assignee_contact_id'] as $contact_id) {
           if($contact_id) {
@@ -245,24 +245,24 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     $return = '';
     $params = $this->getActionParameters();
     if (!empty($params['activity_type_id'])) {
-      $type = civicrm_api3('OptionValue', 'getvalue', array(
+      $type = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_type',
-        'value' => $params['activity_type_id']));
-      $return .= ts("Type: %1", array(1 => $type));
+        'value' => $params['activity_type_id']]);
+      $return .= ts("Type: %1", [1 => $type]);
     }
     if (!empty($params['status_id'])) {
-      $status = civicrm_api3('OptionValue', 'getvalue', array(
+      $status = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_status',
-        'value' => $params['status_id']));
+        'value' => $params['status_id']]);
       $return .= "<br>";
-      $return .= ts("Status: %1", array(1 => $status));
+      $return .= ts("Status: %1", [1 => $status]);
     }
     $subject = $params['subject'];
     if (!empty($subject)) {
       $return .= "<br>";
-      $return .= ts("Subject: %1", array(1 => $subject));
+      $return .= ts("Subject: %1", [1 => $subject]);
     }
     // #188 relationship based target selection
     $relContactMap = [
@@ -276,12 +276,12 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     }
     if (!empty($params['assignee_contact_id']) && !empty($params['assignee_contact_id'][0])) {
       if (!is_array($params['assignee_contact_id'])) {
-        $params['assignee_contact_id'] = array($params['assignee_contact_id']);
+        $params['assignee_contact_id'] = [$params['assignee_contact_id']];
       }
       $assignees = '';
       foreach($params['assignee_contact_id'] as $cid) {
         try {
-          $assignee = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $cid));
+          $assignee = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $cid]);
           if ($assignee) {
             if (strlen($assignees)) {
               $assignees .= ', ';
@@ -294,7 +294,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
       }
 
       $return .= '<br>';
-      $return .= ts("Assignee(s): %1", array(1 => $assignees));
+      $return .= ts("Assignee(s): %1", [1 => $assignees]);
     }
 
     // #188 assignee by relationship

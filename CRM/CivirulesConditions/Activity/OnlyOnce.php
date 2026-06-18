@@ -32,11 +32,11 @@ class CRM_CivirulesConditions_Activity_OnlyOnce extends CRM_Civirules_Condition 
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     try {
-      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', array(
+      $sourceRecordTypeId = civicrm_api3('OptionValue', 'getvalue', [
         'option_group' => 'activity_contacts',
         'name' => 'Activity Source',
         'return' => 'value'
-      ));
+      ]);
       $activityContactData = $triggerData->getEntityData('ActivityContact');
       if (empty($activityContactData) || $activityContactData['record_type_id'] == $sourceRecordTypeId) {
         $isConditionValid = TRUE;

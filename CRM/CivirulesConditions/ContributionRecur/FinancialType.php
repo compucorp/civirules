@@ -99,7 +99,7 @@ class CRM_CivirulesConditions_ContributionRecur_FinancialType extends CRM_Civiru
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Financial Type is NOT one of: ';
     }
-    $finText = array();
+    $finText = [];
     foreach ($this->conditionParams['financial_type_id'] as $finTypeId) {
       $financialType = new CRM_Financial_BAO_FinancialType();
       $financialType->id = $finTypeId;

@@ -37,7 +37,7 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
   public function userFriendlyConditionParams() {
     $activityTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('activity_contacts'), $this->conditionParams['record_type_id']);
     if (!empty($activityTypeLabel)) {
-      return ts('For all %1', array(1 => $activityTypeLabel));
+      return ts('For all %1', [1 => $activityTypeLabel]);
     }
     return '';
   }
@@ -98,6 +98,6 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    return $trigger->doesProvideEntities(array('Activity', 'ActivityContact'));
+    return $trigger->doesProvideEntities(['Activity', 'ActivityContact']);
   }
 }

@@ -45,9 +45,9 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
               FROM `civirule_rule_log` `rule_log2`
               WHERE `rule_log2`.`rule_id` = %3 and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
             )";
-    $params[1] = array($this->triggerParams['activity_type_id'], 'Integer');
-    $params[2] = array($this->triggerParams['activity_status_id'], 'Integer');
-    $params[3] = array($this->ruleId, 'Integer');
+    $params[1] = [$this->triggerParams['activity_type_id'], 'Integer'];
+    $params[2] = [$this->triggerParams['activity_status_id'], 'Integer'];
+    $params[3] = [$this->ruleId, 'Integer'];
     $this->activityDAO = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Activity_DAO_Activity');
 
     return true;

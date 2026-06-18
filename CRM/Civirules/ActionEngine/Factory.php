@@ -2,7 +2,7 @@
 
 class CRM_Civirules_ActionEngine_Factory {
   
-  private static $instances = array();
+  private static $instances = [];
   
   /**
    * Returns the engine for executing actions.

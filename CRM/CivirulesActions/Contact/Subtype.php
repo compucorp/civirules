@@ -95,7 +95,7 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
     $label = ts('Set contact subtype to: ');
-    $subTypeLabels = array();
+    $subTypeLabels = [];
     $subTypes = CRM_Contact_BAO_ContactType::contactTypeInfo();
     foreach($params['sub_type'] as $sub_type) {
       $subTypeLabels[] = $subTypes[$sub_type]['parent_label'].' - '.$subTypes[$sub_type]['label'];

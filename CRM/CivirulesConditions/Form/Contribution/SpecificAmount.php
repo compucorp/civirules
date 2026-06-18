@@ -34,16 +34,16 @@ class CRM_CivirulesConditions_Form_Contribution_SpecificAmount extends CRM_Civir
     $this->add('select', 'count_type', ts('Count What?'), $countTypeList, true);
     $this->add('select', 'amount_operator', ts('where Operator'), $operatorList, true);
     $this->add('select', 'financial_type_id', ts('of Financial Type(s)'), $financialTypes, true,
-      array('id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('text', 'no_of_contributions', ts('Number of Contributions'), array(), true);
+      ['id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+    $this->add('text', 'no_of_contributions', ts('Number of Contributions'), [], true);
     $this->addRule('no_of_contributions','Number of contributions must be a whole number','numeric');
     $this->addRule('no_of_contributions','Number of contributions must be a whole number','nopunctuation');
-    $this->add('text', 'amount', ts('Amount'), array(), true);
+    $this->add('text', 'amount', ts('Amount'), [], true);
     $this->addRule('amount','Amount can only contain numbers','numeric');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

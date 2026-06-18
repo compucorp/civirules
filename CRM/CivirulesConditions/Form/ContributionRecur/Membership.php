@@ -36,10 +36,10 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Membership
     $this->addDatePickerRange('join_date', ts('Membership Join Date'), FALSE, FALSE, 'From', 'To', NULL, '_to', '_from');
     $this->addDatePickerRange('end_date', ts('Membership End Date'), FALSE, FALSE, 'From', 'To', NULL, '_to', '_from');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE),
-      array('type' => 'cancel', 'name' => ts('Cancel')),
-    ));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

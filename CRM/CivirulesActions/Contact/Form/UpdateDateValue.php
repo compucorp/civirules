@@ -43,9 +43,9 @@ class CRM_CivirulesActions_Contact_Form_UpdateDateValue extends CRM_CivirulesAct
     // set defaults
     $this->setDefaults($this->ruleAction->unserializeParams());
 
-    $this->addButtons(array(
-      array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
   }
 
   /**

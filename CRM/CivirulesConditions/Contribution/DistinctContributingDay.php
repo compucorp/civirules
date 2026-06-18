@@ -29,9 +29,9 @@ class CRM_CivirulesConditions_Contribution_DistinctContributingDay extends CRM_C
     $query = 'SELECT COUNT(DISTINCT CONCAT(EXTRACT(YEAR FROM receive_date),
 EXTRACT(MONTH FROM receive_date), EXTRACT(DAY FROM receive_date))) AS distinctDates
 FROM civicrm_contribution WHERE contact_id = %1 AND civicrm_contribution.contribution_status_id = %2';
-    $params = array(
-      1 => array($contact_id, 'Positive'),
-      2 => array(CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'Positive'));
+    $params = [
+      1 => [$contact_id, 'Positive'],
+      2 => [CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'Positive']];
 
     $periodStartDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToStartDate($this->conditionParams);
     $periodEndDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToEndDate($this->conditionParams);

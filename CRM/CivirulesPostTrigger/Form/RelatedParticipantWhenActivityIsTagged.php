@@ -33,10 +33,10 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
-    $this->add('select', 'event_id_custom_field', ts('Event ID custom field'), array('' => ts('-- please select --')) + self::getActivityCustomFields(), true, [
+    $this->add('select', 'event_id_custom_field', ts('Event ID custom field'), ['' => ts('-- please select --')] + self::getActivityCustomFields(), true, [
       'class' => 'crm-select2 huge'
     ]);
-    $this->add('select', 'activity_type_id', ts('Limit to Activity type'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_type'), true, [
+    $this->add('select', 'activity_type_id', ts('Limit to Activity type'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_type'), true, [
       'class' => 'crm-select2 huge',
       'multiple' => 'multiple',
     ]);
@@ -46,9 +46,9 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityIsTagged exten
       'placeholder' => '--- select tag(s) ---',
     ]);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

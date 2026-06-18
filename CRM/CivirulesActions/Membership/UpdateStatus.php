@@ -93,10 +93,10 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
     $friendlyParams = '';
     $params = $this->getActionParameters();
     if ($params['membership_status_id']) {
-      $status = civicrm_api3('MembershipStatus', 'getvalue', array(
+      $status = civicrm_api3('MembershipStatus', 'getvalue', [
         'return' => 'label',
-        'id' => $params['membership_status_id']));
-      $friendlyParams .= E::ts("Status: %1", array(1 => $status));
+        'id' => $params['membership_status_id']]);
+      $friendlyParams .= E::ts("Status: %1", [1 => $status]);
     }
     if ($params['set_is_override']) {
       $friendlyParams .= '; ' . E::ts('Status Override?');

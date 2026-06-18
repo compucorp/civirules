@@ -25,7 +25,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
    * Function to add validation condition rules (overrides parent function)
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_ValueComparison', 'validateOperatorAndComparisonValue'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_ValueComparison', 'validateOperatorAndComparisonValue']);
   }
 
   public static function validateOperatorAndComparisonValue($fields) {
@@ -40,7 +40,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
       case 'contains string':
       case 'not contains string':
         if (!isset($fields['value']) || strlen($fields['value']) === 0) {
-          return array('value' => ts('Compare value is required'));
+          return ['value' => ts('Compare value is required')];
         }
         break;
       case 'is one of':
@@ -50,7 +50,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
       case 'contains all of':
       case 'not contains all of':
         if (empty($fields['multi_value'])) {
-          return array('multi_value' => 'Compare values is a required field');
+          return ['multi_value' => 'Compare values is a required field'];
         }
         break;
     }
@@ -65,16 +65,16 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
 
     $this->add('hidden', 'rule_condition_id');
 
-    $this->add('select', 'operator', ts('Operator'), $this->conditionClass->getOperators(), true, array('class' => 'crm-select2 huge'));
+    $this->add('select', 'operator', ts('Operator'), $this->conditionClass->getOperators(), true, ['class' => 'crm-select2 huge']);
     $this->add('text', 'value', ts('Compare value'));
     $this->add('textarea', 'multi_value', ts('Compare values'));
 
     $this->assign('field_options', $this->conditionClass->getFieldOptions());
     $this->assign('is_field_option_multiple', $this->conditionClass->isMultiple());
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**
@@ -83,8 +83,8 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
    * @return array $defaultValues
    */
   public function setDefaultValues() {
-    $data = array();
-    $defaultValues = array();
+    $data = [];
+    $defaultValues = [];
     $defaultValues['rule_condition_id'] = $this->ruleConditionId;
     $ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $ruleCondition->id = $this->ruleConditionId;

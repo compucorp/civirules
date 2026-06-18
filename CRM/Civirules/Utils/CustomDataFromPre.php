@@ -2,7 +2,7 @@
 
 class CRM_Civirules_Utils_CustomDataFromPre {
 
-  private static $customValues = array();
+  private static $customValues = [];
 
   /**
    * Method pre to store the entity custom data before the data in the database is changed
@@ -75,7 +75,7 @@ class CRM_Civirules_Utils_CustomDataFromPre {
         }
       }
       if ($all_ones) {
-        $v = array();
+        $v = [];
         foreach($value as $i => $j) {
           $v[] = $i;
         }

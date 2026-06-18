@@ -19,9 +19,9 @@ class CRM_Civirules_Utils {
     if (empty($contactId)) {
       return '';
     }
-    $params = array(
+    $params = [
       'id' => $contactId,
-      'return' => 'display_name');
+      'return' => 'display_name'];
     try {
       $contactName = civicrm_api3('Contact', 'Getvalue', $params);
     } catch (CRM_Core_Exception $ex) {
@@ -97,7 +97,7 @@ class CRM_Civirules_Utils {
    * @static
    */
   public static function buildLabelFromName($name) {
-    $labelParts = array();
+    $labelParts = [];
     $nameParts = explode('_', strtolower($name));
     foreach ($nameParts as $namePart) {
       $labelParts[] = ucfirst($namePart);
@@ -112,12 +112,12 @@ class CRM_Civirules_Utils {
    * @access public
    */
   public static function getActivityStatusList() {
-    $activityStatusList = array();
+    $activityStatusList = [];
     $activityStatusOptionGroupId = self::getOptionGroupIdWithName('activity_status');
-    $params = array(
+    $params = [
       'option_group_id' => $activityStatusOptionGroupId,
       'is_active' => 1,
-      'options' => array('limit' => 0));
+      'options' => ['limit' => 0]];
     $activityStatuses = civicrm_api3('OptionValue', 'Get', $params);
     foreach ($activityStatuses['values'] as $optionValue) {
       $activityStatusList[$optionValue['value']] = $optionValue['label'];
@@ -132,12 +132,12 @@ class CRM_Civirules_Utils {
    * @access public
    */
   public static function getActivityTypeList() {
-    $activityTypeList = array();
+    $activityTypeList = [];
     $activityTypeOptionGroupId = self::getOptionGroupIdWithName('activity_type');
-    $params = array(
+    $params = [
       'option_group_id' => $activityTypeOptionGroupId,
       'is_active' => 1,
-      'options' => array('limit' => 0));
+      'options' => ['limit' => 0]];
     $activityTypes = civicrm_api3('OptionValue', 'Get', $params);
     foreach ($activityTypes['values'] as $optionValue) {
       $activityTypeList[$optionValue['value']] = $optionValue['label'];
@@ -197,9 +197,9 @@ class CRM_Civirules_Utils {
    * @throws Exception when no option group activity_type is found
    */
   public static function getOptionGroupIdWithName($optionGroupName) {
-    $params = array(
+    $params = [
       'name' => $optionGroupName,
-      'return' => 'id');
+      'return' => 'id'];
     try {
       $optionGroupId = civicrm_api3('OptionGroup', 'Getvalue', $params);
     } catch (CRM_Core_Exception $ex) {
@@ -222,11 +222,11 @@ class CRM_Civirules_Utils {
     if (empty($optionGroupId) or empty($optionValue)) {
       return FALSE;
     } else {
-      $params = array(
+      $params = [
         'option_group_id' => $optionGroupId,
         'value' => $optionValue,
         'return' => 'label'
-      );
+      ];
       try {
         return civicrm_api3('OptionValue', 'Getvalue', $params);
       } catch (CRM_Core_Exception $ex) {
@@ -246,10 +246,10 @@ class CRM_Civirules_Utils {
    */
   public static function getContributionStatusIdWithName($statusName) {
     $optionGroupId = self::getOptionGroupIdWithName('contribution_status');
-    $optionValueParams = array(
+    $optionValueParams = [
       'option_group_id' => $optionGroupId,
       'name' => $statusName,
-      'return' => 'value');
+      'return' => 'value'];
     try {
       $statusId = (int) civicrm_api3('OptionValue', 'Getvalue', $optionValueParams);
     } catch (CRM_Core_Exception $ex) {
@@ -264,7 +264,7 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getFinancialTypes() {
-    $return = array();
+    $return = [];
     $dao = CRM_Core_DAO::executeQuery("SELECT * FROM `civicrm_financial_type` where `is_active` = 1");
     while($dao->fetch()) {
       $return[$dao->id] = $dao->name;
@@ -278,13 +278,13 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getRelationshipTypes($onlyActive = TRUE) {
-    $return = array();
+    $return = [];
     if ($onlyActive) {
-      $params = array('is_active' => 1);
+      $params = ['is_active' => 1];
     } else {
-      $params = array();
+      $params = [];
     }
-    $params['options'] = array('limit' => 0);
+    $params['options'] = ['limit' => 0];
     try {
       $relationshipTypes = civicrm_api3("RelationshipType", "Get", $params);
       foreach ($relationshipTypes['values'] as $relationshipType) {
@@ -395,7 +395,7 @@ class CRM_Civirules_Utils {
    * @return mixed
    */
   public static function getMenuKeyMax($menuArray) {
-    $max = array(max(array_keys($menuArray)));
+    $max = [max(array_keys($menuArray))];
     foreach($menuArray as $v) {
       if (!empty($v['child'])) {
         $max[] = self::getMenuKeyMax($v['child']);
@@ -410,13 +410,13 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getCampaignList() {
-    $campaignList = array();
+    $campaignList = [];
     try {
-      $campaigns = civicrm_api3('Campaign', 'get', array(
+      $campaigns = civicrm_api3('Campaign', 'get', [
         'sequential' => 1,
         'is_active' => 1,
-        'options' => array('limit' => 0),
-      ));
+        'options' => ['limit' => 0],
+      ]);
       foreach ($campaigns['values'] as $campaign) {
         if (isset($campaign['title'])) {
           $campaignList[$campaign['id']] = $campaign['title'];
@@ -428,7 +428,7 @@ class CRM_Civirules_Utils {
       asort($campaignList);
     }
     catch (CRM_Core_Exception $ex) {
-      $campaignList = array();
+      $campaignList = [];
     }
     return $campaignList;
   }
@@ -440,12 +440,12 @@ class CRM_Civirules_Utils {
    * @access public
    */
   public static function getEventTypeList() {
-    $eventTypeList = array();
+    $eventTypeList = [];
     $eventTypeOptionGroupId = self::getOptionGroupIdWithName('event_type');
-    $params = array(
+    $params = [
       'option_group_id' => $eventTypeOptionGroupId,
       'is_active' => 1,
-      'options' => array('limit' => 0));
+      'options' => ['limit' => 0]];
     $eventTypes = civicrm_api3('OptionValue', 'Get', $params);
     foreach ($eventTypes['values'] as $optionValue) {
       $eventTypeList[$optionValue['value']] = $optionValue['label'];
@@ -474,7 +474,7 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getActivityDateOperatorOptions() {
-    return array(
+    return [
       'equals',
       'later than',
       'later than or equal',
@@ -482,7 +482,7 @@ class CRM_Civirules_Utils {
       'earlier than or equal',
       'not equal',
       'between',
-    );
+    ];
   }
 
   /**
@@ -491,14 +491,14 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function getGenericComparisonOperatorOptions() {
-    return array(
+    return [
       'equals',
       'greater than',
       'greater than or equal',
       'less than',
       'less than or equal',
       'not equal',
-    );
+    ];
   }
 
   /**
@@ -570,7 +570,7 @@ class CRM_Civirules_Utils {
    * @return array
    */
   public static function moveDaoToArray($dao) {
-    $ignores = array('N', 'id', 'entity_id');
+    $ignores = ['N', 'id', 'entity_id'];
     $columns = get_object_vars($dao);
     // first remove all columns starting with _
     foreach ($columns as $key => $value) {

@@ -47,12 +47,12 @@ class CRM_CivirulesConditions_EntityTag_TagId extends CRM_Civirules_Condition {
    */
   public function userFriendlyConditionParams() {
     if (!empty($this->conditionParams['tag_id'])) {
-      $tagLabels = array();
+      $tagLabels = [];
       foreach ($this->conditionParams['tag_id'] as $tagId) {
         $tagLabels[] = civicrm_api3('Tag', 'getvalue',
-          array(
+          [
             'return' => 'name',
-            'id' => $tagId));
+            'id' => $tagId]);
       }
       return ts('Tag for Contact is one of selected: ').implode(', ', $tagLabels);
     }

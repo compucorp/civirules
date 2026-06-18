@@ -16,10 +16,10 @@ class CRM_CivirulesActions_Activity_Form_AddTargetContact extends CRM_CivirulesA
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'rel_type_id', ts('Related contact'), array('' => ts('-- please select --')) + CRM_Civirules_Utils::getRelationshipTypes(), true);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('select', 'rel_type_id', ts('Related contact'), ['' => ts('-- please select --')] + CRM_Civirules_Utils::getRelationshipTypes(), true);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

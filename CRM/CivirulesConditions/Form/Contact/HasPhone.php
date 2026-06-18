@@ -10,13 +10,13 @@ class CRM_CivirulesConditions_Form_Contact_HasPhone extends CRM_CivirulesConditi
 
   protected function getPhoneTypes() {
     return
-      array(0 => ts(' - Any phone type -')) +
+      [0 => ts(' - Any phone type -')] +
       CRM_Core_OptionGroup::values('phone_type', false, false, false, false, 'label', false)
     ;
   }
 
   protected function getLocationTypes() {
-    $locTypes = civicrm_api3('LocationType', 'get', array());
+    $locTypes = civicrm_api3('LocationType', 'get', []);
     $return[0] = ts('- Any location -');
     foreach($locTypes['values'] as $loc_type) {
       $return[$loc_type['id']] = $loc_type['display_name'];
@@ -35,9 +35,9 @@ class CRM_CivirulesConditions_Form_Contact_HasPhone extends CRM_CivirulesConditi
     $this->add('select', 'location_type', ts('Location type'), $this->getLocationTypes(), true);
     $this->add('select', 'phone_type', ts('Phone type'), $this->getPhoneTypes(), true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

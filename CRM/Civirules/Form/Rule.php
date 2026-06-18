@@ -172,7 +172,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access public
    */
   function setDefaultValues() {
-    $defaults = array();
+    $defaults = [];
     $defaults['id'] = $this->ruleId;
     switch ($this->_action) {
       case CRM_Core_Action::ADD:
@@ -192,13 +192,13 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    */
   function addRules() {
     if ($this->_action != CRM_Core_Action::DELETE) {
-      $this->addFormRule(array(
+      $this->addFormRule([
         'CRM_Civirules_Form_Rule',
         'validateRuleLabelExists'
-      ));
+      ]);
     }
     if ($this->_action == CRM_Core_Action::ADD) {
-      $this->addFormRule(array('CRM_Civirules_Form_Rule', 'validateTriggerEmpty'));
+      $this->addFormRule(['CRM_Civirules_Form_Rule', 'validateTriggerEmpty']);
     }
   }
 
@@ -254,11 +254,11 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function createFormElements() {
-    $this->add('hidden', 'id', E::ts('RuleId'), array('id' => 'ruleId'));
+    $this->add('hidden', 'id', E::ts('RuleId'), ['id' => 'ruleId']);
     if ($this->_action != CRM_Core_Action::DELETE) {
-      $this->add('text', 'rule_label', E::ts('Name'), array('size' => CRM_Utils_Type::HUGE), TRUE);
-      $this->add('text', 'rule_description', E::ts('Description'), array('size' => 100, 'maxlength' => 256));
-      $this->add('wysiwyg', 'rule_help_text', E::ts('Help text with purpose of rule'), array('rows' => 6, 'cols' => 80));
+      $this->add('text', 'rule_label', E::ts('Name'), ['size' => CRM_Utils_Type::HUGE], TRUE);
+      $this->add('text', 'rule_description', E::ts('Description'), ['size' => 100, 'maxlength' => 256]);
+      $this->add('wysiwyg', 'rule_help_text', E::ts('Help text with purpose of rule'), ['rows' => 6, 'cols' => 80]);
       $this->add('select2', 'rule_tag_id', E::ts('Civirule Tag(s)'), Civi::entity('CiviRulesRuleTag')->getOptions('rule_tag_id'), FALSE,
         ['id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'huge']);
       $this->add('checkbox', 'rule_is_active', E::ts('Enabled'));
@@ -296,19 +296,19 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       }
     }
     if ($this->_action == CRM_Core_Action::ADD) {
-        $this->addButtons(array(
-        array('type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE),
-        array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+        $this->addButtons([
+        ['type' => 'next', 'name' => E::ts('Next'), 'isDefault' => TRUE],
+        ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
     } else {
-      $this->addButtons(array(
-        array('type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE),
+      $this->addButtons([
+        ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
         [
           'type' => 'upload',
           'name' => E::ts('Save and Done'),
           'subName' => 'done',
         ],
-        array('type' => 'next', 'name' => E::ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'),
-        array('type' => 'next', 'name' => E::ts('Close'), 'subName' => 'cancel', 'icon' => 'fa-close')));
+        ['type' => 'next', 'name' => E::ts('Clone'), 'subName' => 'clone', 'icon' => 'fa-creative-commons'],
+        ['type' => 'next', 'name' => E::ts('Close'), 'subName' => 'cancel', 'icon' => 'fa-close']]);
     }
   }
 
@@ -316,7 +316,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * Function to add the form elements specific for the update action
    */
   protected function createUpdateFormElements() {
-    $this->add('text', 'rule_trigger_label', '', array('size' => CRM_Utils_Type::HUGE));
+    $this->add('text', 'rule_trigger_label', '', ['size' => CRM_Utils_Type::HUGE]);
     $this->assign('ruleConditions', $this->getRuleConditions());
   }
 
@@ -418,7 +418,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
    * @access protected
    */
   protected function setRuleConditionActions($ruleConditionId, CRM_Civirules_Condition $condition) {
-    $conditionActions = array();
+    $conditionActions = [];
 
     $editUrl = $condition->getExtraDataInputUrl($ruleConditionId);
     if (!empty($editUrl)) {

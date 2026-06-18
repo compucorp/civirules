@@ -19,12 +19,12 @@ class CRM_CivirulesConditions_Form_Contribution_FinancialType extends CRM_Civiru
     $financialTypes = CRM_Civirules_Utils::getFinancialTypes();
     asort($financialTypes);
     $this->add('select', 'financial_type_id', ts('Financial Type(s)'), $financialTypes, true,
-      array('id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+      ['id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

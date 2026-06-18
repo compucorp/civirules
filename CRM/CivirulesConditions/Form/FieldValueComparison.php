@@ -11,7 +11,7 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesConditions_Form_ValueComparison {
 
   protected function getEntityOptions() {
-    $return = array();
+    $return = [];
     foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->label;
@@ -21,7 +21,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   }
 
   protected function getEntities() {
-    $return = array();
+    $return = [];
     foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $return[$entityDef->entity] = $entityDef->entity;
@@ -31,15 +31,15 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   }
 
   protected function getFields() {
-    $return = array();
+    $return = [];
     foreach($this->triggerClass->getProvidedEntities() as $entityDef) {
       if (!empty($entityDef->daoClass) && class_exists($entityDef->daoClass)) {
         $key = $entityDef->entity . '_';
         $className = $entityDef->daoClass;
-        if (!is_callable(array($className, 'fields'))) {
+        if (!is_callable([$className, 'fields'])) {
           continue;
         }
-        $fields = call_user_func(array($className, 'fields'));
+        $fields = call_user_func([$className, 'fields']);
         foreach ($fields as $field) {
           $fieldKey = $key . $field['name'];
           if (isset($field['title'])) {
@@ -62,18 +62,18 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   }
 
   protected function getCustomfieldsForEntity($entity) {
-    $extends = array($entity);
+    $extends = [$entity];
     if ($entity == 'Contact') {
-      $contact_types = civicrm_api3('ContactType', 'get', array());
+      $contact_types = civicrm_api3('ContactType', 'get', []);
       foreach($contact_types['values'] as $type) {
         $extends[] = $type['name'];
       }
     }
 
-    $return = array();
-    $processedGroups = array();
+    $return = [];
+    $processedGroups = [];
     foreach($extends as $extend) {
-      $customGroups = civicrm_api3('CustomGroup', 'get', array('extends' => $extend, 'options' => array('limit' => 0)));
+      $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => $extend, 'options' => ['limit' => 0]]);
       foreach($customGroups['values'] as $customGroup) {
         if (in_array($customGroup['id'], $processedGroups)) {
           continue;
@@ -91,8 +91,8 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   }
 
   protected function getCustomFieldPerGroup($group_id, $group_label) {
-    $fields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $group_id, 'options' => array('limit' => 0)));
-    $return = array();
+    $fields = civicrm_api3('CustomField', 'get', ['custom_group_id' => $group_id, 'options' => ['limit' => 0]]);
+    $return = [];
     foreach($fields['values'] as $field) {
       $key = 'custom_'.$field['id'];
       $return[$key] = $group_label.': '.$field['label'];
@@ -110,8 +110,8 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     parent::buildQuickForm();
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), true, array('class' => 'crm-select2 huge'));
-    $this->add('select', 'field', ts('Field'), $this->getFields(), true, array('class' => 'crm-select2 huge'));
+    $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), true, ['class' => 'crm-select2 huge']);
+    $this->add('select', 'field', ts('Field'), $this->getFields(), true, ['class' => 'crm-select2 huge']);
     $this->add('checkbox', 'original_data', ts('Compare with original value (before the change)?'));
     $this->assign('entities', $this->getEntities());
     $this->assign('custom_field_multi_select_html_types', CRM_Civirules_Utils_CustomField::getMultiselectTypes());
@@ -125,16 +125,16 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   public function addRules()
   {
     parent::addRules();
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_FieldValueComparison', 'validateEntityAndField'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_FieldValueComparison', 'validateEntityAndField']);
   }
 
   public static function validateEntityAndField($fields) {
     $entity = $fields['entity'];
     if (empty($entity)) {
-      return array('entity' => ts('Entity could not be empty'));
+      return ['entity' => ts('Entity could not be empty')];
     }
     if (stripos($fields['field'], $fields['entity'].'_')!==0) {
-      return array('entity' => ts('Field is not valid'));
+      return ['entity' => ts('Field is not valid')];
     }
     return true;
   }
@@ -146,7 +146,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
    * @access public
    */
   public function setDefaultValues() {
-    $data = array();
+    $data = [];
     $defaultValues = parent::setDefaultValues();
     $data = $this->ruleCondition->unserializeParams();
     if (!empty($data['entity'])) {

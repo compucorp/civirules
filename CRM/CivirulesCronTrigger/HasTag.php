@@ -30,7 +30,7 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
       }
     }
     if ($this->dao->fetch()) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
       return new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'EntityTag', $data, NULL, $this);
     }
@@ -74,7 +74,7 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
               WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
             )";
 
-    $params[1] = array($this->ruleId, 'Integer');
+    $params[1] = [$this->ruleId, 'Integer'];
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_DAO_GroupContact');
 
     return true;
@@ -102,8 +102,8 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
   public function getTriggerDescription(): string {
     $groupName = ts('Unknown');
     if (is_array($this->triggerParams['group_id'])) {
-      $groupApi = civicrm_api3('Group', 'get', array('id' => array('IN' => $this->triggerParams['group_id']), 'options' => array('limit' => 0)));
-      $groupNames = array();
+      $groupApi = civicrm_api3('Group', 'get', ['id' => ['IN' => $this->triggerParams['group_id']], 'options' => ['limit' => 0]]);
+      $groupNames = [];
       foreach($groupApi['values'] as $group) {
         $groupNames[] = $group['title'];
       }
@@ -120,8 +120,8 @@ class CRM_CivirulesCronTrigger_HasTag extends CRM_Civirules_Trigger_Cron {
         //do nothing
       }
     }
-    return ts('Daily trigger for all members of group %1', array(
+    return ts('Daily trigger for all members of group %1', [
       1 => $groupName
-    ));
+    ]);
   }
 }

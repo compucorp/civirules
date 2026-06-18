@@ -14,10 +14,10 @@ class CRM_CivirulesActions_Participant_Form_UpdateStatus extends CRM_CivirulesAc
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'status_id', ts('Status'), array('' => ts('-- please select --')) + CRM_Event_PseudoConstant::participantStatus(), true);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('select', 'status_id', ts('Status'), ['' => ts('-- please select --')] + CRM_Event_PseudoConstant::participantStatus(), true);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

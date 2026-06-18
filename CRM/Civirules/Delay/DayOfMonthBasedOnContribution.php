@@ -32,7 +32,7 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
   }
 
   public function getDelayExplanation() {
-    return ts('Delay by the %1 day of the month of the contribution', array(1 => $this->day_of_month));
+    return ts('Delay by the %1 day of the month of the contribution', [1 => $this->day_of_month]);
   }
 
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
@@ -56,7 +56,7 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
 
     $availableEntities = $triggerObject->getProvidedEntities();
     if (!isset($availableEntities['Contribution'])) {
-      $errors[$prefix.'delay_select'] = ts('This delay is not available with trigger %1', array(1 => $trigger->label));
+      $errors[$prefix.'delay_select'] = ts('This delay is not available with trigger %1', [1 => $trigger->label]);
     }
   }
 
@@ -65,7 +65,7 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
   }
 
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $values = array();
+    $values = [];
     $values[$prefix.'day_of_month'] = $this->day_of_month;
     return $values;
   }

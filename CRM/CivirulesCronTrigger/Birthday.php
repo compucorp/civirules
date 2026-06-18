@@ -39,7 +39,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
       $this->queryForTriggerEntities();
     }
     if ($this->dao->fetch()) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($this->dao, $data);
       return new CRM_Civirules_TriggerData_Cron($this->dao->id, 'Contact', $data, NULL, $this);
     }
@@ -63,7 +63,7 @@ class CRM_CivirulesCronTrigger_Birthday extends CRM_Civirules_Trigger_Cron {
               FROM `civirule_rule_log` `rule_log`
               WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
             )";
-    $params[1] = array($this->ruleId, 'Integer');
+    $params[1] = [$this->ruleId, 'Integer'];
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_BAO_Contact');
   }
 }

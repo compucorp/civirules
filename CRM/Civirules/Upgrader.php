@@ -191,19 +191,19 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
    */
   public function upgrade_1008() {
     $query = 'UPDATE civirule_condition SET class_name = %1 WHERE class_name = %2';
-    $paramsRecurCount = array(
-      1 => array('CRM_CivirulesConditions_ContributionRecur_Count', 'String'),
-      2 => array('CRM_CivirulesConditions_Contribution_CountRecurring', 'String'));
+    $paramsRecurCount = [
+      1 => ['CRM_CivirulesConditions_ContributionRecur_Count', 'String'],
+      2 => ['CRM_CivirulesConditions_Contribution_CountRecurring', 'String']];
     CRM_Core_DAO::executeQuery($query, $paramsRecurCount);
 
-    $paramsRecurIs = array(
-      1 => array('CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring', 'String'),
-      2 => array('CRM_CivirulesConditions_Contribution_DonorIsRecurring', 'String'));
+    $paramsRecurIs = [
+      1 => ['CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring', 'String'],
+      2 => ['CRM_CivirulesConditions_Contribution_DonorIsRecurring', 'String']];
     CRM_Core_DAO::executeQuery($query, $paramsRecurIs);
 
-    $paramsRecurEnd = array(
-      1 => array('CRM_CivirulesConditions_ContributionRecur_EndDate', 'String'),
-      2 => array('CRM_CivirulesConditions_Contribution_RecurringEndDate', 'String'));
+    $paramsRecurEnd = [
+      1 => ['CRM_CivirulesConditions_ContributionRecur_EndDate', 'String'],
+      2 => ['CRM_CivirulesConditions_Contribution_RecurringEndDate', 'String']];
     CRM_Core_DAO::executeQuery($query, $paramsRecurEnd);
 
     return true;
@@ -226,20 +226,20 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
    */
   public function upgrade_1021() {
     $query = 'UPDATE civirule_trigger SET class_name = %1 WHERE name LiKE %2';
-    CRM_Core_DAO::executeQuery($query, array(
-      1 => array('CRM_CivirulesPostTrigger_EntityTag', 'String'),
-      2 => array('%entity_tag%', 'String'),
-    ));
+    CRM_Core_DAO::executeQuery($query, [
+      1 => ['CRM_CivirulesPostTrigger_EntityTag', 'String'],
+      2 => ['%entity_tag%', 'String'],
+    ]);
     $query = 'UPDATE civirule_trigger SET label = %1 WHERE name LiKE %2';
-    CRM_Core_DAO::executeQuery($query, array(
-      1 => array('Contact is tagged (tag is added to contact)', 'String'),
-      2 => array('new_entity_tag', 'String'),
-    ));
+    CRM_Core_DAO::executeQuery($query, [
+      1 => ['Contact is tagged (tag is added to contact)', 'String'],
+      2 => ['new_entity_tag', 'String'],
+    ]);
     $query = 'UPDATE civirule_trigger SET label = %1 WHERE name LiKE %2';
-    CRM_Core_DAO::executeQuery($query, array(
-      1 => array('Contact is un-tagged (tag is removed from contact)', 'String'),
-      2 => array('deleted_entity_tag', 'String'),
-    ));
+    CRM_Core_DAO::executeQuery($query, [
+      1 => ['Contact is un-tagged (tag is removed from contact)', 'String'],
+      2 => ['deleted_entity_tag', 'String'],
+    ]);
     return TRUE;
   }
 
@@ -260,12 +260,12 @@ class CRM_Civirules_Upgrader extends CRM_Extension_Upgrader_Base {
   public function upgrade_1023() {
     $this->ctx->log->info('Applying update 1023 - remove unwanted managed entities');
     $query = "DELETE FROM civicrm_managed WHERE module = %1 AND entity_type IN(%2, %3, %4)";
-    $params = array(
-      1 => array("org.civicoop.civirules", "String"),
-      2 => array("CiviRuleAction", "String"),
-      3 => array("CiviRuleCondition", "String"),
-      4 => array("CiviRuleTrigger", "String"),
-    );
+    $params = [
+      1 => ["org.civicoop.civirules", "String"],
+      2 => ["CiviRuleAction", "String"],
+      3 => ["CiviRuleCondition", "String"],
+      4 => ["CiviRuleTrigger", "String"],
+    ];
     if (CRM_Core_DAO::checkTableExists("civicrm_managed")) {
       CRM_Core_DAO::executeQuery($query, $params);
     }

@@ -23,15 +23,15 @@ class CRM_CivirulesConditions_Form_Contribution_DistinctContributingDay extends 
 
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'no_of_days', ts('Number of Days'), array(), true);
+    $this->add('text', 'no_of_days', ts('Number of Days'), [], true);
     $this->addRule('no_of_days','Number of Days must be a whole number','numeric');
     $this->addRule('no_of_days','Number of Days must be a whole number','nopunctuation');
 
     CRM_CivirulesConditions_Utils_Period::buildQuickForm($this);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

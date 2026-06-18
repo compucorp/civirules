@@ -120,10 +120,10 @@ class CRM_CivirulesConditions_Contribution_Campaign extends CRM_Civirules_Condit
     if ($this->conditionParams['operator'] == 4) {
       $friendlyText = 'Is in any campaigns.';
     }
-    $campaignText = array();
+    $campaignText = [];
     foreach ($this->conditionParams['campaign_id'] as $campaignId) {
       try {
-        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', array('id' => $campaignId, 'return' => 'title'));
+        $campaignText[] = civicrm_api3('Campaign', 'Getvalue', ['id' => $campaignId, 'return' => 'title']);
       } catch (CRM_Core_Exception $ex) {}
     }
     if (!empty($campaignText)) {

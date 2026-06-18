@@ -16,7 +16,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     $entity = CRM_Civirules_Utils_ObjectName::convertToEntity($objectName);
 
-    $entityTags = array();
+    $entityTags = [];
     // $objectRef is either an object or an array.
     if (is_object($objectRef)) {
       $entityTags[] = [
@@ -70,8 +70,8 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
       $triggerData->setEntityData('Event', $event);
 
       $sql = "SELECT `p`.* FROM `civicrm_participant` `p` WHERE p.event_id = %1";
-      $params[1] = array($event_id, 'Integer');
-      $params[2] = array($this->ruleId, 'Integer');
+      $params[1] = [$event_id, 'Integer'];
+      $params[2] = [$this->ruleId, 'Integer'];
       $dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Event_DAO_Participant');
 
       while ($dao->fetch()) {

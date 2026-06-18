@@ -34,9 +34,9 @@ class CRM_CivirulesPostTrigger_Form_Event extends CRM_CivirulesTrigger_Form_Form
     $options[1] = E::ts('Set contact id to logged in contact');
     $this->add('select', 'contact_id', E::ts('Contact ID'),$options, true, ['class' => 'crm-select2 huge']);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

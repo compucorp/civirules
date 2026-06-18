@@ -56,7 +56,7 @@ class CRM_CivirulesConditions_Form_Contribution_xthContribution extends CRM_Civi
    * @access public
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_Contribution_xthContribution', 'validateCompareZero'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_Contribution_xthContribution', 'validateCompareZero']);
   }
 
   /**

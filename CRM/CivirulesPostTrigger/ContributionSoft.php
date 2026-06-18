@@ -9,7 +9,7 @@ class CRM_CivirulesPostTrigger_ContributionSoft extends CRM_Civirules_Trigger_Po
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     $triggerData = parent::getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
     $contributionSoft = $triggerData->getEntityData('ContributionSoft');
-    $contribution = civicrm_api3('Contribution', 'getsingle', array('id' => $contributionSoft['contribution_id']));
+    $contribution = civicrm_api3('Contribution', 'getsingle', ['id' => $contributionSoft['contribution_id']]);
     $triggerData->setEntityData('Contribution', $contribution);
     return $triggerData;
   }

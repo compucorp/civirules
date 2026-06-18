@@ -18,14 +18,14 @@ class CRM_CivirulesConditions_Contribution_FirstContribution extends CRM_Civirul
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
   {
     $contactId = $triggerData->getContactId();
-    $contributionParams = array('contact_id' => $contactId);
+    $contributionParams = ['contact_id' => $contactId];
     $countContributions = civicrm_api3('Contribution', 'getcount', $contributionParams);
     switch ($countContributions) {
       case 0:
         return TRUE;
         break;
       case 1:
-        $existingContribution = civicrm_api3('Contribution', 'Getsingle', array('contact_id' => $contactId));
+        $existingContribution = civicrm_api3('Contribution', 'Getsingle', ['contact_id' => $contactId]);
         $triggerContribution = $triggerData->getEntityData('Contribution');
         if ($triggerContribution['contribution_id'] == $existingContribution['contribution_id']) {
           return TRUE;

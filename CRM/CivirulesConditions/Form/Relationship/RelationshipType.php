@@ -19,12 +19,12 @@ class CRM_CivirulesConditions_Form_Relationship_RelationshipType extends CRM_Civ
     $relationshipTypes[0] = ts('- select -');
     asort($relationshipTypes);
     $this->add('select', 'relationship_type_id', ts('Relationship Type(s)'), $relationshipTypes, true,
-      array('id' => 'relationship_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+      ['id' => 'relationship_type_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

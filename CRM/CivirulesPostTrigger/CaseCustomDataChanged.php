@@ -52,7 +52,7 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
     if ($custom_group['extends'] != 'Case') {
       return;
     }
-    $case = civicrm_api3('Case', 'getsingle', array('id' => $entityID));
+    $case = civicrm_api3('Case', 'getsingle', ['id' => $entityID]);
     foreach($params as $field) {
       if (!empty($field['custom_field_id'])) {
         $value = $field['value'];

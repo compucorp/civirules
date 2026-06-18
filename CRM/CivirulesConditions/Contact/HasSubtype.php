@@ -111,7 +111,7 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
       if (strlen($subtypes)) {
         $subtypes .= ', ';
       }
-      $subtypes .= civicrm_api3('ContactType', 'getvalue', array('return' => 'label', 'name' => $subtype));
+      $subtypes .= civicrm_api3('ContactType', 'getvalue', ['return' => 'label', 'name' => $subtype]);
     }
 
     return $operatorLabel.' subtypes ('.$subtypes.')';
@@ -124,11 +124,11 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
    * @access protected
    */
   public static function getOperatorOptions() {
-    return array(
+    return [
       'in one of' => ts('In one of selected'),
       'in all of' => ts('In all selected'),
       'not in' => ts('Not in selected'),
-    );
+    ];
   }
 
 }

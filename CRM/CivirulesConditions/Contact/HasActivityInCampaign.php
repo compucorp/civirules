@@ -11,7 +11,7 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
 
   private $_query = NULL;
   private $_index = NULL;
-  private $_queryParams = array();
+  private $_queryParams = [];
 
   /**
    * Method to determine if condition is valid
@@ -27,11 +27,11 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       FROM civicrm_activity AS act
       JOIN civicrm_activity_contact AS contact ON act.id = contact.activity_id AND contact.record_type_id = %1
       WHERE act.is_test = %2 AND contact.contact_id = %3';
-      $this->_queryParams = array(
-        1 => array(3, 'Integer'),
-        2 => array(0, 'Integer'),
-        3 => array($contactId, 'Integer'),
-      );
+      $this->_queryParams = [
+        1 => [3, 'Integer'],
+        2 => [0, 'Integer'],
+        3 => [$contactId, 'Integer'],
+      ];
       $this->_index = 3;
       // add activity type and campaign clause(s)
       $this->addWhereClauses('activity_type_id');
@@ -53,11 +53,11 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
    * @param $fieldName
    */
   private function addWhereClauses($fieldName) {
-    $fieldIds = array();
+    $fieldIds = [];
     foreach ($this->conditionParams[$fieldName] as $fieldValue) {
       $this->_index++;
       $fieldIds[] = '%'.$this->_index;
-      $this->_queryParams[$this->_index] = array($fieldValue, 'Integer');
+      $this->_queryParams[$this->_index] = [$fieldValue, 'Integer'];
     }
     if (!empty($fieldIds)) {
       $this->_query .= ' AND act.' . $fieldName . ' IN (' . implode(', ', $fieldIds) . ')';
@@ -86,14 +86,14 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $activityTypeLabels = array();
+    $activityTypeLabels = [];
     foreach ($this->conditionParams['activity_type_id'] as $activityTypeId) {
       try {
-        $activityTypeLabels[] = civicrm_api3('OptionValue', 'getvalue', array(
+        $activityTypeLabels[] = civicrm_api3('OptionValue', 'getvalue', [
           'option_group_id' => 'activity_type',
           'value' => $activityTypeId,
           'return' => 'label',
-        ));
+        ]);
       }
       catch (CRM_Core_Exception $ex) {
       }
@@ -105,13 +105,13 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       $text = ts('has activities of type(s)') . ': ' . implode('; ', $this->conditionParams['activity_type_id']);
 
     }
-    $campaignTitles = array();
+    $campaignTitles = [];
     foreach ($this->conditionParams['campaign_id'] as $campaignId) {
       try {
-        $campaignTitles[] = civicrm_api3('Campaign', 'getvalue', array(
+        $campaignTitles[] = civicrm_api3('Campaign', 'getvalue', [
           'id' => $campaignId,
           'return' => 'title',
-        ));
+        ]);
       }
       catch (CRM_Core_Exception $ex) {
       }

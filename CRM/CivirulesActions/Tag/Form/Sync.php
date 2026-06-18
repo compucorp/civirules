@@ -22,7 +22,7 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'type', ts('Type'), array('' => ts('-- please select --'), 'sync' => E::ts('Synchronize'), 'copy' => E::ts('Copy')), true,[
+    $this->add('select', 'type', ts('Type'), ['' => ts('-- please select --'), 'sync' => E::ts('Synchronize'), 'copy' => E::ts('Copy')], true,[
       'style' => 'min-width:250px',
       'class' => 'crm-select2 huge',
     ]);
@@ -38,9 +38,9 @@ class CRM_CivirulesActions_Tag_Form_Sync extends CRM_CivirulesActions_Form_Form 
       'class' => 'crm-select2 huge',
       'placeholder' => E::ts('--- select relationship type(s) ---'),
     ]);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

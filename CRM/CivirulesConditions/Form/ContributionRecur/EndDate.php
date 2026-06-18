@@ -16,11 +16,11 @@ class CRM_CivirulesConditions_Form_ContributionRecur_EndDate extends CRM_Civirul
   public function buildQuickForm() {
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'end_date', ts('End Date is'), array('is not set', 'is set'), true);
+    $this->add('select', 'end_date', ts('End Date is'), ['is not set', 'is set'], true);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'cancel', 'name' => ts('Cancel')]]);
   }
 
   /**

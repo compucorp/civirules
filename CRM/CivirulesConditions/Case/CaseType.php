@@ -105,7 +105,7 @@ class CRM_CivirulesConditions_Case_CaseType extends CRM_Civirules_Condition {
     if ($this->conditionParams['operator'] == 1) {
       $friendlyText = 'Case Type is NOT one of: ';
     }
-    $caseText = array();
+    $caseText = [];
     foreach ($this->conditionParams['case_type_id'] as $caseTypeId) {
       $caseText[] = $caseTypes[$caseTypeId];
     }

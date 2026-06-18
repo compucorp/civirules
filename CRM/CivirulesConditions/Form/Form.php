@@ -46,7 +46,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
     if (!$this->ruleCondition->find(true)) {
       throw new Exception('Civirules could not find ruleCondition');
     }
-    $ruleConditionData = array();
+    $ruleConditionData = [];
     CRM_Core_DAO::storeValues($this->ruleCondition, $ruleConditionData);
 
     $this->condition = new CRM_Civirules_BAO_CiviRulesCondition();
@@ -104,7 +104,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
    * @access public
    */
   public function setDefaultValues() {
-    $defaultValues = array();
+    $defaultValues = [];
     $defaultValues['rule_condition_id'] = $this->ruleConditionId;
     return $defaultValues;
   }

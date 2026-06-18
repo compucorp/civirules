@@ -82,7 +82,7 @@ class CRM_CivirulesPostTrigger_Case extends CRM_Civirules_Trigger_Post {
 
     //retrieve extra data from the database because the objectRef does not contain all
     //data from the case
-    $case_data = civicrm_api3('Case', 'getsingle', array('id' => $id));
+    $case_data = civicrm_api3('Case', 'getsingle', ['id' => $id]);
     foreach($case_data as $key => $value) {
       if (!isset($data[$key])) {
         $data[$key] = $value;

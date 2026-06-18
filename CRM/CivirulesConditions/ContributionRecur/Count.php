@@ -26,10 +26,10 @@ class CRM_CivirulesConditions_ContributionRecur_Count extends CRM_Civirules_Cond
      */
     $query = 'SELECT COUNT(*) AS recurringContributions FROM civicrm_contribution
 WHERE contact_id = %1 AND civicrm_contribution.contribution_recur_id > %2 AND contribution_status_id = %3';
-    $params = array(
-      1 => array($contribution['contact_id'], 'Positive'),
-      2 => array(0, 'Positive'),
-      3 => array(CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'String'));
+    $params = [
+      1 => [$contribution['contact_id'], 'Positive'],
+      2 => [0, 'Positive'],
+      3 => [CRM_Civirules_Utils::getContributionStatusIdWithName('Completed'), 'String']];
     $dao = CRM_Core_DAO::executeQuery($query, $params);
     if ($dao->fetch()) {
 
