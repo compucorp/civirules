@@ -66,14 +66,24 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       }
       $activityContact->free();
     }
-
-    foreach ($activityContacts as $activityContact) {
-      $triggerData->setEntityData('ActivityContact', $activityContact);
-      if (isset($activityContact['contact_id']) && $activityContact['contact_id']) {
-        $triggerData->setContactId($activityContact['contact_id']);
+    // hack for email activity (see issue https://lab.civicrm.org/extensions/civirules/-/work_items/290)
+    if ($this->isEmailActivity($objectRef)) {
+      $emailContactId = $this->getEmailContactId();
+      if ($emailContactId) {
+        $triggerData->setContactId($emailContactId);
+        $this->setTriggerData($triggerData);
+        parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
       }
-      $this->setTriggerData($triggerData);
-      parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+    }
+    else {
+      foreach($activityContacts as $activityContact) {
+        $triggerData->setEntityData('ActivityContact', $activityContact);
+        if (isset($activityContact['contact_id']) && $activityContact['contact_id']) {
+          $triggerData->setContactId($activityContact['contact_id']);
+        }
+        $this->setTriggerData($triggerData);
+        parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
+      }
     }
   }
 
@@ -184,6 +194,46 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       default:
         return parent::getHelpText($context);
     }
+  }
+
+  /**
+   * @param $objectRef
+   * @return bool
+   */
+  public function isEmailActivity($objectRef): bool {
+    $emailActivity = FALSE;
+    if ($objectRef->activity_type_id) {
+      try {
+        $optionValue = \Civi\Api4\OptionValue::get(FALSE)
+          ->addSelect('value')
+          ->addWhere('option_group_id:name', '=', 'activity_type')
+          ->addWhere('name', '=', 'Email')
+          ->execute()->first();
+        if ($optionValue['value'] == $objectRef->activity_type_id) {
+          $emailActivity = TRUE;
+        }
+      }
+      catch (\CRM_Core_Exception $ex) {
+      }
+
+    }
+    return $emailActivity;
+  }
+
+  /**
+   * @return int|null
+   */
+  public function getEmailContactId(): ?int {
+    $contactId = NULL;
+    try {
+      $cid = CRM_Utils_Request::retrieveValue('cid', 'Integer');
+      if ($cid) {
+        $contactId = $cid;
+      }
+    }
+    catch (\CRM_Core_Exception $ex) {
+    }
+    return $contactId;
   }
 
 }

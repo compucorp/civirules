@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Version 3.38.0 (2026-06-18)
+
+* [!357](https://lab.civicrm.org/extensions/civirules/-/merge_requests/357) -  fix for issue #290 - trigger activity does not respect activity type email
+
 # Version 3.37.0 (2026-06-18)
 
 * [!354](https://lab.civicrm.org/extensions/civirules/-/merge_requests/354) Optimize SavedSearch CiviRules Rule Log Search by using LEFT JOIN to force index-ordered scan.
