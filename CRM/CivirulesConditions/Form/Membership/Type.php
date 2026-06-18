@@ -29,8 +29,8 @@ class CRM_CivirulesConditions_Form_Membership_Type extends CRM_CivirulesConditio
     ]);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
 
     $this->addFormRule([__CLASS__, 'formRule']);
@@ -87,4 +87,5 @@ class CRM_CivirulesConditions_Form_Membership_Type extends CRM_CivirulesConditio
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

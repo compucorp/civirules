@@ -34,7 +34,7 @@ class CRM_CivirulesActions_Generic_Form_CopyCustomField extends CRM_CivirulesAct
     $this->setDefaults($this->ruleAction->unserializeParams());
 
     $this->addButtons([
-      ['type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
 
@@ -88,11 +88,13 @@ class CRM_CivirulesActions_Generic_Form_CopyCustomField extends CRM_CivirulesAct
           'return' => 'id,label,custom_group_id',
         ]);
         foreach ($field_query['values'] as $field) {
-          $field_list[$field['id']] = ['id' => $field['id'], 'label' => E::ts("Field '%1' (Entity '%3', Group '%2')", [
-            1 => $field['label'],
-            2 => $eligible_group_ids[$field['custom_group_id']],
-            3 => $group_query['values'][$field['custom_group_id']]['extends'],
-           ])
+          $field_list[$field['id']] = [
+            'id' => $field['id'],
+            'label' => E::ts("Field '%1' (Entity '%3', Group '%2')", [
+              1 => $field['label'],
+              2 => $eligible_group_ids[$field['custom_group_id']],
+              3 => $group_query['values'][$field['custom_group_id']]['extends'],
+            ]),
           ];
         }
       }

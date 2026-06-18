@@ -1,7 +1,8 @@
 <?php
 
 use CRM_Civirules_ExtensionUtil as E;
-require_once(E::path('api/v3/CiviRulesRuleAction.php'));
+
+require_once E::path('api/v3/CiviRulesRuleAction.php');
 
 /**
  * Notification of deprecated function.
@@ -80,5 +81,3 @@ function _civicrm_api3_civi_rule_rule_action_delete_spec(&$spec) {
 function civicrm_api3_civi_rule_rule_action_delete($params) {
   return civicrm_api3_civi_rules_rule_action_delete($params);
 }
-
-

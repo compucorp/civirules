@@ -6,7 +6,6 @@
  * @date 10 Nov 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
 
   /**
@@ -24,16 +23,17 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
       $entityTag = $triggerData->getEntityData('EntityTag');
       // todo if tag used contains civicrm_contact and cater for many entity ids
       $params['id'] = $entityTag['entity_id'];
-    } else {
+    }
+    else {
       $params['id'] = $contactId;
     }
-    $params['preferred_communication_method'] = array();
+    $params['preferred_communication_method'] = [];
     try {
       //retrieve current settings for contact
-      $currentCommPrefs = civicrm_api3('Contact', 'getvalue', array(
+      $currentCommPrefs = civicrm_api3('Contact', 'getvalue', [
         'id' => $params['id'],
-        'return' => 'preferred_communication_method'
-      ));
+        'return' => 'preferred_communication_method',
+      ]);
       if (!empty($currentCommPrefs) && !is_array($currentCommPrefs)) {
         $currentCommPrefs = [$currentCommPrefs];
       }
@@ -43,7 +43,8 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
             $params['preferred_communication_method'][] = $currentValue;
           }
         }
-      } else {
+      }
+      else {
         if (!empty($currentCommPrefs)) {
           $params['preferred_communication_method'] = $currentCommPrefs;
         }
@@ -58,8 +59,8 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
       civicrm_api3('Contact', 'create', $params);
     }
     catch (CRM_Core_Exception $ex) {
-      throw new Exception('Could not update contact with communication preferences in '.__METHOD__
-        .', contact your system administrator. Error from API Contact create: '.$ex->getMessage());
+      throw new Exception('Could not update contact with communication preferences in ' . __METHOD__
+        . ', contact your system administrator. Error from API Contact create: ' . $ex->getMessage());
     }
 
   }
@@ -82,12 +83,12 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $commPrefs = civicrm_api3('OptionValue', 'get', array(
+    $commPrefs = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'preferred_communication_method',
       'is_active' => 1,
-      'options' => array('limit' => 0)
-    ));
-    $actionLabels = array();
+      'options' => ['limit' => 0],
+    ]);
+    $actionLabels = [];
     $actionParams = $this->getActionParameters();
     if (isset($actionParams['comm_pref'])) {
       foreach ($actionParams['comm_pref'] as $key => $actionParam) {
@@ -98,10 +99,11 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
         }
       }
     }
-    $label = ts('Communication Preference(s) ').implode(', ', $actionLabels).' '.ts('switched').' ';
+    $label = ts('Communication Preference(s) ') . implode(', ', $actionLabels) . ' ' . ts('switched') . ' ';
     if ($actionParams['on_or_off'] == 1) {
       $label .= ts('ON');
-    } else {
+    }
+    else {
       $label .= 'OFF';
     }
     return $label;
@@ -115,14 +117,15 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['comm_pref'] as $i=>$j) {
+    foreach ($action_params['comm_pref'] as $i => $j) {
       try {
         $action_params['comm_pref'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'name',
           'value' => $j,
           'option_group_id' => 'preferred_communication_method',
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -135,14 +138,15 @@ class CRM_CivirulesActions_Contact_SetCommPref extends CRM_Civirules_Action {
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['comm_pref'] as $i=>$j) {
+    foreach ($action_params['comm_pref'] as $i => $j) {
       try {
         $action_params['comm_pref'][$i] = civicrm_api3('OptionValue', 'getvalue', [
           'return' => 'value',
           'name' => $j,
           'option_group_id' => 'preferred_communication_method',
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);

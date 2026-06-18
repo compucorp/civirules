@@ -10,12 +10,12 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_Form {
 
   /**
-   * @var string the entity name
+   * @var stringtheentityname
    */
   protected $ruleConditionEntity;
 
   /**
-   * @var string the name of the field for the options
+   * @var stringthenameofthefieldfortheoptions
    */
   protected $ruleConditionField;
 
@@ -34,7 +34,7 @@ class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_F
       $entityCondition = new $className();
       return $entityCondition->getEntityStatusFieldName();
     }
-    Throw new Exception("Entity {$entity} does not implement status condition");
+    throw new Exception("Entity {$entity} does not implement status condition");
   }
 
   /**
@@ -56,13 +56,13 @@ class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_F
 
     $this->add('select', 'status_id', $label, $options, TRUE, [
       'multiple' => TRUE,
-      'class' => 'crm-select2'
+      'class' => 'crm-select2',
     ]);
     $this->add('select', 'operator', ts('Operator'), [0 => ts('is one of'), 1 => ts('is NOT one of')], TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

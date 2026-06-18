@@ -5,7 +5,7 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
   /**
    * The API version. We default to 3 for compatibility but new actions should set this to 4.
    *
-   * @var int $apiVersion
+   * @var int
    */
   private int $apiVersion = 3;
 
@@ -38,14 +38,14 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
    *
    * @return string
    */
-  protected abstract function getApiEntity();
+  abstract protected function getApiEntity();
 
   /**
    * Method to get the api action to process in this CiviRule action
    *
    * @return string
    */
-  protected abstract function getApiAction();
+  abstract protected function getApiAction();
 
   /**
    * Returns an array with parameters used for processing an action
@@ -86,7 +86,7 @@ abstract class CRM_CivirulesActions_Generic_Api extends CRM_Civirules_Action {
    * @param string $entity
    * @param string $action
    * @param array $params
-
+   *
    * @throws Exception on api error
    */
   protected function executeApiAction(string $entity, string $action, array $params) {

@@ -3,7 +3,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesPostTrigger_Relationship extends CRM_Civirules_Trigger_Post {
 
   /**
@@ -38,9 +37,10 @@ class CRM_CivirulesPostTrigger_Relationship extends CRM_Civirules_Trigger_Post {
     $relationship = $triggerData->getEntityData('Relationship');
     if (!empty($relationship['case_id'])) {
       try {
-        $case = civicrm_api3('Case', 'getsingle', array('id' => $relationship['case_id']));
+        $case = civicrm_api3('Case', 'getsingle', ['id' => $relationship['case_id']]);
         $triggerData->setEntityData('Case', $case);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         // Do nothing.
       }
     }
@@ -54,7 +54,7 @@ class CRM_CivirulesPostTrigger_Relationship extends CRM_Civirules_Trigger_Post {
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case' , 'Case');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case', 'Case');
     return $entities;
   }
 

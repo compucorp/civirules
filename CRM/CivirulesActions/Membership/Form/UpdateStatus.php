@@ -9,7 +9,6 @@ use CRM_Civirules_ExtensionUtil as E;
 /**
  * Form Class for Action: "Update Membership"
  */
-
 class CRM_CivirulesActions_Membership_Form_UpdateStatus extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -35,8 +34,8 @@ class CRM_CivirulesActions_Membership_Form_UpdateStatus extends CRM_CivirulesAct
     $this->addRadio('set_is_override', ts('Status Override?'), $options, [], NULL, TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -52,7 +51,7 @@ class CRM_CivirulesActions_Membership_Form_UpdateStatus extends CRM_CivirulesAct
       $defaultValues['membership_status_id'] = $data['membership_status_id'];
     }
     if (!empty($data['set_is_override'])) {
-        $defaultValues['set_is_override'] = $data['set_is_override'];
+      $defaultValues['set_is_override'] = $data['set_is_override'];
     }
     return $defaultValues;
   }

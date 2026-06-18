@@ -42,7 +42,7 @@ class CRM_CivirulesActions_Generic_SetCustomField extends CRM_Civirules_Action {
     $new_value = $action_params['value'];
     // check if it's json
     $json_value = json_decode($new_value, 1);
-    if ($json_value !== null) {
+    if ($json_value !== NULL) {
       $new_value = $json_value;
     }
 
@@ -80,7 +80,8 @@ class CRM_CivirulesActions_Generic_SetCustomField extends CRM_Civirules_Action {
         unset($action_params['field_id']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -103,7 +104,8 @@ class CRM_CivirulesActions_Generic_SetCustomField extends CRM_Civirules_Action {
         $action_params['field_id'] = $customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

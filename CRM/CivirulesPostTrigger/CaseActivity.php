@@ -20,7 +20,8 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
     $case = new CRM_Case_BAO_Case();
     if ($objectRef instanceof CRM_Activity_DAO_Activity && !empty($objectRef->case_id)) {
       $case->id = $objectRef->case_id;
-    } else {
+    }
+    else {
       // Get the CaseActivity record.
       $caseActivity = new CRM_Case_DAO_CaseActivity();
       $caseActivity->activity_id = $objectId;
@@ -31,13 +32,12 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
     }
 
     if ($case->id && $case->find(TRUE)) {
-      $data = array();
+      $data = [];
       CRM_Core_DAO::storeValues($case, $data);
       $triggerData->setEntityData('Case', $data);
     }
     return $triggerData;
   }
-
 
   /**
    * Trigger a rule for this trigger
@@ -58,16 +58,16 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
 
   protected function isCaseActivity($op, $objectName, $objectId, $objectRef) {
     if ($objectName != 'Activity') {
-      return false;
+      return FALSE;
     }
     if (isset($objectRef->case_id) && !empty($objectRef->case_id)) {
-      return true;
-    } elseif (CRM_Case_BAO_Case::isCaseActivity($objectId)) {
-      return true;
+      return TRUE;
     }
-    return false;
+    elseif (CRM_Case_BAO_Case::isCaseActivity($objectId)) {
+      return TRUE;
+    }
+    return FALSE;
   }
-
 
   /**
    * Returns additional entities provided in this trigger.
@@ -76,8 +76,9 @@ class CRM_CivirulesPostTrigger_CaseActivity extends CRM_CivirulesPostTrigger_Act
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case' , 'Case');
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('CaseActivity', 'CaseActivity', 'CRM_Case_DAO_CaseActivity' , 'CaseActivity');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Case', 'Case', 'CRM_Case_DAO_Case', 'Case');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('CaseActivity', 'CaseActivity', 'CRM_Case_DAO_CaseActivity', 'CaseActivity');
     return $entities;
   }
+
 }

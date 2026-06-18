@@ -13,10 +13,10 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
    */
   protected function queryForTriggerEntities() {
     if (empty($this->triggerParams['activity_type_id'])) {
-      return false;
+      return FALSE;
     }
     if (empty($this->triggerParams['activity_status_id'])) {
-      return false;
+      return FALSE;
     }
 
     $activityContactWhereClause = '';
@@ -45,12 +45,12 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
               FROM `civirule_rule_log` `rule_log2`
               WHERE `rule_log2`.`rule_id` = %3 and `rule_log2`.`entity_table` IS NULL AND `rule_log2`.`entity_id` IS NULL
             )";
-    $params[1] = array($this->triggerParams['activity_type_id'], 'Integer');
-    $params[2] = array($this->triggerParams['activity_status_id'], 'Integer');
-    $params[3] = array($this->ruleId, 'Integer');
-    $this->activityDAO = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Activity_DAO_Activity');
+    $params[1] = [$this->triggerParams['activity_type_id'], 'Integer'];
+    $params[2] = [$this->triggerParams['activity_status_id'], 'Integer'];
+    $params[3] = [$this->ruleId, 'Integer'];
+    $this->activityDAO = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Activity_DAO_Activity');
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -63,7 +63,7 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/activitydate', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/activitydate', 'rule_id=' . $ruleId);
   }
 
   /**
@@ -72,8 +72,8 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
    * @return string
    */
   public function getTriggerDescription(): string {
-    $activityTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('activity_type'),  $this->triggerParams['activity_type_id']);
-    $activityStatusLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('activity_status'),  $this->triggerParams['activity_status_id']);
+    $activityTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('activity_type'), $this->triggerParams['activity_type_id']);
+    $activityStatusLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('activity_status'), $this->triggerParams['activity_status_id']);
 
     $result = civicrm_api3('ActivityContact', 'getoptions', [
       'field' => "record_type_id",

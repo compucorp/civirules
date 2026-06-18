@@ -34,5 +34,4 @@ class CiviRulesCompilerPass implements CompilerPassInterface {
     }
   }
 
-
 }

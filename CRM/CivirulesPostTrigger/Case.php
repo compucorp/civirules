@@ -39,7 +39,7 @@ class CRM_CivirulesPostTrigger_Case extends CRM_Civirules_Trigger_Post {
 
     //trigger for each client
     $clients = CRM_Case_BAO_Case::getCaseClients($objectId);
-    foreach($clients as $client) {
+    foreach ($clients as $client) {
       $triggerData = clone $t;
       $triggerData->setEntityData('Relationship', NULL);
       $triggerData->setContactId($client);
@@ -49,13 +49,13 @@ class CRM_CivirulesPostTrigger_Case extends CRM_Civirules_Trigger_Post {
 
     //trigger for each case role
     $relatedContacts = CRM_Case_BAO_Case::getRelatedContacts($objectId);
-    foreach($relatedContacts as $contact) {
+    foreach ($relatedContacts as $contact) {
       $triggerData = clone $t;
       $relationshipData = NULL;
       $relationship = new CRM_Contact_BAO_Relationship();
       $relationship->contact_id_b = $contact['contact_id'];
       $relationship->case_id = $objectId;
-      if ($relationship->find(true)) {
+      if ($relationship->find(TRUE)) {
         CRM_Core_DAO::storeValues($relationship, $relationshipData);
       }
       $triggerData->setEntityData('Relationship', $relationshipData);
@@ -72,7 +72,7 @@ class CRM_CivirulesPostTrigger_Case extends CRM_Civirules_Trigger_Post {
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Relationship', 'Relationship', 'CRM_Contact_DAO_Relationship' , 'Relationship');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Relationship', 'Relationship', 'CRM_Contact_DAO_Relationship', 'Relationship');
     return $entities;
   }
 
@@ -82,8 +82,8 @@ class CRM_CivirulesPostTrigger_Case extends CRM_Civirules_Trigger_Post {
 
     //retrieve extra data from the database because the objectRef does not contain all
     //data from the case
-    $case_data = civicrm_api3('Case', 'getsingle', array('id' => $id));
-    foreach($case_data as $key => $value) {
+    $case_data = civicrm_api3('Case', 'getsingle', ['id' => $id]);
+    foreach ($case_data as $key => $value) {
       if (!isset($data[$key])) {
         $data[$key] = $value;
       }

@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_ContributionRecur_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
 
   /**
@@ -57,7 +56,7 @@ class CRM_CivirulesConditions_ContributionRecur_StatusChanged extends CRM_Civiru
     $return = [];
     $params = [
       'return' => ["name", "value"],
-      'option_group_id' =>  'contribution_status',
+      'option_group_id' => 'contribution_status',
       'options' => ['limit' => 0, 'sort' => "label ASC"],
     ];
     try {
@@ -65,7 +64,9 @@ class CRM_CivirulesConditions_ContributionRecur_StatusChanged extends CRM_Civiru
       foreach ($options as $option) {
         $return[$option['value']] = $option['name'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return $return;
   }

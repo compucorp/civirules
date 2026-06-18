@@ -1,13 +1,12 @@
 <?php
 
-use Civi\Api4\Service\Schema\Joinable\CustomGroupJoinable;
 
 class CRM_Civirules_Utils_PreData {
 
   /**
    * Data set in pre and used for compare which field is changed
    *
-   * @var array $preData
+   * @var array
    */
   protected static $preData = [];
 
@@ -46,7 +45,8 @@ class CRM_Civirules_Utils_PreData {
     $id = $objectId;
     if (empty($id) && isset($params['id']) && !empty($params['id'])) {
       $id = $params['id'];
-    } elseif ($objectName == 'EntityTag') {
+    }
+    elseif ($objectName == 'EntityTag') {
       try {
         $id = civicrm_api3('EntityTag', 'getvalue', [
           'return' => 'id',
@@ -79,7 +79,8 @@ class CRM_Civirules_Utils_PreData {
       else {
         $data = civicrm_api3($entity, 'getsingle', ['id' => $id]);
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       return;
     }
     // add custom data fields
@@ -89,16 +90,17 @@ class CRM_Civirules_Utils_PreData {
         'entity_id' => $id,
         'entity_table' => ucfirst($entity),
       ]);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $customData = [];
     }
-    if ( empty($customData['is_error']) && ! empty($customData['count']) ) {
-      foreach ($customData['values'] as $customField ) {
+    if (empty($customData['is_error']) && !empty($customData['count'])) {
+      foreach ($customData['values'] as $customField) {
         $data['custom_' . $customField['id']] = $customField['latest'];
       }
     }
 
-    foreach($triggers as $trigger) {
+    foreach ($triggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {
         $data = $trigger->alterPreData($data, $op, $objectName, $objectId, $params, $eventID);
       }
@@ -116,7 +118,7 @@ class CRM_Civirules_Utils_PreData {
    * @param $params
    * @param $eventID
    */
-  public static function customPre($op, $groupID, $entityID, $params, $eventID=1) {
+  public static function customPre($op, $groupID, $entityID, $params, $eventID = 1) {
     // We use api version 3 here as there is no api v4 for the CustomValue table.
     if ($op != 'edit' && $op != 'delete') {
       return;
@@ -128,12 +130,13 @@ class CRM_Civirules_Utils_PreData {
     if (!isset(self::$preData[$entity][$entityID][$eventID])) {
       try {
         $data = civicrm_api3($entity, 'getsingle', ['id' => $entityID]);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         // Do nothing.
       }
       $customDataApiResult = civicrm_api3('CustomValue', 'get', [
         'entity_id' => $entityID,
-        'entity_table' => $entity
+        'entity_table' => $entity,
       ]);
       foreach ($customDataApiResult['values'] as $customField) {
         $data['custom_' . $customField['id']] = $customField['latest'];
@@ -171,12 +174,15 @@ class CRM_Civirules_Utils_PreData {
       case 'Contact':
         $entityNames = ['Contact', 'Individual', 'Organization', 'Household'];
         break;
+
       case 'Individual':
         $entityNames = ['Contact', 'Individual'];
         break;
+
       case 'Organization':
         $entityNames = ['Contact', 'Organization'];
         break;
+
       case 'Household':
         $entityNames = ['Contact', 'Household'];
         break;
@@ -199,15 +205,15 @@ class CRM_Civirules_Utils_PreData {
    */
   public static function getEntityTagId(string $entity_table, int $entity_id):? int {
     if (isset(self::$preData['EntityTag'])) {
-      foreach(self::$preData['EntityTag'] as $id => $entityTags) {
-        foreach($entityTags as $entityTag) {
+      foreach (self::$preData['EntityTag'] as $id => $entityTags) {
+        foreach ($entityTags as $entityTag) {
           if (isset($entityTag['entity_table']) && $entityTag['entity_table'] == $entity_table && isset($entityTag['entity_id']) && $entityTag['entity_id'] == $entity_id) {
             return $id;
           }
         }
       }
     }
-    return null;
+    return NULL;
   }
 
 }

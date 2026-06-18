@@ -6,7 +6,6 @@
  * @date 3 May 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -17,12 +16,13 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'activity_type_id', ts('Activity Type(s)'), $this->getActivityTypeList(), TRUE,
-      array('id' => 'activity_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
+      ['id' => 'activity_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'campaign_id', ts('Campaign(s)'), CRM_Civirules_Utils::getCampaignList(), TRUE,
-      array('id' => 'campaign_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+      ['id' => 'campaign_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -64,22 +64,22 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
    * @return array
    */
   private function getActivityTypeList() {
-    $activityTypeList = array();
+    $activityTypeList = [];
     try {
-      $activityTypes = civicrm_api3('OptionValue', 'get', array(
+      $activityTypes = civicrm_api3('OptionValue', 'get', [
         'sequential' => 1,
         'is_active' => 1,
         'option_group_id' => 'activity_type',
-        'component_id' => array('IS NULL' => 1),
-        'options' => array('limit' => 0),
-      ));
+        'component_id' => ['IS NULL' => 1],
+        'options' => ['limit' => 0],
+      ]);
       foreach ($activityTypes['values'] as $activityType) {
         $activityTypeList[$activityType['value']] = $activityType['label'];
       }
       asort($activityTypeList);
     }
     catch (CRM_Core_Exception $ex) {
-      $activityTypeList = array();
+      $activityTypeList = [];
     }
     return $activityTypeList;
   }

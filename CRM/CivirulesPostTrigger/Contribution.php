@@ -19,20 +19,22 @@
     try {
       $dataFromPostHook = $triggerData->getEntityData('Contribution');
       if (!isset($dataFromPostHook['contact_id']) || !isset($dataFromPostHook['financial_type_id'])) {
-        $dataInDatabase = civicrm_api3('Contribution', 'getsingle', array('id' => $dataFromPostHook['id']));
+        $dataInDatabase = civicrm_api3('Contribution', 'getsingle', ['id' => $dataFromPostHook['id']]);
         // Merge both arrays preserving the data in the posthook.
         $newData = array_merge($dataInDatabase, $dataFromPostHook);
         $triggerData->setEntityData('Contribution', $newData);
       }
       if (CRM_Civirules_Utils_ContributionTrigger::getParticipantId()) {
         try {
-          $participant = civicrm_api3('Participant', 'getsingle', array('id' => CRM_Civirules_Utils_ContributionTrigger::getParticipantId()));
+          $participant = civicrm_api3('Participant', 'getsingle', ['id' => CRM_Civirules_Utils_ContributionTrigger::getParticipantId()]);
           $triggerData->setEntityData('Participant', $participant);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           // Do nothing
         }
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       // Do nothing. There could be an exception when the contribution does not exists in the database anymore.
     }
 

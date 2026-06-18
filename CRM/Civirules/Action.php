@@ -64,7 +64,6 @@ abstract class CRM_Civirules_Action {
     $this->action = $action;
   }
 
-
   /**
    * Returns condition data as an array and ready for export.
    * E.g. replace ids for names.
@@ -81,7 +80,7 @@ abstract class CRM_Civirules_Action {
    *
    * @return string
    */
-  public function importActionParameters($action_params=null) {
+  public function importActionParameters($action_params = NULL) {
     if (!empty($action_params)) {
       return serialize($action_params);
     }
@@ -154,7 +153,7 @@ abstract class CRM_Civirules_Action {
    * @param \CRM_Civirules_TriggerData_TriggerData|NULL $triggerData
    * @param string $level Should be one of \Psr\Log\LogLevel
    */
-  protected function logAction($message, ?CRM_Civirules_TriggerData_TriggerData $triggerData=null, $level=\Psr\Log\LogLevel::INFO) {
+  protected function logAction($message, ?CRM_Civirules_TriggerData_TriggerData $triggerData = NULL, $level = \Psr\Log\LogLevel::INFO) {
     $context = [];
     $context['message'] = $message;
     $context['rule_id'] = $this->ruleAction['rule_id'];
@@ -167,7 +166,7 @@ abstract class CRM_Civirules_Action {
     $context['rule_action_id'] = $this->ruleAction['id'];
     $context['action_label'] = CRM_Civirules_BAO_Action::getActionLabelWithId($this->ruleAction['action_id']);
     $context['action_parameters'] = $this->userFriendlyConditionParams();
-    $context['contact_id'] = $triggerData ? $triggerData->getContactId() : - 1;
+    $context['contact_id'] = $triggerData ? $triggerData->getContactId() : -1;
     $msg = E::ts(
       "Rule: '%1' with id %2: Action: %3 with id %4: %5",
       [

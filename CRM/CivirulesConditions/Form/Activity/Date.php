@@ -16,15 +16,16 @@ class CRM_CivirulesConditions_Form_Activity_Date extends CRM_CivirulesConditions
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'operator', ts('Operator'), CRM_Civirules_Utils::getActivityDateOperatorOptions(), TRUE, array('onclick' => "checkOperator()"));
-    $this->add('datepicker', 'activity_compare_date', ts('Comparison Date'), array('placeholder' => ts('Compare with')),FALSE, array('time' => FALSE));
-    $this->add('datepicker', 'activity_from_date', ts('From date'), array('placeholder' => ts('From')),FALSE, array('time' => FALSE));
-    $this->add('datepicker', 'activity_to_date', ts('To date'), array('placeholder' => ts('To')),FALSE, array('time' => FALSE));
+    $this->add('select', 'operator', ts('Operator'), CRM_Civirules_Utils::getActivityDateOperatorOptions(), TRUE, ['onclick' => "checkOperator()"]);
+    $this->add('datepicker', 'activity_compare_date', ts('Comparison Date'), ['placeholder' => ts('Compare with')], FALSE, ['time' => FALSE]);
+    $this->add('datepicker', 'activity_from_date', ts('From date'), ['placeholder' => ts('From')], FALSE, ['time' => FALSE]);
+    $this->add('datepicker', 'activity_to_date', ts('To date'), ['placeholder' => ts('To')], FALSE, ['time' => FALSE]);
     $this->addYesNo('use_trigger_date', ts('Compare with the date the rule is triggered'), [], TRUE);
     $this->addYesNo('use_action_date', ts('Compare with the date the action is executed'), [], TRUE);
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }
@@ -35,7 +36,7 @@ class CRM_CivirulesConditions_Form_Activity_Date extends CRM_CivirulesConditions
    * @access public
    */
   public function addRules() {
-    $this->addFormRule(array('CRM_CivirulesConditions_Form_Activity_Date', 'validateInputFields'));
+    $this->addFormRule(['CRM_CivirulesConditions_Form_Activity_Date', 'validateInputFields']);
   }
 
   /**

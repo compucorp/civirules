@@ -43,6 +43,7 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
           $errors['value'] = ts('Compare value is required');
         }
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -67,6 +68,7 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
           $errors['original_value'] = ts('Compare value is required');
         }
         break;
+
       case 'is one of':
       case 'is not one of':
       case 'contains one of':
@@ -107,7 +109,7 @@ class CRM_CivirulesConditions_Form_FieldValueChangeComparison extends CRM_Civiru
     $this->assign('is_field_option_multiple', $this->conditionClass->isMultiple());
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }

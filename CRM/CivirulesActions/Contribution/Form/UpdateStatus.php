@@ -21,8 +21,8 @@ class CRM_CivirulesActions_Contribution_Form_UpdateStatus extends CRM_CivirulesA
     $this->add('select', 'status_id', E::ts('Set Status to'), ['' => E::ts('-- please select --')] + $statuses, TRUE);
     $this->add('text', 'cancel_reason', E::ts('Set Cancel Reason To'));
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 

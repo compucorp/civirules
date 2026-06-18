@@ -30,7 +30,7 @@ abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
       return $result;
     }
 
-    while($triggerData = $this->getNextEntityTriggerData()) {
+    while ($triggerData = $this->getNextEntityTriggerData()) {
       try {
         $this->alterTriggerData($triggerData);
         $isValid = CRM_Civirules_Engine::triggerRule($this, $triggerData);
@@ -70,7 +70,8 @@ abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
           }
         }
       }
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
       // Do nothing.
     }
     return FALSE;
@@ -92,19 +93,21 @@ abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
    * @return int
    */
   protected function getLockTimeout() {
-    return 1800; //1800 seconds = 30 minutes
+    //1800 seconds = 30 minutes
+    return 1800;
   }
 
-  /*
+  /**
+   *
    * Returns the name of the trigger data class.
    *
    * This function could be overridden in a child class.
    *
    * @return String
+   *
    */
   public function getTriggerDataClassName() {
     return 'CRM_Civirules_TriggerData_Cron';
   }
-
 
 }

@@ -8,11 +8,11 @@
  *
  * This stub provides compatibility. It is not intended to be modified in a
  * substantive way. Property annotations may be added, but are not required.
- * @property string $id 
- * @property string $name 
- * @property string $label 
- * @property string $class_name 
- * @property bool|string $is_active 
+ * @property string $id
+ * @property string $name
+ * @property string $label
+ * @property string $class_name
+ * @property bool|string $is_active
  */
 class CRM_Civirules_DAO_CiviRulesAction extends CRM_Civirules_DAO_Base {
 

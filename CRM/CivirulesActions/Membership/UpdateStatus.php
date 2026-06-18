@@ -24,10 +24,11 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
     $params['status_id'] = $action_params['membership_status_id'];
     switch ($params['set_is_override']) {
       case 'set_true':
-        $params['is_override'] = true;
+        $params['is_override'] = TRUE;
         break;
+
       case 'set_false':
-        $params['is_override'] = false;
+        $params['is_override'] = FALSE;
         break;
     }
     return $params;
@@ -46,7 +47,8 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
         'return' => 'name',
         'id' => $action_params['membership_status_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -63,7 +65,8 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
         'return' => 'id',
         'name' => $action_params['membership_status_id'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -93,17 +96,18 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
     $friendlyParams = '';
     $params = $this->getActionParameters();
     if ($params['membership_status_id']) {
-      $status = civicrm_api3('MembershipStatus', 'getvalue', array(
+      $status = civicrm_api3('MembershipStatus', 'getvalue', [
         'return' => 'label',
-        'id' => $params['membership_status_id']));
-      $friendlyParams .= E::ts("Status: %1", array(1 => $status));
+        'id' => $params['membership_status_id'],
+      ]);
+      $friendlyParams .= E::ts("Status: %1", [1 => $status]);
     }
     if ($params['set_is_override']) {
       $friendlyParams .= '; ' . E::ts('Status Override?');
       $options = [
-      'set_true' => E::ts('set to override permanently'),
-      'set_false' => E::ts('set to not override'),
-      'dont_set' => E::ts('do not change setting'),
+        'set_true' => E::ts('set to override permanently'),
+        'set_false' => E::ts('set to not override'),
+        'dont_set' => E::ts('do not change setting'),
       ];
       $friendlyParams .= ' ' . $options[$params['set_is_override']];
     }

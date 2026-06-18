@@ -3,7 +3,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_AfformSubmission_Status extends CRM_CivirulesConditions_Generic_Status {
 
   /**

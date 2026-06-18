@@ -28,7 +28,7 @@ class CRM_CivirulesConditions_Form_Membership_ActiveMembership extends CRM_Civir
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -62,4 +62,5 @@ class CRM_CivirulesConditions_Form_Membership_ActiveMembership extends CRM_Civir
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

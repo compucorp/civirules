@@ -8,7 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 27 Aug 2024
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Membership_CancelLatestMembership extends CRM_Civirules_Action {
 
   /**

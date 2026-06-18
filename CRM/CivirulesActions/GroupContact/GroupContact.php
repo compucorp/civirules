@@ -43,10 +43,11 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
     $groupIds = [];
     if (!empty($actionParams['group_id'])) {
       $groupIds = [$actionParams['group_id']];
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       $groupIds = $actionParams['group_ids'];
     }
-    foreach($groupIds as $groupId) {
+    foreach ($groupIds as $groupId) {
       $params = [];
       $params['group_id'] = $groupId;
 
@@ -72,16 +73,19 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
           'return' => 'name',
           'id' => $action_params['group_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       foreach ($action_params['group_ids'] as $i => $j) {
         try {
           $action_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'name',
             'id' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -101,16 +105,19 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
           'return' => 'id',
           'name' => $action_params['group_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($actionParams['group_ids']) && is_array($actionParams['group_ids'])) {
       foreach ($action_params['group_ids'] as $i => $j) {
         try {
           $action_params['group_ids'][$i] = civicrm_api3('Group', 'getvalue', [
             'return' => 'id',
             'name' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -142,25 +149,28 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
       try {
         $group = civicrm_api3('Group', 'getvalue', [
           'return' => 'title',
-          'id' => $params['group_id']
+          'id' => $params['group_id'],
         ]);
         return $this->getActionLabel($group);
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         return '';
       }
-    } elseif (!empty($params['group_ids']) && is_array($params['group_ids'])) {
+    }
+    elseif (!empty($params['group_ids']) && is_array($params['group_ids'])) {
       $groups = '';
-      foreach($params['group_ids'] as $group_id) {
+      foreach ($params['group_ids'] as $group_id) {
         try {
           $group = civicrm_api3('Group', 'getvalue', [
             'return' => 'title',
-            'id' => $group_id
+            'id' => $group_id,
           ]);
           if (strlen($groups)) {
             $groups .= ', ';
           }
           $groups .= $group;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           // Do nothing.
         }
       }

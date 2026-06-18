@@ -5,7 +5,6 @@
  * @author Véronique Gratioulet <veronique.gratioulet@atd-quartmonde.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contact_HasSubtype extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -14,12 +13,12 @@ class CRM_CivirulesConditions_Form_Contact_HasSubtype extends CRM_CivirulesCondi
    * @return array
    * @access protected
    */
-  protected function getSubtypes($contactType = null) {
+  protected function getSubtypes($contactType = NULL) {
     if ($contactType != "Individual" && $contactType != "Household" || $contactType != "Individual") {
       $contactType = NULL;
     }
     $all = empty($contactType);
-    return CRM_Contact_BAO_ContactType::subTypePairs($contactType, $all, null);
+    return CRM_Contact_BAO_ContactType::subTypePairs($contactType, $all, NULL);
   }
 
   /**
@@ -41,13 +40,14 @@ class CRM_CivirulesConditions_Form_Contact_HasSubtype extends CRM_CivirulesCondi
     $this->add('hidden', 'rule_condition_id');
     $object_name = $this->trigger->object_name;
 
-    $subtype = $this->add('select', 'subtype_names', ts('Subtypes'), $this->getSubtypes($object_name), true);
+    $subtype = $this->add('select', 'subtype_names', ts('Subtypes'), $this->getSubtypes($object_name), TRUE);
     $subtype->setMultiple(TRUE);
-    $this->add('select', 'operator', ts('Operator'), $this->getOperators(), true);
+    $this->add('select', 'operator', ts('Operator'), $this->getOperators(), TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -82,4 +82,5 @@ class CRM_CivirulesConditions_Form_Contact_HasSubtype extends CRM_CivirulesCondi
 
     parent::postProcess();
   }
+
 }

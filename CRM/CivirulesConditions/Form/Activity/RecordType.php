@@ -17,13 +17,14 @@ class CRM_CivirulesConditions_Form_Activity_RecordType extends CRM_CivirulesCond
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $activityTypeList = array('- select -') + CRM_Core_OptionGroup::values('activity_contacts');
+    $activityTypeList = ['- select -'] + CRM_Core_OptionGroup::values('activity_contacts');
     asort($activityTypeList);
-    $this->add('select', 'record_type_id', 'Contact record Type', $activityTypeList, true);
+    $this->add('select', 'record_type_id', 'Contact record Type', $activityTypeList, TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

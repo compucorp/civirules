@@ -25,8 +25,9 @@ class CRM_CivirulesConditions_Activity_Subject extends CRM_Civirules_Condition {
           $isConditionValid = TRUE;
         }
         break;
+
       case 'contains':
-        if (strpos(mb_strtolower($activity['subject']), mb_strtolower($this->conditionParams['text'])) !== false){
+        if (strpos(mb_strtolower($activity['subject']), mb_strtolower($this->conditionParams['text'])) !== FALSE) {
           $isConditionValid = TRUE;
         }
         break;

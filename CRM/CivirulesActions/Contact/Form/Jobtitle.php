@@ -3,9 +3,7 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_Form_Jobtitle extends CRM_CivirulesActions_Form_Form {
-
 
   /**
    * Overridden parent method to build the form
@@ -15,11 +13,12 @@ class CRM_CivirulesActions_Contact_Form_Jobtitle extends CRM_CivirulesActions_Fo
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('text', 'job_title', ts('Job title'), true);
+    $this->add('text', 'job_title', ts('Job title'), TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

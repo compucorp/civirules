@@ -18,13 +18,14 @@ class CRM_CivirulesConditions_Form_Case_CaseType extends CRM_CivirulesConditions
     $caseTypes = $this->getCaseTypes();
     $caseTypes[0] = ts('- select -');
     asort($caseTypes);
-    $this->add('select', 'case_type_id', ts('Case Type(s)'), $caseTypes, true,
-      array('id' => 'case_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'case_type_id', ts('Case Type(s)'), $caseTypes, TRUE,
+      ['id' => 'case_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -58,4 +59,5 @@ class CRM_CivirulesConditions_Form_Case_CaseType extends CRM_CivirulesConditions
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

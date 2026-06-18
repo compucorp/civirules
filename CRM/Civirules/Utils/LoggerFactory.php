@@ -4,18 +4,18 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_Civirules_Utils_LoggerFactory {
 
-  private static $logger = null;
+  private static $logger = NULL;
 
-  private static $loggerHookInvoked = false;
+  private static $loggerHookInvoked = FALSE;
 
   /**
    * @return \Psr\Log\LoggerInterface|NULL
    */
   public static function getLogger() {
-    if (empty(self::$logger) && self::$loggerHookInvoked === false) {
+    if (empty(self::$logger) && self::$loggerHookInvoked === FALSE) {
       $hook = CRM_Civirules_Utils_HookInvoker::singleton();
       $hook->hook_civirules_getlogger(self::$logger);
-      self::$loggerHookInvoked = true;
+      self::$loggerHookInvoked = TRUE;
       if (empty(self::$logger)) {
         self::$logger = Civi::log();
       }
@@ -23,7 +23,7 @@ class CRM_Civirules_Utils_LoggerFactory {
     return self::$logger;
   }
 
-  public static function log($message, $context=[], $level=\Psr\Log\LogLevel::INFO) {
+  public static function log($message, $context = [], $level = \Psr\Log\LogLevel::INFO) {
     $logger = CRM_Civirules_Utils_LoggerFactory::getLogger();
     if (empty($logger)) {
       return;
@@ -39,7 +39,7 @@ class CRM_Civirules_Utils_LoggerFactory {
    *
    * @return void
    */
-  public static function logError(string $reason, string $original_error, CRM_Civirules_TriggerData_TriggerData $triggerData, $context=[]) {
+  public static function logError(string $reason, string $original_error, CRM_Civirules_TriggerData_TriggerData $triggerData, $context = []) {
     $logger = CRM_Civirules_Utils_LoggerFactory::getLogger();
     if (empty($logger)) {
       return;

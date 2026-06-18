@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Email_PrimaryEmailChanged extends CRM_CivirulesConditions_Generic_FieldChanged {
 
   /**
@@ -40,11 +39,13 @@ class CRM_CivirulesConditions_Email_PrimaryEmailChanged extends CRM_CivirulesCon
     if ($isValid) {
       $data = $triggerData->getEntityData($this->getEntity());
       if (!empty($data['is_primary'])) {
-        $isValid = true;
-      } else {
-        $isValid = false;
+        $isValid = TRUE;
+      }
+      else {
+        $isValid = FALSE;
       }
     }
     return $isValid;
   }
+
 }

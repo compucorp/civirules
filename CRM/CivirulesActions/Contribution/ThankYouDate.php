@@ -6,6 +6,7 @@
  * @license AGPL-3.0
  */
 class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Action {
+
   /**
    * Method processAction to execute the action
    *
@@ -20,12 +21,14 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
       case 1:
         if (!empty($actionParams['number_of_days'])) {
           $thankYouDate = new DateTime();
-          $thankYouDate->modify('+'.$actionParams['number_of_days']. ' day');
-          }
+          $thankYouDate->modify('+' . $actionParams['number_of_days'] . ' day');
+        }
         break;
+
       case 2:
         $thankYouDate = new DateTime($actionParams['thank_you_date']);
         break;
+
       default:
         $thankYouDate = new DateTime();
         break;
@@ -38,13 +41,15 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
     if (empty($actionParams['thank_you_time']) && empty($actionParams['thank_you_time_radio'])) {
       $thankYouDate->setTime(0, 0, 0);
     }
-    $params = array(
+    $params = [
       'id' => $contribution['id'],
-      'thankyou_date' => $thankYouDate->format('YmdHis')
-    );
+      'thankyou_date' => $thankYouDate->format('YmdHis'),
+    ];
     try {
       civicrm_api3('Contribution', 'Create', $params);
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
   }
 
   /**
@@ -81,9 +86,11 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
         case 0:
           $dateString = "date action executes";
           break;
+
         case 1:
-          $dateString = $params['number_of_days']." days after action executes";
+          $dateString = $params['number_of_days'] . " days after action executes";
           break;
+
         case 2:
           $dateString = date('d M Y', strtotime($params['thank_you_date']));
           break;
@@ -101,4 +108,5 @@ class CRM_CivirulesActions_Contribution_ThankYouDate extends CRM_Civirules_Actio
     }
     return $return;
   }
+
 }

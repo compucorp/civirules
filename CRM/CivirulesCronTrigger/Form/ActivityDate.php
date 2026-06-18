@@ -34,8 +34,10 @@ class CRM_CivirulesCronTrigger_Form_ActivityDate extends CRM_CivirulesCronTrigge
 
     if (!empty($data['record_type'])) {
       $defaultValues['record_type'] = $data['record_type'];
-    } else {
-      $defaultValues['record_type'] = 3; // Default to only targets
+    }
+    else {
+      // Default to only targets
+      $defaultValues['record_type'] = 3;
     }
 
     $defaultValues['case_activity'] = $data['case_activity'] ?? FALSE;

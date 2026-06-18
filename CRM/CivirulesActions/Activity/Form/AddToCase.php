@@ -30,7 +30,7 @@ class CRM_CivirulesActions_Activity_Form_AddToCase extends CRM_CivirulesActions_
 
     $case_types = [];
     $case_type_api = civicrm_api3('CaseType', 'get', ['options' => ['limit' => 0]]);
-    foreach($case_type_api['values'] as $case_type) {
+    foreach ($case_type_api['values'] as $case_type) {
       $case_types[$case_type['id']] = $case_type['title'];
     }
 
@@ -83,4 +83,5 @@ class CRM_CivirulesActions_Activity_Form_AddToCase extends CRM_CivirulesActions_
     $this->ruleAction->action_params = serialize($data);
     $this->ruleAction->save();
   }
+
 }

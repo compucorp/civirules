@@ -17,13 +17,14 @@ class CRM_CivirulesConditions_Form_Activity_Details extends CRM_CivirulesConditi
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $this->add('select', 'operator', ts('Operator'), array('contains' => 'Contains the text', 'exact_match' => 'is an exact match to'), true);
+    $this->add('select', 'operator', ts('Operator'), ['contains' => 'Contains the text', 'exact_match' => 'is an exact match to'], TRUE);
 
-    $this->add('textarea', 'text', ts('Text to match'), null, true);
+    $this->add('textarea', 'text', ts('Text to match'), NULL, TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

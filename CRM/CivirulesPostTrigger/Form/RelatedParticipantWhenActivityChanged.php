@@ -11,9 +11,9 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged extend
   public static function getActivityCustomFields() {
     $customGroups = civicrm_api3('CustomGroup', 'get', ['extends' => 'Activity', 'options' => ['limit' => 0]]);
     $activityCustomFields = [];
-    foreach($customGroups['values'] as $customGroup) {
+    foreach ($customGroups['values'] as $customGroup) {
       $customFields = civicrm_api3('CustomField', 'get', ['custom_group_id' => $customGroup['id'], 'options' => ['limit' => 0]]);
-      foreach($customFields['values'] as $customField) {
+      foreach ($customFields['values'] as $customField) {
         $activityCustomFields[$customField['id']] = $customGroup['title'] . ': ' . $customField['label'];
       }
     }
@@ -27,17 +27,18 @@ class CRM_CivirulesPostTrigger_Form_RelatedParticipantWhenActivityChanged extend
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
-    $this->add('select', 'event_id_custom_field', ts('Event ID custom field'), array('' => ts('-- please select --')) + self::getActivityCustomFields(), true, [
-      'class' => 'crm-select2 huge'
+    $this->add('select', 'event_id_custom_field', ts('Event ID custom field'), ['' => ts('-- please select --')] + self::getActivityCustomFields(), TRUE, [
+      'class' => 'crm-select2 huge',
     ]);
-    $this->add('select', 'activity_type_id', ts('Limit to Activity type'), array('' => ts('-- please select --')) + CRM_Core_OptionGroup::values('activity_type'), true, [
+    $this->add('select', 'activity_type_id', ts('Limit to Activity type'), ['' => ts('-- please select --')] + CRM_Core_OptionGroup::values('activity_type'), TRUE, [
       'class' => 'crm-select2 huge',
       'multiple' => 'multiple',
     ]);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**

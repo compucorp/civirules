@@ -5,13 +5,12 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Participant_ParticipantStatus extends CRM_CivirulesConditions_Form_Form {
 
   protected function getParticipantStatuses() {
     $participantStatusList = civicrm_api3('ParticipantStatusType', 'get', ['options' => ['limit' => 0]]);
-    $statuses = array();
-    foreach($participantStatusList['values'] as $status) {
+    $statuses = [];
+    foreach ($participantStatusList['values'] as $status) {
       $statuses[$status['id']] = $status['label'];
     }
     return $statuses;
@@ -27,13 +26,14 @@ class CRM_CivirulesConditions_Form_Participant_ParticipantStatus extends CRM_Civ
 
     $statuses = $this->getParticipantStatuses();
     asort($statuses);
-    $this->add('select', 'participant_status_id', ts('Participant Status(es)'), $statuses, true,
-      array('id' => 'participant_status_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'participant_status_id', ts('Participant Status(es)'), $statuses, TRUE,
+      ['id' => 'participant_status_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -67,4 +67,5 @@ class CRM_CivirulesConditions_Form_Participant_ParticipantStatus extends CRM_Civ
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

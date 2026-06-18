@@ -28,8 +28,8 @@ class CRM_CivirulesActions_Membership_Form_Add extends CRM_CivirulesActions_Form
     ]);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 

@@ -25,7 +25,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_CiviRulesR
    * @param \Civi\Core\Event\PostEvent $event
    */
   public static function self_hook_civicrm_post(\Civi\Core\Event\PostEvent $event) {
-    if (in_array($event->action, ['create' , 'edit'])) {
+    if (in_array($event->action, ['create', 'edit'])) {
       CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleAction');
     }
   }

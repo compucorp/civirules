@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contribution_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
 
   /**

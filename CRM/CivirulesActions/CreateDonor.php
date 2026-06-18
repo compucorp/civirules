@@ -19,10 +19,10 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
     $processContact = FALSE;
     // retrieve contact type of contact
     try {
-      $contactParams = array('id' => $contactId, 'return' => 'contact_type');
+      $contactParams = ['id' => $contactId, 'return' => 'contact_type'];
       $contactType = civicrm_api3('Contact', 'Getvalue', $contactParams);
       // retrieve contact type Donor and only execute if the same
-      $donorType = civicrm_api3('ContactType', 'Getsingle', array('name' => 'Donor'));
+      $donorType = civicrm_api3('ContactType', 'Getsingle', ['name' => 'Donor']);
       switch ($contactType) {
         case 'Individual':
           if ($donorType['parent_id'] = 1) {
@@ -43,7 +43,7 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
           break;
       }
       if ($processContact) {
-        $newParams = array('id' => $contactId, 'contact_sub_type' => 'Donor');
+        $newParams = ['id' => $contactId, 'contact_sub_type' => 'Donor'];
         try {
           civicrm_api3('Contact', 'Create', $newParams);
         }
@@ -54,6 +54,7 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
     catch (CRM_Core_Exception $ex) {
     }
   }
+
   /**
    * Method to return the url for additional form processing for action
    * and return false if none is needed

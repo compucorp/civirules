@@ -33,9 +33,10 @@ class CRM_CivirulesActions_Generic_Form_SetCustomField extends CRM_CivirulesActi
     // set defaults
     $this->setDefaults($this->ruleAction->unserializeParams());
 
-    $this->addButtons(array(
-      array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -46,8 +47,8 @@ class CRM_CivirulesActions_Generic_Form_SetCustomField extends CRM_CivirulesActi
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-        'field_id'  => $values['field_id'] ?? NULL,
-        'value'     => $values['value'] ?? NULL,
+      'field_id'  => $values['field_id'] ?? NULL,
+      'value'     => $values['value'] ?? NULL,
     ];
 
     $this->ruleAction->action_params = serialize($configuration);
@@ -61,8 +62,8 @@ class CRM_CivirulesActions_Generic_Form_SetCustomField extends CRM_CivirulesActi
    * @return array list of field IDs
    */
   protected function getEligibleCustomFields() {
-    static $field_list = null;
-    if ($field_list === null) {
+    static $field_list = NULL;
+    if ($field_list === NULL) {
       foreach ($this->triggerClass->getProvidedEntities() as $entityDef) {
         $entity = $entityDef->entity;
         if ($entity == 'Contact') {
@@ -100,4 +101,5 @@ class CRM_CivirulesActions_Generic_Form_SetCustomField extends CRM_CivirulesActi
     }
     return $field_list;
   }
+
 }

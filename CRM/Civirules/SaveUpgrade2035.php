@@ -48,11 +48,11 @@ class CRM_Civirules_SaveUpgrade2035 {
     while ($rule->fetch()) {
       $this->saveRuleRule($rule, $tablesExist);
       // next get all related actions and triggers and save those too
-      $action = CRM_Core_DAO::executeQuery("SELECT * FROM civirule_rule_action WHERE rule_id = %1", [1 =>[$rule->id, "Integer"]]);
+      $action = CRM_Core_DAO::executeQuery("SELECT * FROM civirule_rule_action WHERE rule_id = %1", [1 => [$rule->id, "Integer"]]);
       while ($action->fetch()) {
         $this->saveRuleAction($action, $tablesExist);
       }
-      $condition = CRM_Core_DAO::executeQuery("SELECT * FROM civirule_rule_condition WHERE rule_id = %1", [1 =>[$rule->id, "Integer"]]);
+      $condition = CRM_Core_DAO::executeQuery("SELECT * FROM civirule_rule_condition WHERE rule_id = %1", [1 => [$rule->id, "Integer"]]);
       while ($condition->fetch()) {
         $this->saveRuleCondition($condition, $tablesExist);
       }
@@ -83,7 +83,7 @@ class CRM_Civirules_SaveUpgrade2035 {
           $queryParams[$index] = [$rule->$possible, "String"];
         }
       }
-      $insert = "INSERT INTO civirule_pre210_rule (" . implode(',', $columns) . ") VALUES(" . implode(',', $values). ")";
+      $insert = "INSERT INTO civirule_pre210_rule (" . implode(',', $columns) . ") VALUES(" . implode(',', $values) . ")";
       CRM_Core_DAO::executeQuery($insert, $queryParams);
     }
     else {
@@ -119,7 +119,7 @@ class CRM_Civirules_SaveUpgrade2035 {
           $queryParams[$index] = [$action->$possible, "String"];
         }
       }
-      $insert = "INSERT INTO civirule_pre210_rule_action (" . implode(',', $columns) . ") VALUES(" . implode(',', $values). ")";
+      $insert = "INSERT INTO civirule_pre210_rule_action (" . implode(',', $columns) . ") VALUES(" . implode(',', $values) . ")";
       CRM_Core_DAO::executeQuery($insert, $queryParams);
     }
     else {
@@ -153,7 +153,7 @@ class CRM_Civirules_SaveUpgrade2035 {
           $queryParams[$index] = [$condition->$possible, "String"];
         }
       }
-      $insert = "INSERT INTO civirule_pre210_rule_condition (" . implode(',', $columns) . ") VALUES(" . implode(',', $values). ")";
+      $insert = "INSERT INTO civirule_pre210_rule_condition (" . implode(',', $columns) . ") VALUES(" . implode(',', $values) . ")";
       CRM_Core_DAO::executeQuery($insert, $queryParams);
     }
     else {
@@ -163,4 +163,3 @@ class CRM_Civirules_SaveUpgrade2035 {
   }
 
 }
-

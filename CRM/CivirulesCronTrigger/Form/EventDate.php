@@ -24,7 +24,7 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
     $this->add('select', 'event_type_id', E::ts('Event Type'), [E::ts(' - any -')] + $this->getEventType(), TRUE);
     $this->add('select', 'date_field', E::ts('Date Field'), [
       'start_date' => E::ts('Start date'),
-      'end_date' => E::ts('End date')
+      'end_date' => E::ts('End date'),
     ], TRUE);
     $this->add('select', 'offset_unit', E::ts('Offset Unit'), [
       'HOUR' => E::ts('Hour(s)'),
@@ -45,7 +45,7 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -79,7 +79,8 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
     }
     if (!empty($data['run_type'])) {
       $defaultValues['run_type'] = $data['run_type'];
-    } else {
+    }
+    else {
       $defaultValues['run_type'] = 'participant';
     }
     return $defaultValues;
@@ -98,7 +99,8 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
       $this->triggerParams['offset_unit'] = $this->getSubmittedValue('offset_unit');
       $this->triggerParams['offset_type'] = $this->getSubmittedValue('offset_type');
       $this->triggerParams['offset'] = $this->getSubmittedValue('offset');
-    } else {
+    }
+    else {
       $this->triggerParams['offset_unit'] = $this->getSubmittedValue('offset_unit');
       $this->triggerParams['offset_type'] = $this->getSubmittedValue('offset_type');
       $this->triggerParams['offset'] = '';

@@ -18,7 +18,7 @@ abstract class CRM_CivirulesCronTrigger_Form_Activity extends CRM_CivirulesTrigg
     $params = [
       'option_group_id' => $activityStatusOptionGroupId,
       'is_active' => 1,
-      'options' => ['limit' => 0]
+      'options' => ['limit' => 0],
     ];
     $activityStatuses = civicrm_api3('OptionValue', 'Get', $params);
     foreach ($activityStatuses['values'] as $optionValue) {
@@ -43,8 +43,8 @@ abstract class CRM_CivirulesCronTrigger_Form_Activity extends CRM_CivirulesTrigg
     $this->addYesNo('case_activity', ts('Trigger for case activities?'), FALSE, TRUE);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

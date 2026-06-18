@@ -18,7 +18,7 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
     }
 
     $sqlParams = [];
-    $whereClauses = [ 'contribution_recur_id = %1' ];
+    $whereClauses = ['contribution_recur_id = %1'];
     $sqlParams[1] = [$recurringID, 'Integer'];
     // Most of the following is copied from  CRM_CivirulesConditions_Membership_ContactHasMembership class.
 
@@ -84,24 +84,26 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['membership_type_id']) && is_array($params['membership_type_id'])) {
-      foreach($params['membership_type_id'] as $i => $gid) {
+      foreach ($params['membership_type_id'] as $i => $gid) {
         try {
           $params['membership_type_id'][$i] = civicrm_api3('MembershipType', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($params['membership_status_id']) && is_array($params['membership_status_id'])) {
-      foreach($params['membership_status_id'] as $i => $gid) {
+      foreach ($params['membership_status_id'] as $i => $gid) {
         try {
           $params['membership_status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -116,24 +118,26 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['membership_type_id']) && is_array($condition_params['membership_type_id'])) {
-      foreach($condition_params['membership_type_id'] as $i => $gid) {
+      foreach ($condition_params['membership_type_id'] as $i => $gid) {
         try {
           $condition_params['membership_type_id'][$i] = civicrm_api3('MembershipType', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
     if (!empty($condition_params['membership_status_id']) && is_array($condition_params['membership_status_id'])) {
-      foreach($condition_params['membership_status_id'] as $i => $gid) {
+      foreach ($condition_params['membership_status_id'] as $i => $gid) {
         try {
           $condition_params['membership_status_id'][$i] = civicrm_api3('MembershipStatus', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -169,10 +173,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
     $label = $inclusionOperators[$selectedInclusionOperator] . "<ul>";
 
     try {
-      $params = array(
+      $params = [
         'is_active' => 1,
-        'options' => array('limit' => 0, 'sort' => "name ASC"),
-      );
+        'options' => ['limit' => 0, 'sort' => "name ASC"],
+      ];
       $membershipTypes = civicrm_api3('MembershipType', 'Get', $params);
       if (isset($this->conditionParams['membership_type_id']) && count($this->conditionParams['membership_type_id'])) {
         $operator = $operator_options[$this->conditionParams['type_operator']];
@@ -253,10 +257,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    * @access protected
    */
   public static function getOperatorOptions() {
-    return array(
+    return [
       'in' => ts('Is one of'),
       'not in' => ts('Is not one of'),
-    );
+    ];
   }
 
   /**
@@ -267,11 +271,10 @@ class CRM_CivirulesConditions_ContributionRecur_Membership extends CRM_Civirules
    */
   public static function getInclusionOptions() {
     // Contact HAS Membership is value '0', for backwards-compatibility for existing rules where this condition will be empty
-    return array(
+    return [
       '0' => ts('Recurring Contribution pays for Membership'),
       '1' => ts('Recurring Contribution does not pay for Membership'),
-    );
+    ];
   }
 
 }
-

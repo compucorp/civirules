@@ -7,7 +7,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   /**
    * @var bool
    */
-  protected $ruleId = false;
+  protected $ruleId = FALSE;
 
   /**
    * @var \CRM_Civirules_BAO_CiviRulesRule
@@ -25,7 +25,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
   protected $triggerClass;
 
   /**
-   * @var array The trigger params
+   * @var arrayThetriggerparams
    */
   protected array $triggerParams = [];
 
@@ -39,16 +39,16 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
     $this->rule->id = $this->ruleId;
-    if (!$this->rule->find(true)) {
+    if (!$this->rule->find(TRUE)) {
       throw new Exception('Civirules could not find rule');
     }
 
     $this->trigger->id = $this->rule->trigger_id;
-    if (!$this->trigger->find(true)) {
+    if (!$this->trigger->find(TRUE)) {
       throw new Exception('Civirules could not find trigger');
     }
 
-    $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, true);
+    $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
     $this->triggerClass->setTriggerId($this->trigger->id);
     $this->triggerClass->setRuleId($this->rule->id);
     $this->triggerClass->setTriggerParams($this->rule->trigger_params ?? '');
@@ -99,7 +99,7 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     $this->rule->save();
 
     $session = CRM_Core_Session::singleton();
-    $session->setStatus('Rule '.$this->rule->label.' parameters updated', 'Rule parameters updated', 'success');
+    $session->setStatus('Rule ' . $this->rule->label . ' parameters updated', 'Rule parameters updated', 'success');
 
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     CRM_Utils_System::redirect($redirectUrl);

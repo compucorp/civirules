@@ -6,7 +6,6 @@
  * @date 13 June 2018
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condition {
 
   /**
@@ -22,18 +21,18 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
       // retrieve country (primary or based on location_type)
       try {
         if (isset($this->conditionParams['location_type_id']) && !empty($this->conditionParams['location_type_id'])) {
-          $countryParams = array(
+          $countryParams = [
             'return' => 'country_id',
             'location_type_id' => $this->conditionParams['location_type_id'],
             'contact_id' => $contactId,
-          );
+          ];
         }
         else {
-          $countryParams = array(
+          $countryParams = [
             'return' => 'country_id',
             'is_primary' => TRUE,
             'contact_id' => $contactId,
-          );
+          ];
         }
         $countryId = civicrm_api3('Address', 'getvalue', $countryParams);
         // if empty country setting determines if default country is to be used
@@ -62,9 +61,9 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
   private function checkDefaultCountryUsed() {
     if ($this->conditionParams['no_address_found'] || $this->conditionParams['no_address_found']) {
       try {
-        return civicrm_api3('Setting', 'getvalue', array(
+        return civicrm_api3('Setting', 'getvalue', [
           'name' => "defaultContactCountry",
-        ));
+        ]);
       }
       catch (CRM_Core_Exception $ex) {
         return FALSE;
@@ -78,11 +77,11 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
    * @param $fieldName
    */
   private function addWhereClauses($fieldName) {
-    $fieldIds = array();
+    $fieldIds = [];
     foreach ($this->conditionParams[$fieldName] as $fieldValue) {
       $this->_index++;
-      $fieldIds[] = '%'.$this->_index;
-      $this->_queryParams[$this->_index] = array($fieldValue, 'Integer');
+      $fieldIds[] = '%' . $this->_index;
+      $this->_queryParams[$this->_index] = [$fieldValue, 'Integer'];
     }
     if (!empty($fieldIds)) {
       $this->_query .= ' AND act.' . $fieldName . ' IN (' . implode(', ', $fieldIds) . ')';
@@ -111,13 +110,13 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
    * @access public
    */
   public function userFriendlyConditionParams() {
-    $countryNames = array();
+    $countryNames = [];
     foreach ($this->conditionParams['country_id'] as $countryId) {
       try {
-        $countryNames[] = civicrm_api3('Country', 'getvalue', array(
+        $countryNames[] = civicrm_api3('Country', 'getvalue', [
           'country_id' => $countryId,
           'return' => 'name',
-        ));
+        ]);
       }
       catch (CRM_Core_Exception $ex) {
       }
@@ -131,10 +130,10 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
     }
     if (isset($this->conditionParams['location_type_id']) && !empty($this->conditionParams['location_type_id'])) {
       try {
-        $text .= ' (checking address with location type ' . civicrm_api3('LocationType', 'getvalue', array(
+        $text .= ' (checking address with location type ' . civicrm_api3('LocationType', 'getvalue', [
           'return' => 'display_name',
           'id' => $this->conditionParams['location_type_id'],
-        )) . ')';
+        ]) . ')';
       }
       catch (CRM_Core_Exception $ex) {
       }

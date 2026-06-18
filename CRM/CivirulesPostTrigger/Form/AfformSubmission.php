@@ -31,7 +31,7 @@ class CRM_CivirulesPostTrigger_Form_AfformSubmission extends CRM_CivirulesTrigge
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 

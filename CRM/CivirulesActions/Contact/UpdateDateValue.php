@@ -32,7 +32,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
         try {
           $new_value_datetime = new DateTime($action_params['update_operand']);
           $new_value = $new_value_datetime->format('Y-m-d H:i:s');
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           Civi::log()->debug("UpdateDateCustomValue Action: Unknown DateTime set format for target field id '{$action_params['target_field_id']}'.");
           return;
         }
@@ -45,7 +46,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
           $new_value_datetime = new DateTime($new_value);
           $new_value_datetime->modify($action_params['update_operand']);
           $new_value = $new_value_datetime->format('Y-m-d H:i:s');
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           Civi::log()->debug("UpdateDateCustomValue Action: Unknown DateTime modify format for target field id '{$action_params['target_field_id']}'.");
           return;
         }
@@ -58,7 +60,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
           $new_value_datetime = new DateTime($new_value);
           $new_value_datetime->modify($action_params['update_operand']);
           $new_value = $new_value_datetime->format('Y-m-d H:i:s');
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           Civi::log()->debug("UpdateDateCustomValue Action: Unknown DateTime modify format for target field id '{$action_params['target_field_id']}'.");
           return;
         }
@@ -71,7 +74,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
           $new_value_datetime = new DateTime($new_value);
           $new_value_datetime->modify($action_params['update_operand']);
           $new_value = $new_value_datetime->format('Y-m-d H:i:s');
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           Civi::log()->debug("UpdateDateCustomValue Action: Unknown DateTime modify format for target field id '{$action_params['target_field_id']}'.");
           return;
         }
@@ -94,15 +98,16 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
   protected function setValue($field_id, $new_value, $contact_id) {
     if (is_numeric($field_id)) {
       civicrm_api3('Contact', 'create', [
-          'id'                 => $contact_id,
-          "custom_{$field_id}" => $new_value]);
+        'id'                 => $contact_id,
+        "custom_{$field_id}" => $new_value,
+      ]);
 
-    } else {
+    }
+    else {
       // this shouldn't happen
       Civi::log()->debug("UpdateDateCustomValue Action: Unknown field id '{$field_id}'.");
     }
   }
-
 
   /**
    * Get the value of the given field for the given contact
@@ -118,7 +123,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
       if (is_numeric($field_id)) {
         return civicrm_api3('Contact', 'getvalue', ['id' => $contact_id, 'return' => "custom_{$field_id}"]);
 
-      } else {
+      }
+      else {
         // this should not happen
         Civi::log()->debug("UpdateDateCustomValue Action: Unknown field id '{$field_id}'.");
         return 0;
@@ -129,18 +135,21 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
     if ($mode == 'min' || $mode == 'max') {
       if (is_numeric($field_id)) {
         $custom_field = civicrm_api3('CustomField', 'getsingle', [
-            'id'     => $field_id,
-            'return' => 'custom_group_id,column_name']);
+          'id'     => $field_id,
+          'return' => 'custom_group_id,column_name',
+        ]);
         $custom_group = civicrm_api3('CustomGroup', 'getsingle', [
-            'id'     => $custom_field['custom_group_id'],
-            'return' => 'table_name']);
+          'id'     => $custom_field['custom_group_id'],
+          'return' => 'table_name',
+        ]);
         return CRM_Core_DAO::singleValueQuery("
             SELECT {$mode}({$custom_field['column_name']})
             FROM {$custom_group['table_name']}
             LEFT JOIN civicrm_contact contact ON contact.id = {$custom_group['table_name']}.entity_id
             WHERE (contact.is_deleted IS NULL OR contact.is_deleted = 0);");
 
-      } else {
+      }
+      else {
         // this should not happen
         Civi::log()->debug("UpdateDateCustomValue Action: Unknown field id '{$field_id}'.");
         return 0;
@@ -179,9 +188,9 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
     $target_field_id = $action_params['target_field_id'];
     $target_field = '"' . $this->getHumanReadableFieldLabel($target_field_id) . '"';
 
-    if ($action_params['update_operation']==='set') {
+    if ($action_params['update_operation'] === 'set') {
 
-      return 'Set '. $target_field . ' to "'. $action_params['update_operand'] . '"';
+      return 'Set ' . $target_field . ' to "' . $action_params['update_operand'] . '"';
     }
 
     $source_field_id = $action_params['source_field_id'];
@@ -189,17 +198,17 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
 
     $update = empty($action_params['update_operand']) ? '' : ' modifield by "' . $action_params['update_operand'] . '"';
 
-    if ($action_params['update_operation']==='modify') {
+    if ($action_params['update_operation'] === 'modify') {
 
-      return 'Set '. $target_field .' to the value of ' . $source_field . $update;
+      return 'Set ' . $target_field . ' to the value of ' . $source_field . $update;
     }
 
-    if ($action_params['update_operation']==='max_modify') {
+    if ($action_params['update_operation'] === 'max_modify') {
 
       return 'Set ' . $target_field . ' to the Global Maximum value of ' . $source_field . $update;
     }
 
-    if ($action_params['update_operation']==='min_modify') {
+    if ($action_params['update_operation'] === 'min_modify') {
 
       return 'Set ' . $target_field . ' to the Global Minimum value of ' . $source_field . $update;
     }
@@ -226,7 +235,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
         unset($action_params['target_field_id']);
         $action_params['target_custom_group'] = $customGroup['name'];
         $action_params['target_custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -241,7 +251,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
         unset($action_params['source_field_id']);
         $action_params['source_custom_group'] = $customGroup['name'];
         $action_params['source_custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -264,7 +275,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
         $action_params['target_field_id'] = $customField['id'];
         unset($action_params['target_custom_group']);
         unset($action_params['target_custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -277,7 +289,8 @@ class CRM_CivirulesActions_Contact_UpdateDateValue extends CRM_Civirules_Action 
         $action_params['source_field_id'] = $customField['id'];
         unset($action_params['source_custom_group']);
         unset($action_params['source_custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }

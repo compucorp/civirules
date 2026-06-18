@@ -30,7 +30,7 @@ class CRM_CivirulesConditions_Form_Contact_LoggedIn extends CRM_CivirulesConditi
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 
@@ -60,4 +60,5 @@ class CRM_CivirulesConditions_Form_Contact_LoggedIn extends CRM_CivirulesConditi
 
     parent::postProcess();
   }
+
 }

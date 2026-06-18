@@ -1,12 +1,12 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Condition Contribution Frequency
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_ContributionRecur_Frequency extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -19,13 +19,14 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Frequency extends CRM_Civir
     $frequencyUnits = CRM_Civirules_Utils::getFrequencyUnits();
     asort($frequencyUnits);
     $this->add('select', 'frequency_unit', E::ts('Frequency Unit'), $frequencyUnits, TRUE,
-      ['id' => 'frequency_unit_id','class' => 'crm-select2']);
+      ['id' => 'frequency_unit_id', 'class' => 'crm-select2']);
     $this->add('text', 'frequency_interval', E::ts("Interval"), [], TRUE);
     $this->addRule('frequency_interval', "The interval has to be an integer.", "numeric");
     $this->addRule('frequency_interval', "The interval has to be an integer.", "nopunctuation");
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]]);
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -62,4 +63,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_Frequency extends CRM_Civir
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

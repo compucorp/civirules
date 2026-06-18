@@ -12,8 +12,8 @@ class CRM_CivirulesConditions_Form_Contribution_Source extends CRM_CivirulesCond
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'operator', ts('Operator'),
-      ['contains' => ts('Contains the text'), 'exact_match' => ts('is an exact match to')], true);
-    $this->add('textarea', 'text', ts('Text to match'), null, true);
+      ['contains' => ts('Contains the text'), 'exact_match' => ts('is an exact match to')], TRUE);
+    $this->add('textarea', 'text', ts('Text to match'), NULL, TRUE);
 
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
@@ -38,7 +38,6 @@ class CRM_CivirulesConditions_Form_Contribution_Source extends CRM_CivirulesCond
     }
     return $defaultValues;
   }
-
 
   /**
    * Overridden parent method to process form data after submission

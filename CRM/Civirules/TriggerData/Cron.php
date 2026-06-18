@@ -26,7 +26,8 @@ class CRM_Civirules_TriggerData_Cron extends CRM_Civirules_TriggerData_TriggerDa
     $this->entityName = $entity;
     if (isset($entity_id)) {
       $this->setEntityId($entity_id);
-    } elseif (isset($data['id'])) {
+    }
+    elseif (isset($data['id'])) {
       $this->setEntityId($data['id']);
     }
     else {

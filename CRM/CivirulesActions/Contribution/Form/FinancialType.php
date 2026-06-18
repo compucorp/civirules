@@ -12,11 +12,12 @@ class CRM_CivirulesActions_Contribution_Form_FinancialType extends CRM_Civirules
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
 
-    $this->add('select', 'financial_type_id', ts('Financial Type'), array('' => ts('-- please select --')) + CRM_Contribute_BAO_Contribution::buildOptions('financial_type_id', 'create'));
+    $this->add('select', 'financial_type_id', ts('Financial Type'), ['' => ts('-- please select --')] + CRM_Contribute_BAO_Contribution::buildOptions('financial_type_id', 'create'));
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -35,7 +36,6 @@ class CRM_CivirulesActions_Contribution_Form_FinancialType extends CRM_Civirules
     return $defaultValues;
   }
 
-
   /**
    * Overridden parent method to process form data after submitting
    *
@@ -47,4 +47,5 @@ class CRM_CivirulesActions_Contribution_Form_FinancialType extends CRM_Civirules
     $this->ruleAction->save();
     parent::postProcess();
   }
+
 }

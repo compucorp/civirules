@@ -33,9 +33,10 @@ class CRM_CivirulesActions_Case_Form_SetCustomField extends CRM_CivirulesActions
     // set defaults
     $this->setDefaults($this->ruleAction->unserializeParams());
 
-    $this->addButtons(array(
-      array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -46,8 +47,8 @@ class CRM_CivirulesActions_Case_Form_SetCustomField extends CRM_CivirulesActions
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-        'field_id'  => $values['field_id'] ?? NULL,
-        'value'     => $values['value'] ?? NULL,
+      'field_id'  => $values['field_id'] ?? NULL,
+      'value'     => $values['value'] ?? NULL,
     ];
 
     $this->ruleAction->action_params = serialize($configuration);
@@ -61,15 +62,15 @@ class CRM_CivirulesActions_Case_Form_SetCustomField extends CRM_CivirulesActions
    * @return array list of field IDs
    */
   protected function getEligibleCustomFields() {
-    static $field_list = null;
-    if ($field_list === null) {
+    static $field_list = NULL;
+    if ($field_list === NULL) {
       // find relevant groups
       $eligible_group_ids = [];
       $group_query = civicrm_api3('CustomGroup', 'get', [
-          'extends'      => ['IN' => ['Case']],
-          'is_active'    => 1,
-          'option.limit' => 0,
-          'return'       => 'id,title',
+        'extends'      => ['IN' => ['Case']],
+        'is_active'    => 1,
+        'option.limit' => 0,
+        'return'       => 'id,title',
       ]);
       foreach ($group_query['values'] as $group) {
         $eligible_group_ids[$group['id']] = $group['title'];
@@ -77,18 +78,20 @@ class CRM_CivirulesActions_Case_Form_SetCustomField extends CRM_CivirulesActions
 
       // find eligible fields
       $field_query = civicrm_api3('CustomField', 'get', [
-          'custom_group_id' => ['IN' => array_keys($eligible_group_ids)],
-          'is_active'       => 1,
-          'option.limit'    => 0,
-          'return'          => 'id,label,custom_group_id',
+        'custom_group_id' => ['IN' => array_keys($eligible_group_ids)],
+        'is_active'       => 1,
+        'option.limit'    => 0,
+        'return'          => 'id,label,custom_group_id',
       ]);
       foreach ($field_query['values'] as $field) {
         $field_list[$field['id']] = E::ts("Field '%1' (Group '%2')", [
-            1 => $field['label'],
-            2 => $eligible_group_ids[$field['custom_group_id']]]);
+          1 => $field['label'],
+          2 => $eligible_group_ids[$field['custom_group_id']],
+        ]);
       }
     }
 
     return $field_list;
   }
+
 }

@@ -14,13 +14,14 @@ class CRM_CivirulesConditions_Form_Group_GroupType extends CRM_CivirulesConditio
     $groupTypes = CRM_CivirulesConditions_Group_GroupType::getGroupTypes();
     $groupTypes[0] = ts('- select -');
     asort($groupTypes);
-    $this->add('select', 'group_type_id', ts('Group Type(s)'), $groupTypes, true,
-      array('id' => 'group_type_ids','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is a', 'is NOT  a'), true);
+    $this->add('select', 'group_type_id', ts('Group Type(s)'), $groupTypes, TRUE,
+      ['id' => 'group_type_ids', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is a', 'is NOT  a'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -54,4 +55,5 @@ class CRM_CivirulesConditions_Form_Group_GroupType extends CRM_CivirulesConditio
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

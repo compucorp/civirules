@@ -21,13 +21,13 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
     $this->add('select',
         'source_field_id',
         E::ts('Source Field'),
-        $this->getEligibleCustomFields(true),
+        $this->getEligibleCustomFields(TRUE),
         TRUE);
 
     $this->add('select',
         'target_field_id',
         E::ts('Target Field'),
-        $this->getEligibleCustomFields(false),
+        $this->getEligibleCustomFields(FALSE),
         TRUE);
 
     $this->add('select',
@@ -43,9 +43,10 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
     // set defaults
     $this->setDefaults($this->ruleAction->unserializeParams());
 
-    $this->addButtons(array(
-      array('type' => 'next',   'name' => E::ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => E::ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
+    ]);
   }
 
   /**
@@ -56,17 +57,16 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
   public function postProcess() {
     $values = $this->exportValues();
     $configuration = [
-        'source_field_id'  => $values['source_field_id'] ?? NULL,
-        'target_field_id'  => $values['target_field_id'] ?? NULL,
-        'update_operation' => $values['update_operation'] ?? NULL,
-        'update_operand'   => CRM_Utils_Array::value('update_operand', $values, 0),
+      'source_field_id'  => $values['source_field_id'] ?? NULL,
+      'target_field_id'  => $values['target_field_id'] ?? NULL,
+      'update_operation' => $values['update_operation'] ?? NULL,
+      'update_operand'   => CRM_Utils_Array::value('update_operand', $values, 0),
     ];
 
     $this->ruleAction->action_params = serialize($configuration);
     $this->ruleAction->save();
     parent::postProcess();
   }
-
 
   /**
    * Get the list of field update operations
@@ -75,15 +75,15 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
    */
   protected function getUpdateOperations() {
     return [
-        'set'         => E::ts("Set to"),
-        'increase_by' => E::ts("Increase by"),
-        'decrease_by' => E::ts("Decrease by"),
-        'multiply_by' => E::ts("Multiply by"),
-        'divide_by'   => E::ts("Divide by"),
-        'max_plus'    => E::ts("Set to (global) maximum plus"),
-        'max_minus'   => E::ts("Set to (global) maximum minus"),
-        'min_plus'    => E::ts("Set to (global) minimum plus"),
-        'min_minus'   => E::ts("Set to (global) minimum minus"),
+      'set'         => E::ts("Set to"),
+      'increase_by' => E::ts("Increase by"),
+      'decrease_by' => E::ts("Decrease by"),
+      'multiply_by' => E::ts("Multiply by"),
+      'divide_by'   => E::ts("Divide by"),
+      'max_plus'    => E::ts("Set to (global) maximum plus"),
+      'max_minus'   => E::ts("Set to (global) maximum minus"),
+      'min_plus'    => E::ts("Set to (global) minimum plus"),
+      'min_minus'   => E::ts("Set to (global) minimum minus"),
     ];
   }
 
@@ -93,20 +93,20 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
    * @param $include_readonly_fields boolean add fields that cannot be manipulated (e.g. contact ID)
    * @return array list of field IDs
    */
-  protected function getEligibleCustomFields($include_readonly_fields = false) {
-    static $field_list = null;
-    if ($field_list === null) {
+  protected function getEligibleCustomFields($include_readonly_fields = FALSE) {
+    static $field_list = NULL;
+    if ($field_list === NULL) {
       $field_list = [
-          'contact_external_id' => E::ts("Contact External Identifier")
+        'contact_external_id' => E::ts("Contact External Identifier"),
       ];
 
       // find relevant groups
       $eligible_group_ids = [];
       $group_query = civicrm_api3('CustomGroup', 'get', [
-          'extends'      => ['IN' => ['Contact', 'Individual', 'Organization', 'Household']],
-          'is_active'    => 1,
-          'option.limit' => 0,
-          'return'       => 'id,title',
+        'extends'      => ['IN' => ['Contact', 'Individual', 'Organization', 'Household']],
+        'is_active'    => 1,
+        'option.limit' => 0,
+        'return'       => 'id,title',
       ]);
       foreach ($group_query['values'] as $group) {
         $eligible_group_ids[$group['id']] = $group['title'];
@@ -114,16 +114,17 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
 
       // find eligible fields
       $field_query = civicrm_api3('CustomField', 'get', [
-          'data_type'       => ['IN' => ['Int', 'Money', 'Float']],
-          'custom_group_id' => ['IN' => array_keys($eligible_group_ids)],
-          'is_active'       => 1,
-          'option.limit'    => 0,
-          'return'          => 'id,label,custom_group_id',
+        'data_type'       => ['IN' => ['Int', 'Money', 'Float']],
+        'custom_group_id' => ['IN' => array_keys($eligible_group_ids)],
+        'is_active'       => 1,
+        'option.limit'    => 0,
+        'return'          => 'id,label,custom_group_id',
       ]);
       foreach ($field_query['values'] as $field) {
         $field_list[$field['id']] = E::ts("Field '%1' (Group '%2')", [
-            1 => $field['label'],
-            2 => $eligible_group_ids[$field['custom_group_id']]]);
+          1 => $field['label'],
+          2 => $eligible_group_ids[$field['custom_group_id']],
+        ]);
       }
     }
 
@@ -133,4 +134,5 @@ class CRM_CivirulesActions_Contact_Form_UpdateNumericValue extends CRM_Civirules
     }
     return $result;
   }
+
 }

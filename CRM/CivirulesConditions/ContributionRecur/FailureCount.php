@@ -7,7 +7,6 @@
  *
  * @author Shane Bill (Coop SymbioTIC) <shane@symbiotic.coop>
  */
-
 class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirules_Condition {
 
   /**
@@ -53,8 +52,6 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
     return "Recurring contribution {$operator} " . $this->conditionParams['failure_count'] . " failed attempts";
   }
 
-
-
   /**
    * This function validates whether this condition works with the selected trigger.
    *
@@ -72,4 +69,3 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
   }
 
 }
-

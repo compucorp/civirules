@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 class CRM_Civirules_Utils_ContributionTrigger {
 
-  protected static $participantId = null;
+  protected static $participantId = NULL;
 
   public static function pre($op, $objectName, $objectId, &$params) {
     if ($op == 'create' && $objectName == 'Contribution') {
-      self::$participantId = null;
+      self::$participantId = NULL;
       if (isset($params['participant_id'])) {
         self::$participantId = $params['participant_id'];
       }

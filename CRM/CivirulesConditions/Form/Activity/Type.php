@@ -17,15 +17,16 @@ class CRM_CivirulesConditions_Form_Activity_Type extends CRM_CivirulesConditions
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $activityTypeList = array('- select -') + CRM_Civirules_Utils::getActivityTypeList();
+    $activityTypeList = ['- select -'] + CRM_Civirules_Utils::getActivityTypeList();
     asort($activityTypeList);
-    $this->add('select', 'activity_type_id', ts('Activity Type(s)'), $activityTypeList, true,
-      array('id' => 'activity_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'activity_type_id', ts('Activity Type(s)'), $activityTypeList, TRUE,
+      ['id' => 'activity_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
 
     parent::buildQuickForm();
   }

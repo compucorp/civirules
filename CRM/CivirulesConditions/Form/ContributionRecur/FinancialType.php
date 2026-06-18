@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_ContributionRecur_FinancialType extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -18,13 +17,14 @@ class CRM_CivirulesConditions_Form_ContributionRecur_FinancialType extends CRM_C
 
     $financialTypes = CRM_Civirules_Utils::getFinancialTypes();
     asort($financialTypes);
-    $this->add('select', 'financial_type_id', ts('Financial Type(s)'), $financialTypes, true,
-      array('id' => 'financial_type_ids', 'multiple' => 'multiple','class' => 'crm-select2'));
-    $this->add('select', 'operator', ts('Operator'), array('is one of', 'is NOT one of'), true);
+    $this->add('select', 'financial_type_id', ts('Financial Type(s)'), $financialTypes, TRUE,
+      ['id' => 'financial_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+    $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -58,4 +58,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_FinancialType extends CRM_C
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

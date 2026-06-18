@@ -17,15 +17,17 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
    * @abstract
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $isConditionValid = false;
+    $isConditionValid = FALSE;
     $contact_id = $triggerData->getContactId();
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in one of':
         $isConditionValid = $this->contactHasOneOfSubTypes($contact_id, $this->conditionParams['subtype_names']);
         break;
+
       case 'in all of':
         $isConditionValid = $this->contactHasAllSubTypes($contact_id, $this->conditionParams['subtype_names']);
         break;
+
       case 'not in':
         $isConditionValid = $this->contactHasNotSubType($contact_id, $this->conditionParams['subtype_names']);
         break;
@@ -34,12 +36,12 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
   }
 
   protected function contactHasNotSubType($contact_id, $subtype_names) {
-    $isValid = true;
+    $isValid = TRUE;
 
     $subtypes = CRM_Contact_BAO_Contact::getContactSubType($contact_id);
-    foreach($subtype_names as $subtype) {
+    foreach ($subtype_names as $subtype) {
       if (in_array($subtype, $subtypes)) {
-        $isValid = false;
+        $isValid = FALSE;
       }
     }
 
@@ -50,26 +52,26 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
     $isValid = 0;
 
     $subtypes = CRM_Contact_BAO_Contact::getContactSubType($contact_id);
-    foreach($subtype_names as $subtype) {
+    foreach ($subtype_names as $subtype) {
       if (in_array($subtype, $subtypes)) {
         $isValid++;
       }
     }
 
     if (count($subtype_names) == $isValid && count($subtype_names) > 0) {
-      return true;
+      return TRUE;
     }
 
-    return false;
+    return FALSE;
   }
 
   protected function contactHasOneOfSubTypes($contact_id, $subtype_names) {
-    $isValid = false;
+    $isValid = FALSE;
 
     $subtypes = CRM_Contact_BAO_Contact::getContactSubType($contact_id);
-    foreach($subtype_names as $subtype) {
+    foreach ($subtype_names as $subtype) {
       if (in_array($subtype, $subtypes)) {
-        $isValid = true;
+        $isValid = TRUE;
         break;
       }
     }
@@ -107,14 +109,14 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
     }
 
     $subtypes = '';
-    foreach($this->conditionParams['subtype_names'] as $subtype) {
+    foreach ($this->conditionParams['subtype_names'] as $subtype) {
       if (strlen($subtypes)) {
         $subtypes .= ', ';
       }
-      $subtypes .= civicrm_api3('ContactType', 'getvalue', array('return' => 'label', 'name' => $subtype));
+      $subtypes .= civicrm_api3('ContactType', 'getvalue', ['return' => 'label', 'name' => $subtype]);
     }
 
-    return $operatorLabel.' subtypes ('.$subtypes.')';
+    return $operatorLabel . ' subtypes (' . $subtypes . ')';
   }
 
   /**
@@ -124,11 +126,11 @@ class CRM_CivirulesConditions_Contact_HasSubtype extends CRM_Civirules_Condition
    * @access protected
    */
   public static function getOperatorOptions() {
-    return array(
+    return [
       'in one of' => ts('In one of selected'),
       'in all of' => ts('In all selected'),
       'not in' => ts('Not in selected'),
-    );
+    ];
   }
 
 }

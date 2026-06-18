@@ -3,19 +3,18 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Case_RelationshipIsCaseRole extends CRM_Civirules_Condition {
 
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $relationship = $triggerData->getEntityData('Relationship');
     if (!empty($relationship['case_id'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   public function getExtraDataInputUrl($ruleConditionId) {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -31,7 +30,7 @@ class CRM_CivirulesConditions_Case_RelationshipIsCaseRole extends CRM_Civirules_
    * @return bool
    */
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    return $trigger->doesProvideEntities(array('Case', 'Relationship'));
+    return $trigger->doesProvideEntities(['Case', 'Relationship']);
   }
 
 }

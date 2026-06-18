@@ -8,7 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 27 Aug 2024
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Membership_Form_CancelLatestMembership extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -21,15 +20,15 @@ class CRM_CivirulesActions_Membership_Form_CancelLatestMembership extends CRM_Ci
     $this->add('select', 'membership_type_id', E::ts('Membership type:'), CRM_Civirules_Utils::getMembershipTypes(), TRUE, [
       'class' => 'crm-select2',
       'multiple' => TRUE,
-      'placeholder' => '- select type(s) -'
+      'placeholder' => '- select type(s) -',
     ]);
     $this->add('select', 'membership_status_id', E::ts('Membership currently has status:'), CRM_Civirules_Utils::getMembershipStatus(), TRUE, [
       'class' => 'crm-select2',
       'multiple' => TRUE,
-      'placeholder' => '- select status(es) -'
+      'placeholder' => '- select status(es) -',
     ]);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }

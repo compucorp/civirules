@@ -51,7 +51,8 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       if (isset($preData['activity_contacts'])) {
         $activityContacts = $preData['activity_contacts'];
       }
-    } else {
+    }
+    else {
       $activityContact = new CRM_Activity_BAO_ActivityContact();
       $activityContact->activity_id = $objectId;
       if ($this->triggerParams && isset($this->triggerParams['record_type']) && $this->triggerParams['record_type']) {
@@ -66,7 +67,7 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       $activityContact->free();
     }
 
-    foreach($activityContacts as $activityContact) {
+    foreach ($activityContacts as $activityContact) {
       $triggerData->setEntityData('ActivityContact', $activityContact);
       if (isset($activityContact['contact_id']) && $activityContact['contact_id']) {
         $triggerData->setContactId($activityContact['contact_id']);
@@ -114,7 +115,7 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
    */
   protected function getAdditionalEntities() {
     $entities = parent::getAdditionalEntities();
-    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ActivityContact', 'ActivityContact', 'CRM_Activity_DAO_ActivityContact' , 'ActivityContact');
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('ActivityContact', 'ActivityContact', 'CRM_Activity_DAO_ActivityContact', 'ActivityContact');
     return $entities;
   }
 
@@ -128,7 +129,7 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
    * @return bool|string
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/activity', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/activity', 'rule_id=' . $ruleId);
   }
 
   /**
@@ -141,10 +142,10 @@ class CRM_CivirulesPostTrigger_Activity extends CRM_Civirules_Trigger_Post {
       'field' => "record_type_id",
     ]);
     $options[0] = E::ts('All contacts');
-    foreach($result['values'] as $val => $opt) {
+    foreach ($result['values'] as $val => $opt) {
       $options[$val] = $opt;
     }
-    return E::ts('Trigger for %1', [1=>$options[$this->triggerParams['record_type'] ?? 0]]);
+    return E::ts('Trigger for %1', [1 => $options[$this->triggerParams['record_type'] ?? 0]]);
   }
 
   /**

@@ -15,13 +15,13 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
     $subTypes = CRM_Contact_BAO_Contact::getContactSubType($contactId);
     $contactType = CRM_Contact_BAO_Contact::getContactType($contactId);
 
-    $changed = false;
+    $changed = FALSE;
     $action_params = $this->getActionParameters();
-    foreach($action_params['sub_type'] as $sub_type) {
+    foreach ($action_params['sub_type'] as $sub_type) {
       if (CRM_Contact_BAO_ContactType::isExtendsContactType($sub_type, $contactType)) {
         if (!in_array($sub_type, $subTypes)) {
           $subTypes[] = $sub_type;
-          $changed = true;
+          $changed = TRUE;
         }
       }
     }
@@ -42,13 +42,14 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
    */
   public function exportActionParameters() {
     $action_params = parent::exportActionParameters();
-    foreach($action_params['sub_type'] as $i=>$j) {
+    foreach ($action_params['sub_type'] as $i => $j) {
       try {
         $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
           'return' => 'name',
           'id' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -61,13 +62,14 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
    * @return string
    */
   public function importActionParameters($action_params = NULL) {
-    foreach($action_params['sub_type'] as $i=>$j) {
+    foreach ($action_params['sub_type'] as $i => $j) {
       try {
         $action_params['sub_type'][$i] = civicrm_api3('ContactType', 'getvalue', [
           'return' => 'id',
           'name' => $j,
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);
@@ -95,10 +97,10 @@ class CRM_CivirulesActions_Contact_Subtype extends CRM_Civirules_Action {
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
     $label = ts('Set contact subtype to: ');
-    $subTypeLabels = array();
+    $subTypeLabels = [];
     $subTypes = CRM_Contact_BAO_ContactType::contactTypeInfo();
-    foreach($params['sub_type'] as $sub_type) {
-      $subTypeLabels[] = $subTypes[$sub_type]['parent_label'].' - '.$subTypes[$sub_type]['label'];
+    foreach ($params['sub_type'] as $sub_type) {
+      $subTypeLabels[] = $subTypes[$sub_type]['parent_label'] . ' - ' . $subTypes[$sub_type]['label'];
     }
     $label .= implode(', ', $subTypeLabels);
     return $label;

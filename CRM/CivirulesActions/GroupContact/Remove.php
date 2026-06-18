@@ -24,10 +24,11 @@ class CRM_CivirulesActions_GroupContact_Remove extends CRM_CivirulesActions_Grou
     $group_ids = [];
     if (!empty($action_params['group_id'])) {
       $group_ids = [$action_params['group_id']];
-    } elseif (!empty($action_params['group_ids']) && is_array($action_params['group_ids'])) {
+    }
+    elseif (!empty($action_params['group_ids']) && is_array($action_params['group_ids'])) {
       $group_ids = $action_params['group_ids'];
     }
-    foreach($group_ids as $group_id) {
+    foreach ($group_ids as $group_id) {
       if (CRM_CivirulesConditions_Utils_GroupContact::isContactInGroup($contactId, $group_id)) {
         $params = [];
         $params['group_id'] = $group_id;
@@ -41,4 +42,5 @@ class CRM_CivirulesActions_GroupContact_Remove extends CRM_CivirulesActions_Grou
       }
     }
   }
+
 }

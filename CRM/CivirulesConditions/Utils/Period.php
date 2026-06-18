@@ -17,8 +17,8 @@ class CRM_CivirulesConditions_Utils_Period {
    */
   public static function Options() {
     $definitions = self::PeriodDefinitions();
-    $options = array();
-    foreach($definitions as $key => $definition) {
+    $options = [];
+    foreach ($definitions as $key => $definition) {
       $options[$key] = $definition['label'];
     }
     return $options;
@@ -34,60 +34,60 @@ class CRM_CivirulesConditions_Utils_Period {
    * @return array
    */
   private static function PeriodDefinitions() {
-    return array(
-      'this month' => array(
+    return [
+      'this month' => [
         'label' => E::ts('This month'),
-        'replacements' => array()
-      ),
-      'previous month' => array(
+        'replacements' => [],
+      ],
+      'previous month' => [
         'label' => E::ts('Previous month'),
-        'replacements' => array()
-      ),
-      'last 30 days' => array(
+        'replacements' => [],
+      ],
+      'last 30 days' => [
         'label' => E::ts('Last 30 days'),
-        'replacements' => array()
-      ),
-      'last 12 months' => array(
+        'replacements' => [],
+      ],
+      'last 12 months' => [
         'label' => E::ts('Last 12 months'),
-        'replacements' => array()
-      ),
-      'last 13 months' => array(
+        'replacements' => [],
+      ],
+      'last 13 months' => [
         'label' => E::ts('Last 13 months'),
-        'replacements' => array()
-      ),
-      'this year' => array(
+        'replacements' => [],
+      ],
+      'this year' => [
         'label' => E::ts('This year'),
-        'replacements' => array()
-      ),
-      'previous year' => array(
+        'replacements' => [],
+      ],
+      'previous year' => [
         'label' => E::ts('Previous year'),
-        'replacements' => array()
-      ),
-      'last nnn days' => array(
+        'replacements' => [],
+      ],
+      'last nnn days' => [
         'label' => E::ts('Last nnn days'),
-        'replacements' => array(
+        'replacements' => [
           'nnn' => E::ts('days'),
-        )
-      ),
-      'last nnn weeks' => array(
+        ],
+      ],
+      'last nnn weeks' => [
         'label' => E::ts('Last nnn weeks'),
-        'replacements' => array(
+        'replacements' => [
           'nnn' => E::ts('weeks'),
-        )
-      ),
-      'last nnn months' => array(
+        ],
+      ],
+      'last nnn months' => [
         'label' => E::ts('Last nnn months'),
-        'replacements' => array(
+        'replacements' => [
           'nnn' => E::ts('months'),
-        )
-      ),
-      'last nnn years' => array(
+        ],
+      ],
+      'last nnn years' => [
         'label' => E::ts('Last nnn years'),
-        'replacements' => array(
+        'replacements' => [
           'nnn' => E::ts('years'),
-        )
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**
@@ -104,11 +104,11 @@ class CRM_CivirulesConditions_Utils_Period {
    */
   private static function getReplacementOptions() {
     $definitions = self::PeriodDefinitions();
-    $replacements = array();
-    foreach($definitions as $key => $definition) {
-      foreach($definition['replacements'] as $replacement => $suffix) {
+    $replacements = [];
+    foreach ($definitions as $key => $definition) {
+      foreach ($definition['replacements'] as $replacement => $suffix) {
         if (!isset($replacements[$replacement])) {
-          $replacements[$replacement] = array();
+          $replacements[$replacement] = [];
         }
         $replacements[$replacement][] = $key;
       }
@@ -130,13 +130,13 @@ class CRM_CivirulesConditions_Utils_Period {
    */
   private static function getReplacementOptionsByPeriod() {
     $definitions = self::PeriodDefinitions();
-    $replacements = array();
-    foreach($definitions as $key => $definition) {
-      foreach($definition['replacements'] as $replacement => $suffix) {
-        $replacements[$key][] = array(
+    $replacements = [];
+    foreach ($definitions as $key => $definition) {
+      foreach ($definition['replacements'] as $replacement => $suffix) {
+        $replacements[$key][] = [
           'name' => $replacement,
           'suffix' => $suffix,
-        );
+        ];
       }
     }
     return $replacements;
@@ -148,18 +148,18 @@ class CRM_CivirulesConditions_Utils_Period {
    * @param $form
    */
   public static function buildQuickForm(&$form) {
-    $form->add('select', 'period',E::ts('Period'), array('' => E::ts('All time')) + CRM_CivirulesConditions_Utils_Period::Options());
+    $form->add('select', 'period', E::ts('Period'), ['' => E::ts('All time')] + CRM_CivirulesConditions_Utils_Period::Options());
 
     $replacements = self::getReplacementOptions();
-    foreach($replacements as $replacement_key => $replacement_periods) {
-      $form->add('text', $replacement_key,E::ts($replacement_key));
+    foreach ($replacements as $replacement_key => $replacement_periods) {
+      $form->add('text', $replacement_key, E::ts($replacement_key));
     }
     $form->assign('period_replacements', $replacements);
     $form->assign('period_replacements_by_period', json_encode(self::getReplacementOptionsByPeriod()));
   }
 
   public static function addRules(&$form) {
-    $form->addFormRule(array('CRM_CivirulesConditions_Utils_Period', 'validatePeriod'));
+    $form->addFormRule(['CRM_CivirulesConditions_Utils_Period', 'validatePeriod']);
   }
 
   public static function validatePeriod($fields) {
@@ -167,17 +167,17 @@ class CRM_CivirulesConditions_Utils_Period {
 
     $period = $fields['period'];
     if (!empty($period) && isset($definitions[$period])) {
-      $errors = array();
-      foreach($definitions[$period]['replacements'] as $key => $label) {
-         if (empty($fields[$key]) || !is_numeric($fields[$key])) {
-           $errors[$key] =E::ts('You should enter a valid amount');
-         }
-       }
+      $errors = [];
+      foreach ($definitions[$period]['replacements'] as $key => $label) {
+        if (empty($fields[$key]) || !is_numeric($fields[$key])) {
+          $errors[$key] = E::ts('You should enter a valid amount');
+        }
+      }
       if (count($errors)) {
         return $errors;
       }
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -192,7 +192,7 @@ class CRM_CivirulesConditions_Utils_Period {
       $defaultValues['period'] = $condition_params['period'];
     }
     if (isset($condition_params['replaceParameters']) && is_array($condition_params['replaceParameters'])) {
-      foreach($condition_params['replaceParameters'] as $key => $val) {
+      foreach ($condition_params['replaceParameters'] as $key => $val) {
         $defaultValues[$key] = $val;
       }
     }
@@ -210,18 +210,18 @@ class CRM_CivirulesConditions_Utils_Period {
   public static function getConditionParams($submitValues, $condition_params) {
     $periods = self::PeriodDefinitions();
     $period = $condition_params['period'] = $submitValues['period'];
-    foreach($periods[$period]['replacements'] as $key => $label) {
+    foreach ($periods[$period]['replacements'] as $key => $label) {
       $condition_params['replaceParameters'][$key] = $submitValues[$key];
     }
     return $condition_params;
   }
 
   private static function replaceParameters($period, $key, $replacement_params) {
-    if (stripos($period, $key) === false) {
-      throw new Exception($key .' is not set for period '.$period);
+    if (stripos($period, $key) === FALSE) {
+      throw new Exception($key . ' is not set for period ' . $period);
     }
     if (empty($replacement_params[$key])) {
-      throw new Exception($key.' is not given for period '.$period);
+      throw new Exception($key . ' is not given for period ' . $period);
     }
     return $replacement_params[$key];
   }
@@ -231,16 +231,18 @@ class CRM_CivirulesConditions_Utils_Period {
     $p = $condition_params['period'];
     if (isset($periods[$p])) {
       $period = $periods[$p]['label'];
-      foreach($periods[$p]['replacements'] as $key => $label) {
+      foreach ($periods[$p]['replacements'] as $key => $label) {
         try {
           $val = self::replaceParameters($period, $key, $condition_params['replaceParameters']);
           $period = str_replace($key, $val, $period);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           //do nothing
         }
       }
-    } else {
-      $period =E::ts('all time');
+    }
+    else {
+      $period = E::ts('all time');
     }
     return $period;
   }
@@ -254,60 +256,71 @@ class CRM_CivirulesConditions_Utils_Period {
    */
   public static function convertPeriodToStartDate($condition_params) {
     $period = $condition_params['period'];
-    $replaceParameters = isset($condition_params['replaceParameters']) ? $condition_params['replaceParameters'] : array();
+    $replaceParameters = isset($condition_params['replaceParameters']) ? $condition_params['replaceParameters'] : [];
     $date = new DateTime();
     switch ($period) {
       case 'this month':
         $date->modify('first day of this month');
         return $date;
-        break;
+
+      break;
       case 'previous month':
         $date->modify('first day of previous month');
         return $date;
-        break;
+
+      break;
       case 'last 30 days':
         $date->modify('-30 days');
         return $date;
-        break;
+
+      break;
       case 'last nnn days':
         $xxx = self::replaceParameters($period, 'nnn', $replaceParameters);
-        $date->modify('-'.$xxx.' days');
+        $date->modify('-' . $xxx . ' days');
         return $date;
-        break;
+
+      break;
       case 'last 12 months':
         $date->modify('-12 months');
         return $date;
-        break;
+
+      break;
       case 'last 13 months':
         $date->modify('-13 months');
         return $date;
-        break;
+
+      break;
       case 'last nnn months':
         $xxx = self::replaceParameters($period, 'nnn', $replaceParameters);
-        $date->modify('-'.$xxx.' months');
+        $date->modify('-' . $xxx . ' months');
         return $date;
-        break;
+
+      break;
       case 'last nnn weeks':
         $xxx = self::replaceParameters($period, 'nnn', $replaceParameters);
-        $date->modify('-'.$xxx.' weeks');
+        $date->modify('-' . $xxx . ' weeks');
         return $date;
-        break;
+
+      break;
       case 'last nnn years':
         $xxx = self::replaceParameters($period, 'nnn', $replaceParameters);
-        $date->modify('-'.$xxx.' years');
+        $date->modify('-' . $xxx . ' years');
         return $date;
-        break;
+
+      break;
       case 'this year':
         $date->modify('first day of January this year');
         return $date;
-        break;
+
+      break;
       case 'previous year':
         $date->modify('first day of January previous year');
         return $date;
-        break;
+
+      break;
     }
 
-    return false;
+    return FALSE;
   }
 
   /**
@@ -319,52 +332,63 @@ class CRM_CivirulesConditions_Utils_Period {
    */
   public static function convertPeriodToEndDate($condition_params) {
     $period = $condition_params['period'];
-    $replaceParameters = isset($condition_params['replaceParameters']) ? $condition_params['replaceParameters'] : array();
+    $replaceParameters = isset($condition_params['replaceParameters']) ? $condition_params['replaceParameters'] : [];
     $date = new DateTime();
     switch ($period) {
       case 'this month':
         $date->modify('last day of this month');
         return $date;
-        break;
+
+      break;
       case 'previous month':
         $date->modify('last day of previous month');
         return $date;
-        break;
+
+      break;
       case 'last 30 days':
         return $date;
-        break;
+
+      break;
       case 'last nnn days':
         return $date;
-        break;
+
+      break;
       case 'last 12 months':
         return $date;
-        break;
+
+      break;
       case 'last 13 months':
         return $date;
-        break;
+
+      break;
       case 'last nnn months':
         return $date;
-        break;
+
+      break;
       case 'last nnn weeks':
         return $date;
-        break;
+
+      break;
       case 'last nnn years':
         return $date;
-        break;
+
+      break;
       case 'this year':
         $date->modify('last day of December this year');
         return $date;
-        break;
+
+      break;
       case 'previous year':
         $date->modify('last day of December previous year');
         return $date;
-        break;
+
+      break;
     }
 
-    return false;
+    return FALSE;
   }
 
- /**
+  /**
    * Returns the friendly conditional parameters
    *
    * @param string $operator
@@ -376,22 +400,28 @@ class CRM_CivirulesConditions_Utils_Period {
       case 1:
         $friendlyOperator = E::ts('is not equal to');
         break;
+
       case 2:
         $friendlyOperator = E::ts('more than');
         break;
+
       case 3:
         $friendlyOperator = E::ts('more than or equal to');
         break;
+
       case 4:
         $friendlyOperator = E::ts('less than');
         break;
+
       case 5:
         $friendlyOperator = E::ts('less than or equal to');
         break;
+
       default:
         $friendlyOperator = E::ts('is equal to');
         break;
     }
     return $friendlyOperator;
   }
+
 }

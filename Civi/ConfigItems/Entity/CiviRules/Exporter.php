@@ -19,7 +19,6 @@
 namespace Civi\ConfigItems\Entity\CiviRules;
 
 use Civi\ConfigItems\Entity\EntityExporter;
-use Civi\ConfigItems\ConfigurationForm;
 use Civi\ConfigItems\FileFormat\EntityImportDataException;
 use CRM_Civirules_BAO_Action;
 use CRM_Civirules_BAO_Condition;
@@ -28,7 +27,7 @@ use CRM_Civirules_ExtensionUtil as E;
 class Exporter implements EntityExporter {
 
   /**
-   * @var \Civi\ConfigItems\Entity\CiviRules\Definition;
+   * @var \Civi\ConfigItems\Entity\CiviRules\Definition
    */
   protected $entityDefinition;
 
@@ -45,7 +44,6 @@ class Exporter implements EntityExporter {
   public function getHelpText() {
     return $this->entityDefinition->getExportHelpText();
   }
-
 
   /**
    * Returns the entity definition
@@ -85,7 +83,7 @@ class Exporter implements EntityExporter {
    */
   public function getIgnoredAttributes() {
     $ignored = [];
-    foreach($this->getGroups() as $group => $groupTitle) {
+    foreach ($this->getGroups() as $group => $groupTitle) {
       $ignored[$group][] = $this->getEntityDefinition()->getIdAttribute();
       $ignored[$group][] = 'created_date';
       $ignored[$group][] = 'created_user_id';
@@ -102,7 +100,7 @@ class Exporter implements EntityExporter {
    * @param string $directory
    * @return array
    */
-  public function export($configuration, $config_item_set, $directory='') {
+  public function export($configuration, $config_item_set, $directory = '') {
     $entityName = $this->getEntityDefinition()->getApiEntityName();
     $ignoredAttributes = $this->getIgnoredAttributes();
     $nameAttribute = $this->entityDefinition->getNameAttribute();
@@ -116,7 +114,8 @@ class Exporter implements EntityExporter {
           ->getImporterClass()
           ->loadEntityImportData($config_item_set);
       }
-    } catch (EntityImportDataException $ex) {
+    }
+    catch (EntityImportDataException $ex) {
       // Do nothing.
     }
 
@@ -124,7 +123,7 @@ class Exporter implements EntityExporter {
     foreach ($results['values'] as $result) {
       $unmungedName = $result[$nameAttribute];
       $name = \CRM_Utils_String::munge($result[$nameAttribute]);
-      foreach($this->getGroups() as $group => $groupTitle) {
+      foreach ($this->getGroups() as $group => $groupTitle) {
         if (isset($configuration[$group]) && in_array($name, $configuration[$group])) {
           $data[$group][$unmungedName] = (array) $result;
           $data[$group][$unmungedName]['trigger'] = $this->entityDefinition->getTriggerName($data[$group][$unmungedName]['trigger_id']);
@@ -139,7 +138,7 @@ class Exporter implements EntityExporter {
         }
       }
     }
-    foreach($this->getGroups() as $group => $groupTitle) {
+    foreach ($this->getGroups() as $group => $groupTitle) {
       if (isset($configuration[$group]) && $configuration[$group]) {
         foreach ($configuration[$group] as $name) {
           if (isset($importData[$group][$name])) {
@@ -163,8 +162,8 @@ class Exporter implements EntityExporter {
         'rule_id' => $ruleId,
         ['options' => ['limit' => 0]],
       ]);
-      foreach($result['values'] as $ruleCondition) {
-        $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], false);
+      foreach ($result['values'] as $ruleCondition) {
+        $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], FALSE);
         if (!$condition) {
           continue;
         }
@@ -177,7 +176,8 @@ class Exporter implements EntityExporter {
         unset($ruleCondition['condition_id']);
         $return[] = $ruleCondition;
       }
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
       // Do nothing.
     }
     return $return;
@@ -194,8 +194,8 @@ class Exporter implements EntityExporter {
         'rule_id' => $ruleId,
         ['options' => ['limit' => 0]],
       ]);
-      foreach($result['values'] as $ruleAction) {
-        $action = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], false);
+      foreach ($result['values'] as $ruleAction) {
+        $action = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], FALSE);
         if (!$action) {
           continue;
         }
@@ -208,11 +208,11 @@ class Exporter implements EntityExporter {
         unset($ruleAction['action_id']);
         $return[] = $ruleAction;
       }
-    } catch (\CRM_Core_Exception $e) {
+    }
+    catch (\CRM_Core_Exception $e) {
       // Do nothing.
     }
     return $return;
   }
-
 
 }

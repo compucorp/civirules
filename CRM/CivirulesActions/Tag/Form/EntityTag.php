@@ -1,5 +1,6 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Add Tag to Entity Action Form
  *
@@ -9,7 +10,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @link https://lab.civicrm.org/extensions/civirules/-/issues/116
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Tag_Form_EntityTag extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -42,8 +42,8 @@ class CRM_CivirulesActions_Tag_Form_EntityTag extends CRM_CivirulesActions_Form_
       'placeholder' => '--- select tag(s) ---',
     ]);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

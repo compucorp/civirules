@@ -6,7 +6,6 @@
  * @date 1 Oct 2019
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Participant_StatusChanged extends CRM_CivirulesConditions_Generic_FieldValueChangeComparison {
 
   /**
@@ -65,7 +64,9 @@ class CRM_CivirulesConditions_Participant_StatusChanged extends CRM_CivirulesCon
       foreach ($options as $option) {
         $return[$option['id']] = $option['name'];
       }
-    } catch (CRM_Core_Exception $ex) {}
+    }
+    catch (CRM_Core_Exception $ex) {
+    }
 
     return $return;
   }

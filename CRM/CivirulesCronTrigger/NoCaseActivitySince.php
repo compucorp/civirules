@@ -9,7 +9,7 @@ use CRM_Civirules_ExtensionUtil as E;
 class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger_Cron {
 
   /**
-   * @var \CRM_Case_DAO_CaseActivity $dao
+   * @var \CRM_Case_DAO_CaseActivity
    */
   private $dao = NULL;
 
@@ -49,7 +49,7 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
    * @return CRM_Civirules_TriggerData_EntityDefinition
    */
   protected function reactOnEntity() {
-    return new CRM_Civirules_TriggerData_EntityDefinition('CaseActivity', 'CaseActivity', 'CRM_Case_DAO_CaseActivity' , 'CaseActivity');
+    return new CRM_Civirules_TriggerData_EntityDefinition('CaseActivity', 'CaseActivity', 'CRM_Case_DAO_CaseActivity', 'CaseActivity');
   }
 
   /**
@@ -88,7 +88,7 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
             AND " . implode(" AND ", $clauses) . "
             AND `rule_log`.`id` IS NULL
             GROUP BY `ca`.`case_id`
-            HAVING DATE_ADD(MAX(`a`.`" . $dateField . "`), INTERVAL ".$offset." ".$unit .") <= NOW()";
+            HAVING DATE_ADD(MAX(`a`.`" . $dateField . "`), INTERVAL " . $offset . " " . $unit . ") <= NOW()";
     $params[1] = [$this->ruleId, 'Integer'];
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Case_DAO_CaseActivity');
 
@@ -167,7 +167,7 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
         'DAY' => E::ts('Day(s)'),
         'WEEK' => E::ts('Week(s)'),
         'MONTH' => E::ts('Month(s)'),
-        'YEAR' => E::ts('Year(s)')
+        'YEAR' => E::ts('Year(s)'),
       ];
       $offsetLabel = "{$this->triggerParams['offset']} {$offsetUnits[$this->triggerParams['offset_unit']]} {$offsetTypes[$this->triggerParams['offset_type']]}";
     }
@@ -177,11 +177,11 @@ class CRM_CivirulesCronTrigger_NoCaseActivitySince extends CRM_Civirules_Trigger
       $eventTypeLabel = CRM_Civirules_Utils::getOptionLabelWithValue(CRM_Civirules_Utils::getOptionGroupIdWithName('event_type'), $this->triggerParams['event_type_id']);
     }
     $description = E::ts('Trigger for Event with type "%1" %3 "%2".', [
-        1 => $eventTypeLabel,
-        2 => $fieldLabel,
-        3 => $offsetLabel
-      ]);
-    $description .=  ' <br/><em>This rule will not trigger for event dates before the rule was created.</em>';
+      1 => $eventTypeLabel,
+      2 => $fieldLabel,
+      3 => $offsetLabel,
+    ]);
+    $description .= ' <br/><em>This rule will not trigger for event dates before the rule was created.</em>';
     return $description;
   }
 

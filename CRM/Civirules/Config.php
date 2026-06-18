@@ -6,20 +6,26 @@
  * @license AGPL-3.0
  */
 class CRM_Civirules_Config {
-  /*
+  /**
+   *
    * singleton pattern
+   *
    */
+
   private static $_singleton = NULL;
-  /*
+  /**
+   *
    * properties to hold the valid entities and actions for civirule trigger
+   *
    */
+
   protected $validTriggerObjectNames = NULL;
   protected $validTriggerOperations = NULL;
 
   /**
    * Constructor
    */
-  function __construct() {
+  public function __construct() {
     $this->setTriggerProperties();
   }
 
@@ -40,8 +46,7 @@ class CRM_Civirules_Config {
    *
    * @return array
    */
-  public function getValidTriggerObjectNames()
-  {
+  public function getValidTriggerObjectNames() {
     return $this->validTriggerObjectNames;
   }
 
@@ -50,8 +55,7 @@ class CRM_Civirules_Config {
    *
    * @return array
    */
-  public function getValidTriggerOperations()
-  {
+  public function getValidTriggerOperations() {
     return $this->validTriggerOperations;
   }
 
@@ -62,7 +66,7 @@ class CRM_Civirules_Config {
       'delete',
       'restore',
       'trash',
-      'update'
+      'update',
     ];
 
     // Load all entities from CiviCRM core.
@@ -71,4 +75,5 @@ class CRM_Civirules_Config {
     $this->validTriggerObjectNames[] = 'Household';
     $this->validTriggerObjectNames[] = 'Organization';
   }
+
 }

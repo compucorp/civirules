@@ -7,7 +7,6 @@
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  */
-
 class CRM_CivirulesConditions_ContributionRecur_Frequency extends CRM_Civirules_Condition {
 
   /**

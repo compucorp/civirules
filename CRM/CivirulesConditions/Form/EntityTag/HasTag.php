@@ -1,12 +1,12 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules Condition parameters form - entity has tag
  *
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_EntityTag_HasTag extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -21,14 +21,14 @@ class CRM_CivirulesConditions_Form_EntityTag_HasTag extends CRM_CivirulesConditi
     $genericTag->setEntityTable($tableName);
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'operator', ts('Operator'), $genericTag->getOperatorOptions(), TRUE);
-       $this->add('select', 'tag_ids', E::ts('Select Tag(s)'), $genericTag->getEntityTags(), TRUE, [
+    $this->add('select', 'tag_ids', E::ts('Select Tag(s)'), $genericTag->getEntityTags(), TRUE, [
       'class' => 'crm-select2',
       'multiple' => TRUE,
       'placeholder' => '--- select tag(s) ---',
     ]);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

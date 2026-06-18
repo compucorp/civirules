@@ -39,12 +39,12 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
-    if (!$this->ruleAction->find(true)) {
+    if (!$this->ruleAction->find(TRUE)) {
       throw new Exception('Civirules could not find ruleAction (Form)');
     }
 
     $this->action->id = $this->ruleAction->action_id;
-    if (!$this->action->find(true)) {
+    if (!$this->action->find(TRUE)) {
       throw new Exception('Civirules could not find action');
     }
 
@@ -55,16 +55,16 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
       ->execute()
       ->first();
     if (class_exists($action['class_name'])) {
-      $this->actionClass = new $action['class_name'];
+      $this->actionClass = new $action['class_name']();
     }
 
     $this->rule->id = $this->ruleAction->rule_id;
-    if (!$this->rule->find(true)) {
+    if (!$this->rule->find(TRUE)) {
       throw new Exception('Civirules could not find rule');
     }
 
     $this->trigger->id = $this->rule->trigger_id;
-    if (!$this->trigger->find(true)) {
+    if (!$this->trigger->find(TRUE)) {
       throw new Exception('Civirules could not find trigger');
     }
 
@@ -74,7 +74,7 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
 
     //set user context
     $session = CRM_Core_Session::singleton();
-    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
+    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
 
     $this->setFormTitle();
@@ -90,7 +90,7 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     $this->assign('ruleActionHelp', $helpText ?? '');
   }
 
-  function cancelAction() {
+  public function cancelAction() {
     if (!empty($this->getSubmittedValue('rule_action_id')) && $this->_action == CRM_Core_Action::ADD) {
       CiviRulesRuleAction::delete(FALSE)
         ->addWhere('id', '=', $this->getSubmittedValue('rule_action_id'))
@@ -110,7 +110,7 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
   }
 
   public function postProcess() {
-    CRM_Core_Session::setStatus(E::ts("Action '%1' parameters updated for CiviRule '%2'", [ 1 => $this->action->label, 2 => $this->rule->label]),
+    CRM_Core_Session::setStatus(E::ts("Action '%1' parameters updated for CiviRule '%2'", [1 => $this->action->label, 2 => $this->rule->label]),
       E::ts('Action parameters updated'),
       'success'
     );

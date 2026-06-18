@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -15,16 +14,17 @@ class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesA
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $dateRadioOptions = array('Date of Action Execution', 'xxx days after Action Execution', 'Specific Date');
+    $dateRadioOptions = ['Date of Action Execution', 'xxx days after Action Execution', 'Specific Date'];
     $this->addRadio('thank_you_date_radio', ts('Thank You Date will be set to : '), $dateRadioOptions);
     $this->add('text', 'number_of_days', ts('Number of Days after Action Execution'));
-    $this->add('datepicker', 'thank_you_date', ts('Thank You Date'), [], FALSE, array('time' => FALSE));
-    $timeRadioOptions = array('Specific Time', 'Time of Action Execution');
+    $this->add('datepicker', 'thank_you_date', ts('Thank You Date'), [], FALSE, ['time' => FALSE]);
+    $timeRadioOptions = ['Specific Time', 'Time of Action Execution'];
     $this->addRadio('thank_you_time_radio', ts('Thank You Time will be set to : '), $timeRadioOptions);
-    $this->add('datepicker', 'thank_you_time', ts('Thank You Time'), [], FALSE, array('date' => FALSE));
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->add('datepicker', 'thank_you_time', ts('Thank You Time'), [], FALSE, ['date' => FALSE]);
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -42,12 +42,14 @@ class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesA
     }
     if (empty($data['thank_you_date_radio'])) {
       $defaultValues['thank_you_date_radio'] = 0;
-    } else {
+    }
+    else {
       $defaultValues['thank_you_date_radio'] = $data['thank_you_date_radio'];
     }
     if (empty($data['thank_you_date'])) {
       $defaultValues['thank_you_date'] = date('Y-m-d');
-    } else {
+    }
+    else {
       $defaultValues['thank_you_date'] = $data['thank_you_date'];
     }
     if (empty($data['thank_you_time_radio'])) {
@@ -57,12 +59,13 @@ class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesA
       $defaultValues['thank_you_time_radio'] = $data['thank_you_time_radio'];
     }
     if (empty($data['thank_you_time'])) {
-      $defaultValues['thank_you_time'] = null;
+      $defaultValues['thank_you_time'] = NULL;
       // Handle the legacy case.
       if (empty($data['thank_you_time_radio'])) {
         $defaultValues['thank_you_time'] = '00:00:00';
       }
-    } else {
+    }
+    else {
       $defaultValues['thank_you_time'] = $data['thank_you_time'];
     }
     return $defaultValues;
@@ -77,22 +80,26 @@ class CRM_CivirulesActions_Contribution_Form_ThankYouDate extends CRM_CivirulesA
     $data['thank_you_date_radio'] = $this->_submitValues['thank_you_date_radio'];
     if ($this->_submitValues['thank_you_date_radio'] == 2) {
       $data['thank_you_date'] = $this->_submitValues['thank_you_date'];
-    } else {
-      $data['thank_you_date'] = null;
+    }
+    else {
+      $data['thank_you_date'] = NULL;
     }
     if ($this->_submitValues['thank_you_date_radio'] == 1) {
       $data['number_of_days'] = $this->_submitValues['number_of_days'];
-    } else {
+    }
+    else {
       $data['number_of_days'] = 0;
     }
     $data['thank_you_time_radio'] = $this->_submitValues['thank_you_time_radio'];
     if ((int) $this->_submitValues['thank_you_time_radio'] == 0) {
       $data['thank_you_time'] = $this->_submitValues['thank_you_time'];
-    } else {
-      $data['thank_you_time'] = null;
+    }
+    else {
+      $data['thank_you_time'] = NULL;
     }
     $this->ruleAction->action_params = serialize($data);
     $this->ruleAction->save();
     parent::postProcess();
   }
+
 }

@@ -5,9 +5,7 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form {
-
 
   /**
    * Method to get tags
@@ -43,7 +41,7 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
     $tags = $bao->getTree($tableName);
 
     $options = [];
-    foreach($tags as $tag_id => $tag) {
+    foreach ($tags as $tag_id => $tag) {
       $parent = '';
       $this->buildOptionsFromTree($options, $tags, $parent);
     }
@@ -52,12 +50,12 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
   }
 
   protected function buildOptionsFromTree(&$options, $tree, $parent) {
-    foreach($tree as $tag_id => $tag) {
+    foreach ($tree as $tag_id => $tag) {
       if ($tag['is_selectable']) {
-        $options[$tag_id] = trim($parent.' '.$tag['name']);
+        $options[$tag_id] = trim($parent . ' ' . $tag['name']);
       }
       if (isset($tag['children']) && is_array($tag['children'])) {
-        $this->buildOptionsFromTree($options, $tag['children'], $tag['name'].':');
+        $this->buildOptionsFromTree($options, $tag['children'], $tag['name'] . ':');
       }
     }
   }
@@ -87,8 +85,8 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
     $multiGroup->setButtonAttributes('remove', ['value' => ts('<< Remove')]);
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -104,18 +102,19 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
    * @access public
    * @static
    */
-  static function validateTagFields($fields) {
+  public static function validateTagFields($fields) {
     $errors = [];
     if ($fields['type'] == 0 && empty($fields['tag_id'])) {
       $errors['tag_id'] = ts('You have to select at least one tag');
-    } elseif ($fields['type'] == 1 && (empty($fields['tag_ids']) || count($fields['tag_ids']) < 1)) {
+    }
+    elseif ($fields['type'] == 1 && (empty($fields['tag_ids']) || count($fields['tag_ids']) < 1)) {
       $errors['tag_ids'] = ts('You have to select at least one tag');
     }
 
     if (count($errors)) {
       return $errors;
     }
-    return true;
+    return TRUE;
   }
 
   /**
@@ -145,11 +144,12 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
    * @access public
    */
   public function postProcess() {
-    $data['tag_id'] = false;
-    $data['tag_ids'] = false;
+    $data['tag_id'] = FALSE;
+    $data['tag_ids'] = FALSE;
     if ($this->_submitValues['type'] == 0) {
       $data['tag_id'] = $this->_submitValues['tag_id'];
-    } else {
+    }
+    else {
       $data['tag_ids'] = $this->_submitValues['tag_ids'];
     }
 

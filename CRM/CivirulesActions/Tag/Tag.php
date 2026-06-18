@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 abstract class CRM_CivirulesActions_Tag_Tag extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -64,10 +63,11 @@ abstract class CRM_CivirulesActions_Tag_Tag extends CRM_CivirulesActions_Generic
     $tag_ids = [];
     if (!empty($action_params['tag_id'])) {
       $tag_ids = [$action_params['tag_id']];
-    } elseif (!empty($action_params['tag_ids']) && is_array($action_params['tag_ids'])) {
+    }
+    elseif (!empty($action_params['tag_ids']) && is_array($action_params['tag_ids'])) {
       $tag_ids = $action_params['tag_ids'];
     }
-    foreach($tag_ids as $tag_id) {
+    foreach ($tag_ids as $tag_id) {
       $params = [];
       $params['tag_id'] = $tag_id;
 
@@ -114,9 +114,10 @@ abstract class CRM_CivirulesActions_Tag_Tag extends CRM_CivirulesActions_Generic
     if (!empty($params['tag_id'])) {
       $tag = civicrm_api3('Tag', 'getvalue', ['return' => 'name', 'id' => $params['tag_id']]);
       return $this->getActionLabel($tag);
-    } elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
+    }
+    elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
       $tags = '';
-      foreach($params['tag_ids'] as $tag_id) {
+      foreach ($params['tag_ids'] as $tag_id) {
         $tag = civicrm_api3('Tag', 'getvalue', ['return' => 'name', 'id' => $tag_id]);
         if (strlen($tags)) {
           $tags .= ', ';
@@ -142,16 +143,19 @@ abstract class CRM_CivirulesActions_Tag_Tag extends CRM_CivirulesActions_Generic
           'return' => 'name',
           'id' => $action_params['tag_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
       foreach ($action_params['tag_ids'] as $i => $j) {
         try {
           $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
             'return' => 'name',
             'id' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -171,16 +175,19 @@ abstract class CRM_CivirulesActions_Tag_Tag extends CRM_CivirulesActions_Generic
           'return' => 'id',
           'name' => $action_params['tag_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
       }
-    } elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
+      catch (CRM_Core_Exception $e) {
+      }
+    }
+    elseif (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
       foreach ($action_params['tag_ids'] as $i => $j) {
         try {
           $action_params['tag_ids'][$i] = civicrm_api3('Tag', 'getvalue', [
             'return' => 'id',
             'name' => $j,
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }

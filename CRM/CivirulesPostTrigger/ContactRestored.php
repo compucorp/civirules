@@ -4,7 +4,6 @@
  * @date 12-6-18
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesPostTrigger_ContactRestored extends CRM_Civirules_Trigger_Post {
 
   /**

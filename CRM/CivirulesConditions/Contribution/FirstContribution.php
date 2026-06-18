@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Contribution_FirstContribution extends CRM_Civirules_Condition {
 
   /**
@@ -15,22 +14,23 @@ class CRM_CivirulesConditions_Contribution_FirstContribution extends CRM_Civirul
    * @return bool
    * @access public
    */
-  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
-  {
+  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contactId = $triggerData->getContactId();
-    $contributionParams = array('contact_id' => $contactId);
+    $contributionParams = ['contact_id' => $contactId];
     $countContributions = civicrm_api3('Contribution', 'getcount', $contributionParams);
     switch ($countContributions) {
       case 0:
         return TRUE;
-        break;
+
+      break;
       case 1:
-        $existingContribution = civicrm_api3('Contribution', 'Getsingle', array('contact_id' => $contactId));
+        $existingContribution = civicrm_api3('Contribution', 'Getsingle', ['contact_id' => $contactId]);
         $triggerContribution = $triggerData->getEntityData('Contribution');
         if ($triggerContribution['contribution_id'] == $existingContribution['contribution_id']) {
           return TRUE;
         }
-      break;
+        break;
+
       default:
         return FALSE;
       break;
@@ -64,4 +64,5 @@ class CRM_CivirulesConditions_Contribution_FirstContribution extends CRM_Civirul
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Contribution');
   }
+
 }

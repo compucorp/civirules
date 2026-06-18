@@ -5,9 +5,7 @@
  * @author A.J. Fasano (Grand Lodge of Virginia AF&AM)
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Activity_ActivityIsFuture extends CRM_Civirules_Condition {
-
 
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
@@ -30,14 +28,12 @@ class CRM_CivirulesConditions_Activity_ActivityIsFuture extends CRM_Civirules_Co
    * @return bool
    * @access public
    */
-  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData)
-  {
+  public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $activityData = $triggerData->getEntityData('Activity');
     $activityDate = new DateTime($activityData['activity_date_time']);
     $currentDate = new DateTime();
 
-    if ($activityDate > $currentDate)
-    {
+    if ($activityDate > $currentDate) {
       return TRUE;
     }
     return FALSE;

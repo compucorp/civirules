@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Contribution_DistinctContributingDay extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -22,16 +21,17 @@ class CRM_CivirulesConditions_Form_Contribution_DistinctContributingDay extends 
     $operatorList[5] = 'is less than or equal (<=)';
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'no_of_days', ts('Number of Days'), array(), true);
-    $this->addRule('no_of_days','Number of Days must be a whole number','numeric');
-    $this->addRule('no_of_days','Number of Days must be a whole number','nopunctuation');
+    $this->add('select', 'operator', ts('Operator'), $operatorList, TRUE);
+    $this->add('text', 'no_of_days', ts('Number of Days'), [], TRUE);
+    $this->addRule('no_of_days', 'Number of Days must be a whole number', 'numeric');
+    $this->addRule('no_of_days', 'Number of Days must be a whole number', 'nopunctuation');
 
     CRM_CivirulesConditions_Utils_Period::buildQuickForm($this);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -55,8 +55,7 @@ class CRM_CivirulesConditions_Form_Contribution_DistinctContributingDay extends 
     return $defaultValues;
   }
 
-  public function addRules()
-  {
+  public function addRules() {
     CRM_CivirulesConditions_Utils_Period::addRules($this);
   }
 
@@ -77,4 +76,5 @@ class CRM_CivirulesConditions_Form_Contribution_DistinctContributingDay extends 
 
     parent::postProcess();
   }
+
 }

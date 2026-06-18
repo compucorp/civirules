@@ -18,7 +18,7 @@ class CRM_CivirulesActions_GroupContact_Form_AddRelated extends CRM_CivirulesAct
     $this->add('select', 'group_id', E::ts('Group'), ['' => E::ts('-- please select --')] + CRM_Civirules_Utils::getGroupList(), TRUE);
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 

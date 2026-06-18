@@ -18,12 +18,13 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
         if (in_array($contribution['payment_instrument_id'], $paymentInstrumentIds)) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
+
       case 1:
         if (!in_array($contribution['payment_instrument_id'], $paymentInstrumentIds)) {
           $isConditionValid = TRUE;
         }
-      break;
+        break;
     }
     return $isConditionValid;
   }
@@ -50,14 +51,15 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
   public function exportConditionParameters() {
     $params = parent::exportConditionParameters();
     if (!empty($params['payment_instrument_id']) && is_array($params['payment_instrument_id'])) {
-      foreach($params['payment_instrument_id'] as $i => $gid) {
+      foreach ($params['payment_instrument_id'] as $i => $gid) {
         try {
           $params['payment_instrument_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'name',
             'id' => $gid,
-            'option_group_id' => 'payment_instrument'
+            'option_group_id' => 'payment_instrument',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -72,14 +74,15 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
    */
   public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params['payment_instrument_id']) && is_array($condition_params['payment_instrument_id'])) {
-      foreach($condition_params['payment_instrument_id'] as $i => $gid) {
+      foreach ($condition_params['payment_instrument_id'] as $i => $gid) {
         try {
           $condition_params['payment_instrument_id'][$i] = civicrm_api3('OptionValue', 'getvalue', [
             'return' => 'id',
             'name' => $gid,
-            'option_group_id' => 'payment_instrument'
+            'option_group_id' => 'payment_instrument',
           ]);
-        } catch (CRM_Core_Exception $e) {
+        }
+        catch (CRM_Core_Exception $e) {
         }
       }
     }
@@ -93,7 +96,7 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
    * @return string
    */
   public function userFriendlyConditionParams() {
-    $operator = null;
+    $operator = NULL;
     if ($this->conditionParams['operator'] == 0) {
       $operator = 'is one of';
     }
@@ -126,7 +129,6 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
     }
     return '';
   }
-
 
   /**
    * This function validates whether this condition works with the selected trigger.

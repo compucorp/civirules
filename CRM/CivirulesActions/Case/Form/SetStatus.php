@@ -25,10 +25,9 @@ class CRM_CivirulesActions_Case_Form_SetStatus extends CRM_CivirulesActions_Form
       [
         'type' => 'cancel',
         'name' => ts('Cancel'),
-      ]
+      ],
     ]);
   }
-
 
   /**
    * Set default values.
@@ -39,7 +38,6 @@ class CRM_CivirulesActions_Case_Form_SetStatus extends CRM_CivirulesActions_Form
     $defaultValues['status_id'] = empty($data['status_id']) ? '' : $data['status_id'];
     return $defaultValues;
   }
-
 
   /**
    * Process form data after submitting

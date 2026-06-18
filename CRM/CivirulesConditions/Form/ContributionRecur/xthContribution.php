@@ -18,14 +18,15 @@ class CRM_CivirulesConditions_Form_ContributionRecur_xthContribution extends CRM
     $operatorList[5] = 'is less than or equal (<=)';
 
     $this->add('hidden', 'rule_condition_id');
-    $this->add('select', 'operator', ts('Operator'), $operatorList, true);
-    $this->add('text', 'no_of_recurring', ts('Number of the Contribution of the Recurring Contribution'), array(), true);
+    $this->add('select', 'operator', ts('Operator'), $operatorList, TRUE);
+    $this->add('text', 'no_of_recurring', ts('Number of the Contribution of the Recurring Contribution'), [], TRUE);
     $this->addRule('no_of_recurring', 'Number of the Contribution of the Recurring Contribution must be a whole number', 'numeric');
     $this->addRule('no_of_recurring', 'Number of the Contribution of the Recurring Contribution must be a whole number', 'nopunctuation');
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -60,4 +61,5 @@ class CRM_CivirulesConditions_Form_ContributionRecur_xthContribution extends CRM
 
     parent::postProcess();
   }
+
 }

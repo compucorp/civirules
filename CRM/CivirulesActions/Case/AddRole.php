@@ -17,7 +17,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
     if (!empty($params['cid'])) {
       $contact_ids_a[] = $triggerData->getContactId();
       $contact_ids_b[] = $params['cid'];
-    } else {
+    }
+    else {
       $contact_ids_b[] = $triggerData->getContactId();
       try {
         $caseContacts = \Civi\Api4\CaseContact::get(TRUE)
@@ -27,7 +28,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
         foreach ($caseContacts as $caseContact) {
           $contact_ids_a[] = $caseContact['contact_id'];
         }
-      } catch (\Civi\API\Exception\UnauthorizedException|CRM_Core_Exception $e) {
+      }
+      catch (\Civi\API\Exception\UnauthorizedException | CRM_Core_Exception $e) {
 
       }
     }
@@ -39,7 +41,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
         $api_params['case_id'] = $case['id'];
         try {
           civicrm_api3('Relationship', 'create', $api_params);
-        } catch (\Exception $ex) {
+        }
+        catch (\Exception $ex) {
           // Do nothing
         }
       }
@@ -59,7 +62,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
         'return' => 'name_a_b',
         'id' => $action_params['role'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -76,7 +80,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
         'return' => 'id',
         'name_a_b' => $action_params['role'],
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
@@ -91,7 +96,6 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
   public function getExtraDataInputUrl($ruleActionId) {
     return $this->getFormattedExtraDataInputUrl('civicrm/civirule/form/action/case/addrole', $ruleActionId);
   }
-
 
   /**
    * Returns a user friendly text explaining the condition params
@@ -108,7 +112,8 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
         ->execute()
         ->first()['display_name'] ?? '';
       return E::ts('Add %2 to the case with role <em>%1</em>', [1 => $roles[$params['role']], 2 => $contactDisplayName]);
-    } else {
+    }
+    else {
       return E::ts('Add the triggering contact to the case with role <em>%1</em>', [1 => $roles[$params['role']]]);
     }
   }
@@ -134,9 +139,10 @@ class CRM_CivirulesActions_Case_AddRole extends CRM_Civirules_Action {
   public static function getCaseRoles() {
     $relationshipTypesApi = civicrm_api3('RelationshipType', 'get', ['options' => ['limit' => 0]]);
     $caseRoles = [];
-    foreach($relationshipTypesApi['values'] as $relType) {
+    foreach ($relationshipTypesApi['values'] as $relType) {
       $caseRoles[$relType['id']] = $relType['label_a_b'];
     }
     return $caseRoles;
   }
+
 }

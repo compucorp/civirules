@@ -38,38 +38,47 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
         $activity_date_time_statement = "AND DATE_SUB(a.activity_date_time, INTERVAL %2 MINUTE) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-hours':
         $activity_date_time_statement = "AND DATE_SUB(a.activity_date_time, INTERVAL %2 HOUR) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-days':
         $activity_date_time_statement = "AND DATE_SUB(a.activity_date_time, INTERVAL %2 DAY) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-weeks':
         $activity_date_time_statement = "AND DATE_SUB(a.activity_date_time, INTERVAL %2 WEEK) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '-months':
         $activity_date_time_statement = "AND DATE_SUB(a.activity_date_time, INTERVAL %2 MONTH) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+minutes':
         $activity_date_time_statement = "AND DATE_ADD(a.activity_date_time, INTERVAL %2 MINUTE) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+hours':
         $activity_date_time_statement = "AND DATE_ADD(a.activity_date_time, INTERVAL %2 HOUR) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+days':
         $activity_date_time_statement = "AND DATE_ADD(a.activity_date_time, INTERVAL %2 DAY) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+weeks':
         $activity_date_time_statement = "AND DATE_ADD(a.activity_date_time, INTERVAL %2 WEEK) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];
         break;
+
       case '+months':
         $activity_date_time_statement = "AND DATE_ADD(a.activity_date_time, INTERVAL %2 MONTH) < {$currentDateTime}";
         $params[2] = [$this->triggerParams['interval'], 'Integer'];

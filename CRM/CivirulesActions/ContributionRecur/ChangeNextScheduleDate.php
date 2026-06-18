@@ -97,8 +97,11 @@ class CRM_CivirulesActions_ContributionRecur_ChangeNextScheduleDate extends CRM_
       $date_raw = $actionParams['schedule_date'];
     }
     $date = new \DateTime($date_raw);
-    $return .= E::ts("Change Next Scheduled Date for Recurring Contribution (%1 gives %2)", [1 => $date_type, 2 => $date->format('Y-m-d H:m
-:s')]);
+    $return .= E::ts("Change Next Scheduled Date for Recurring Contribution (%1 gives %2)", [
+      1 => $date_type,
+      2 => $date->format('Y-m-d H:m
+:s'),
+    ]);
     return $return;
   }
 
@@ -148,7 +151,7 @@ class CRM_CivirulesActions_ContributionRecur_ChangeNextScheduleDate extends CRM_
     }
   }
 
- /**
+  /**
    * Get various types of help text for the action:
    *   - actionDescription: When choosing from a list of actions, explains what the action does.
    *   - actionDescriptionWithParams: When a action has been configured for a rule provides a
@@ -177,6 +180,6 @@ For example: +1 day, +1 week, etc.');
     }
 
     return $helpText ?? '';
- }
+  }
 
 }

@@ -62,7 +62,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
 
     // Get new value
     $new_value = $this->getCustomValue($from_entity, $fromEntityId, $copy_from_field_id);
-    $existing_value =  $this->getCustomValue($entity, $entityId, $field_id);
+    $existing_value = $this->getCustomValue($entity, $entityId, $field_id);
 
     if ($new_value !== $existing_value) {
       // set the new value using the API
@@ -92,7 +92,8 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         unset($action_params['field_id']);
         $action_params['custom_group'] = $customGroup['name'];
         $action_params['custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -107,7 +108,8 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         unset($action_params['copy_from_field_id']);
         $action_params['copy_from_custom_group'] = $customGroup['name'];
         $action_params['copy_from_custom_field'] = $customField['name'];
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -130,7 +132,8 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         $action_params['field_id'] = $customField['id'];
         unset($action_params['custom_group']);
         unset($action_params['custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -143,7 +146,8 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
         $action_params['copy_from_field_id'] = $customField['id'];
         unset($action_params['copy_from_custom_group']);
         unset($action_params['copy_from_custom_field']);
-      } catch (\CRM_Core_Exception $e) {
+      }
+      catch (\CRM_Core_Exception $e) {
         // Do nothing.
       }
     }
@@ -233,13 +237,13 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
    */
   public function userFriendlyConditionParams() : string {
     $action_params = $this->getActionParameters();
-    if(empty($action_params)) {
+    if (empty($action_params)) {
       return '';
     }
-    return E::ts('Copy from %1 to %2',[
-         1 => $this->formatCustomField($action_params['copy_from_field_id']),
-         2 => $this->formatCustomField($action_params['field_id'])
-        ]);
+    return E::ts('Copy from %1 to %2', [
+      1 => $this->formatCustomField($action_params['copy_from_field_id']),
+      2 => $this->formatCustomField($action_params['field_id']),
+    ]);
   }
 
   /**
@@ -254,7 +258,7 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
     try {
       $result = civicrm_api3($from_entity, 'getsingle', [
         'id' => $fromEntityId,
-        'return' => 'custom_' . $copy_from_field_id
+        'return' => 'custom_' . $copy_from_field_id,
       ]);
       // A field of the type ContactReference returns its value in two formats. custom_<nr> returns the display_name
       // and the custom_<nr>_id returns the contact id. The expression below find the contact_id form ContactReference fields

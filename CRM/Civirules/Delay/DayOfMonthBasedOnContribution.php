@@ -21,7 +21,7 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
       if ($modify_days < 0) {
         $modify_days = 0;
       }
-      $newDate->modify('+'.$modify_days.' days');
+      $newDate->modify('+' . $modify_days . ' days');
       return $newDate;
     }
     return $date;
@@ -32,16 +32,16 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
   }
 
   public function getDelayExplanation() {
-    return ts('Delay by the %1 day of the month of the contribution', array(1 => $this->day_of_month));
+    return ts('Delay by the %1 day of the month of the contribution', [1 => $this->day_of_month]);
   }
 
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $form->add('text', $prefix.'day_of_month', ts('Day of month (1-31)'));
+    $form->add('text', $prefix . 'day_of_month', ts('Day of month (1-31)'));
   }
 
   public function validate($values, &$errors, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    if (empty($values[$prefix.'day_of_month']) || !is_numeric($values[$prefix.'day_of_month']) || $values[$prefix.'day_of_month'] < 0 || $values[$prefix.'day_of_month'] > 31) {
-      $errors[$prefix.'day_of_month'] = ts('You need to provide a day of the month (between 1 and 31)');
+    if (empty($values[$prefix . 'day_of_month']) || !is_numeric($values[$prefix . 'day_of_month']) || $values[$prefix . 'day_of_month'] < 0 || $values[$prefix . 'day_of_month'] > 31) {
+      $errors[$prefix . 'day_of_month'] = ts('You need to provide a day of the month (between 1 and 31)');
     }
 
     $rule = new CRM_Civirules_BAO_CiviRulesRule();
@@ -56,17 +56,17 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
 
     $availableEntities = $triggerObject->getProvidedEntities();
     if (!isset($availableEntities['Contribution'])) {
-      $errors[$prefix.'delay_select'] = ts('This delay is not available with trigger %1', array(1 => $trigger->label));
+      $errors[$prefix . 'delay_select'] = ts('This delay is not available with trigger %1', [1 => $trigger->label]);
     }
   }
 
   public function setValues($values, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $this->day_of_month = $values[$prefix.'day_of_month'];
+    $this->day_of_month = $values[$prefix . 'day_of_month'];
   }
 
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    $values = array();
-    $values[$prefix.'day_of_month'] = $this->day_of_month;
+    $values = [];
+    $values[$prefix . 'day_of_month'] = $this->day_of_month;
     return $values;
   }
 

@@ -7,7 +7,6 @@
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  */
-
 class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Condition {
 
   /**
@@ -16,7 +15,6 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $recurring = $triggerData->getEntityData('ContributionRecur');
@@ -53,10 +51,11 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
   public function userFriendlyConditionParams() {
     if (isset($this->conditionParams['end_date']) && $this->conditionParams['end_date'] == 1) {
       $endDateString = 'is set';
-    } else {
+    }
+    else {
       $endDateString = 'is not set';
     }
-    return 'End Date of Recurring Contribution '.$endDateString;
+    return 'End Date of Recurring Contribution ' . $endDateString;
   }
 
   /**
@@ -74,4 +73,5 @@ class CRM_CivirulesConditions_ContributionRecur_EndDate extends CRM_Civirules_Co
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('ContributionRecur');
   }
+
 }

@@ -3,7 +3,6 @@
  * @author Alain Benbassat (CiviCooP) <alain.benbassat@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions_Generic_Api {
 
   /**
@@ -56,7 +55,8 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
           'return' => 'name',
           'id' => $action_params['status_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return $action_params;
@@ -75,7 +75,8 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
           'return' => 'id',
           'name' => $action_params['status_id'],
         ]);
-      } catch (CRM_Core_Exception $e) {
+      }
+      catch (CRM_Core_Exception $e) {
       }
     }
     return parent::importActionParameters($action_params);
@@ -107,7 +108,8 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
     $params = $this->getActionParameters();
     $status = civicrm_api3('ParticipantStatusType', 'getvalue', [
       'return' => 'label',
-      'id' => $params['status_id']]);
+      'id' => $params['status_id'],
+    ]);
     $return .= ts("Status: %1", [1 => $status]);
     return $return;
   }
@@ -125,9 +127,9 @@ class CRM_CivirulesActions_Participant_UpdateStatus extends CRM_CivirulesActions
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     $entities = $trigger->getProvidedEntities();
     if (isset($entities['Participant'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }

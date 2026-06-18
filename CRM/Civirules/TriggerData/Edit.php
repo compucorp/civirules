@@ -2,7 +2,7 @@
 
 class CRM_Civirules_TriggerData_Edit extends CRM_Civirules_TriggerData_Post implements CRM_Civirules_TriggerData_Interface_OriginalData {
 
-  protected $originalData = array();
+  protected $originalData = [];
 
   /**
    * @param string $entity

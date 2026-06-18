@@ -5,16 +5,21 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api {
 
-  // Store a list of api params passed to action
+  /**
+   * Store a list of api params passed to action
+   */
   protected $apiParams = [];
 
-  // Store the triggering activity id
+  /**
+   * Store the triggering activity id
+   */
   protected $activityId;
 
-  // Store a list of new assigned contacts
+  /**
+   * Store a list of new assigned contacts
+   */
   protected $asignedContacts = [];
 
   /**
@@ -31,7 +36,8 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         'value' => $action_params['status_id'],
         'option_group_id' => 'activity_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['activity_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -39,7 +45,8 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         'value' => $action_params['activity_type_id'],
         'option_group_id' => 'activity_type',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return $action_params;
   }
@@ -57,7 +64,8 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         'name' => $action_params['status_id'],
         'option_group_id' => 'activity_status',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     try {
       $action_params['activity_type_id'] = civicrm_api3('OptionValue', 'getvalue', [
@@ -65,11 +73,11 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         'name' => $action_params['activity_type_id'],
         'option_group_id' => 'activity_type',
       ]);
-    } catch (CRM_Core_Exception $e) {
+    }
+    catch (CRM_Core_Exception $e) {
     }
     return parent::importActionParameters($action_params);
   }
-
 
   /**
    * Returns an array with parameters used for processing an action
@@ -95,25 +103,27 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     $params['details'] = $action_params['details'];
 
     if (!empty($action_params['assignee_contact_id'])) {
-      $assignee = array();
+      $assignee = [];
       if (is_array($action_params['assignee_contact_id'])) {
-        foreach($action_params['assignee_contact_id'] as $contact_id) {
-          if($contact_id) {
+        foreach ($action_params['assignee_contact_id'] as $contact_id) {
+          if ($contact_id) {
             $assignee[] = $contact_id;
           }
         }
-      } else {
+      }
+      else {
         $assignee[] = $action_params['assignee_contact_id'];
       }
       if (count($assignee)) {
         $params['assignee_contact_id'] = $action_params['assignee_contact_id'];
-      } else {
+      }
+      else {
         $params['assignee_contact_id'] = [];
       }
 
       // Store the assigned contacts to send a notification email
       if (!empty($params['assignee_contact_id'])) {
-        $this->asignedContacts = (array)$params['assignee_contact_id'];
+        $this->asignedContacts = (array) $params['assignee_contact_id'];
       }
     }
 
@@ -126,7 +136,8 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     // issue #127: no activity date time if set to null
     if ($action_params['activity_date_time'] == 'null') {
       unset($params['activity_date_time']);
-    } else {
+    }
+    else {
       if (!empty($action_params['activity_date_time'])) {
         // Deprecated compatibility check - remove once all data migrated to array storage
         $delayClass = is_array($action_params['activity_date_time']) ? $action_params['activity_date_time'] : unserialize($action_params['activity_date_time']);
@@ -151,7 +162,8 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     // the contact from the trigger as the source contact.
     if (CRM_Core_Session::getLoggedInContactID()) {
       $params['source_contact_id'] = CRM_Core_Session::getLoggedInContactID();
-    } else {
+    }
+    else {
       $params['source_contact_id'] = $triggerData->getContactId();
     }
     return $params;
@@ -174,8 +186,9 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         $contact = civicrm_api3('Contact', 'getsingle', ['id' => $contactId]);
 
         // check contact has an email
-        if (empty($contact['email']))
+        if (empty($contact['email'])) {
           continue;
+        }
 
         CRM_Case_BAO_Case::sendActivityCopy(NULL, $this->activityId, [$contact['email'] => $contact], NULL, NULL);
       }
@@ -206,9 +219,10 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     try {
       $activity = civicrm_api3($entity, $action, $parameters);
       $this->activityId = $activity['id'];
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $formattedParams = '';
-      foreach($parameters as $key => $param) {
+      foreach ($parameters as $key => $param) {
         if (strlen($formattedParams)) {
           $formattedParams .= ', ';
         }
@@ -245,24 +259,26 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     $return = '';
     $params = $this->getActionParameters();
     if (!empty($params['activity_type_id'])) {
-      $type = civicrm_api3('OptionValue', 'getvalue', array(
+      $type = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_type',
-        'value' => $params['activity_type_id']));
-      $return .= ts("Type: %1", array(1 => $type));
+        'value' => $params['activity_type_id'],
+      ]);
+      $return .= ts("Type: %1", [1 => $type]);
     }
     if (!empty($params['status_id'])) {
-      $status = civicrm_api3('OptionValue', 'getvalue', array(
+      $status = civicrm_api3('OptionValue', 'getvalue', [
         'return' => 'label',
         'option_group_id' => 'activity_status',
-        'value' => $params['status_id']));
+        'value' => $params['status_id'],
+      ]);
       $return .= "<br>";
-      $return .= ts("Status: %1", array(1 => $status));
+      $return .= ts("Status: %1", [1 => $status]);
     }
     $subject = $params['subject'];
     if (!empty($subject)) {
       $return .= "<br>";
-      $return .= ts("Subject: %1", array(1 => $subject));
+      $return .= ts("Subject: %1", [1 => $subject]);
     }
     // #188 relationship based target selection
     $relContactMap = [
@@ -276,25 +292,26 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     }
     if (!empty($params['assignee_contact_id']) && !empty($params['assignee_contact_id'][0])) {
       if (!is_array($params['assignee_contact_id'])) {
-        $params['assignee_contact_id'] = array($params['assignee_contact_id']);
+        $params['assignee_contact_id'] = [$params['assignee_contact_id']];
       }
       $assignees = '';
-      foreach($params['assignee_contact_id'] as $cid) {
+      foreach ($params['assignee_contact_id'] as $cid) {
         try {
-          $assignee = civicrm_api3('Contact', 'getvalue', array('return' => 'display_name', 'id' => $cid));
+          $assignee = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $cid]);
           if ($assignee) {
             if (strlen($assignees)) {
               $assignees .= ', ';
             }
             $assignees .= $assignee;
           }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
           //do nothing
         }
       }
 
       $return .= '<br>';
-      $return .= ts("Assignee(s): %1", array(1 => $assignees));
+      $return .= ts("Assignee(s): %1", [1 => $assignees]);
     }
 
     // #188 assignee by relationship
@@ -307,13 +324,13 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
       if ($params['activity_date_time'] != 'null') {
         $delayClass = unserialize(($params['activity_date_time']));
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
-          $return .= '<br>'.ts('Activity date time').': '.$delayClass->getDelayExplanation();
+          $return .= '<br>' . ts('Activity date time') . ': ' . $delayClass->getDelayExplanation();
         }
       }
     }
 
     if (!empty($params['send_email'])) {
-      $return .= '<br>'.ts('Send notification');
+      $return .= '<br>' . ts('Send notification');
     }
 
     return $return;

@@ -3,10 +3,9 @@
 use Civi\Api4\CiviRulesRuleCondition;
 use CRM_Civirules_ExtensionUtil as E;
 
-class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
-{
+class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
 
-  protected $ruleConditionId = false;
+  protected $ruleConditionId = FALSE;
 
   /**
    * The (internal) name of the rule condition
@@ -43,10 +42,10 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
 
     $this->ruleCondition = new CRM_Civirules_BAO_CiviRulesRuleCondition();
     $this->ruleCondition->id = $this->ruleConditionId;
-    if (!$this->ruleCondition->find(true)) {
+    if (!$this->ruleCondition->find(TRUE)) {
       throw new Exception('Civirules could not find ruleCondition');
     }
-    $ruleConditionData = array();
+    $ruleConditionData = [];
     CRM_Core_DAO::storeValues($this->ruleCondition, $ruleConditionData);
 
     $this->condition = new CRM_Civirules_BAO_CiviRulesCondition();
@@ -54,26 +53,26 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
     $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
     $this->condition->id = $this->ruleCondition->condition_id;
-    if (!$this->condition->find(true)) {
+    if (!$this->condition->find(TRUE)) {
       throw new Exception('Civirules could not find condition');
     }
 
     $this->rule->id = $this->ruleCondition->rule_id;
-    if (!$this->rule->find(true)) {
+    if (!$this->rule->find(TRUE)) {
       throw new Exception('Civirules could not find rule');
     }
 
     $this->trigger->id = $this->rule->trigger_id;
-    if (!$this->trigger->find(true)) {
+    if (!$this->trigger->find(TRUE)) {
       throw new Exception('Civirules could not find trigger');
     }
 
-    $this->conditionClass = CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($this->condition->id, false);
+    $this->conditionClass = CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($this->condition->id, FALSE);
     if ($this->conditionClass) {
       $this->conditionClass->setRuleConditionData($ruleConditionData);
     }
 
-    $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, true);
+    $this->triggerClass = CRM_Civirules_BAO_CiviRulesTrigger::getTriggerObjectByTriggerId($this->trigger->id, TRUE);
     $this->triggerClass->setTriggerId($this->trigger->id);
     $this->triggerClass->setTriggerParams($this->rule->trigger_params ?? '');
 
@@ -85,11 +84,11 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
 
     //set user context
     $session = CRM_Core_Session::singleton();
-    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
+    $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
   }
 
-  function cancelAction() {
+  public function cancelAction() {
     if (!empty($this->getSubmittedValue('rule_condition_id')) && $this->_action == CRM_Core_Action::ADD) {
       CiviRulesRuleCondition::delete(FALSE)
         ->addWhere('id', '=', $this->getSubmittedValue('rule_condition_id'))
@@ -104,7 +103,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
    * @access public
    */
   public function setDefaultValues() {
-    $defaultValues = array();
+    $defaultValues = [];
     $defaultValues['rule_condition_id'] = $this->ruleConditionId;
     return $defaultValues;
   }
@@ -113,7 +112,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
     $session = CRM_Core_Session::singleton();
     $session->setStatus(E::ts("Condition '%1' parameters updated for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]), 'Condition parameters updated', 'success');
 
-    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->rule->id, TRUE);
+    $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($redirectUrl);
   }
 
@@ -124,7 +123,7 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
    */
   protected function setFormTitle() {
     $title = 'CiviRules Edit Condition parameters';
-    $this->assign('ruleConditionHeader', E::ts("Edit Condition '%1' for CiviRule '%2'", [ 1 => $this->condition->label, 2 => $this->rule->label]));
+    $this->assign('ruleConditionHeader', E::ts("Edit Condition '%1' for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]));
     CRM_Utils_System::setTitle($title);
   }
 

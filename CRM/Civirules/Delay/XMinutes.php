@@ -52,7 +52,7 @@ class CRM_Civirules_Delay_XMinutes extends CRM_Civirules_Delay_Delay {
    * @return void
    */
   public function validate($values, &$errors, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
-    if (empty($values[$prefix . 'xminutes_minuteOffset']) || !is_numeric($values[$prefix.'xminutes_minuteOffset'])) {
+    if (empty($values[$prefix . 'xminutes_minuteOffset']) || !is_numeric($values[$prefix . 'xminutes_minuteOffset'])) {
       $errors[$prefix . 'xminutes_minuteOffset'] = E::ts('You need to provide a number of minutes');
     }
   }

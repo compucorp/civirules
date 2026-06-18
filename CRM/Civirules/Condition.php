@@ -5,7 +5,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license AGPL-3.0
  */
-
 abstract class CRM_Civirules_Condition {
 
   protected array $ruleCondition = [];
@@ -43,7 +42,7 @@ abstract class CRM_Civirules_Condition {
    *
    * @return bool
    */
-  public abstract function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData);
+  abstract public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData);
 
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
@@ -96,7 +95,7 @@ abstract class CRM_Civirules_Condition {
    *
    * @return string
    */
-  public function importConditionParameters($condition_params=null) {
+  public function importConditionParameters($condition_params = NULL) {
     if (!empty($condition_params)) {
       return serialize($condition_params);
     }
@@ -127,7 +126,7 @@ abstract class CRM_Civirules_Condition {
    * @param \CRM_Civirules_TriggerData_TriggerData|NULL $triggerData
    * @param string $level Should be one of \Psr\Log\LogLevel
    */
-  protected function logCondition($message, ?CRM_Civirules_TriggerData_TriggerData $triggerData=null, $level=\Psr\Log\LogLevel::INFO) {
+  protected function logCondition($message, ?CRM_Civirules_TriggerData_TriggerData $triggerData = NULL, $level = \Psr\Log\LogLevel::INFO) {
     $context = [];
     $context['message'] = $message;
     $context['rule_id'] = $this->ruleCondition['rule_id'];
@@ -140,7 +139,7 @@ abstract class CRM_Civirules_Condition {
     $context['rule_condition_id'] = $this->ruleCondition['id'];
     $context['condition_label'] = CRM_Civirules_BAO_Condition::getConditionLabelWithId($this->ruleCondition['condition_id']);
     $context['condition_parameters'] = $this->userFriendlyConditionParams();
-    $context['contact_id'] = $triggerData ? $triggerData->getContactId() : - 1;
+    $context['contact_id'] = $triggerData ? $triggerData->getContactId() : -1;
     $msg = "Rule: '{$context['rule_title']}' with id {$context['rule_id']}: Condition: {$context['condition_label']} with id {$context['rule_condition_id']}: {$message}";
     if ($context['contact_id'] > 0) {
       $msg .= ": For contact: {contact_id}";

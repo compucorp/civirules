@@ -5,7 +5,6 @@
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_Form_Membership_Status extends CRM_CivirulesConditions_Form_Form {
 
   /**
@@ -19,12 +18,13 @@ class CRM_CivirulesConditions_Form_Membership_Status extends CRM_CivirulesCondit
     $membershipStatus = CRM_Civirules_Utils::getMembershipStatus();
     $membershipStatus[0] = ts('- select -');
     asort($membershipStatus);
-    $this->add('select', 'membership_status_id', ts('Membership Status'), $membershipStatus, true);
-    $this->add('select', 'operator', ts('Operator'), array('equals', 'is not equal to'), true);
+    $this->add('select', 'membership_status_id', ts('Membership Status'), $membershipStatus, TRUE);
+    $this->add('select', 'operator', ts('Operator'), ['equals', 'is not equal to'], TRUE);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -58,4 +58,5 @@ class CRM_CivirulesConditions_Form_Membership_Status extends CRM_CivirulesCondit
     $this->ruleCondition->save();
     parent::postProcess();
   }
+
 }

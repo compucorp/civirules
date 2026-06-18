@@ -17,12 +17,11 @@ class CRM_CivirulesConditions_Contact_HasValidEmail extends CRM_Civirules_Condit
       ->addWhere('is_primary', '=', TRUE)
       ->execute()
       ->count();
-    if ($count>0) {
-      return true;
+    if ($count > 0) {
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
-
 
   /**
    * Returns false, meaning that this condition has no further configuration
@@ -31,7 +30,7 @@ class CRM_CivirulesConditions_Contact_HasValidEmail extends CRM_Civirules_Condit
    * @return false
    */
   public function getExtraDataInputUrl($ruleConditionId) {
-    return false;
+    return FALSE;
   }
 
   /**
@@ -49,4 +48,5 @@ class CRM_CivirulesConditions_Contact_HasValidEmail extends CRM_Civirules_Condit
   public function userFriendlyConditionParams() {
     return 'Has valid email';
   }
+
 }

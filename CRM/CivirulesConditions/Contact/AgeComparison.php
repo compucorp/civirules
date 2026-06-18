@@ -18,12 +18,13 @@ class CRM_CivirulesConditions_Contact_AgeComparison extends CRM_CivirulesConditi
    * @access protected
    */
   protected function getFieldValue(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $sourceBirthDate = civicrm_api3('Contact', 'getvalue', array('id' => $triggerData->getContactId(), 'return' => 'birth_date'));
+    $sourceBirthDate = civicrm_api3('Contact', 'getvalue', ['id' => $triggerData->getContactId(), 'return' => 'birth_date']);
     if ($sourceBirthDate) {
       $birthDate = new DateTime($sourceBirthDate);
       return $birthDate->diff(new DateTime('now'))->y;
     }
-    return false; //undefined birth date
+    //undefined birth date
+    return FALSE;
   }
 
   /**
@@ -37,15 +38,20 @@ class CRM_CivirulesConditions_Contact_AgeComparison extends CRM_CivirulesConditi
     switch ($this->getOperator()) {
       case '=':
         return E::ts('Age is %1', [1 => $this->getComparisonValue()]);
+
       case '>':
         return E::ts('Age is older than %1', [1 => $this->getComparisonValue()]);
+
       case '<':
         return E::ts('Age is younger than %1', [1 => $this->getComparisonValue()]);
+
       case '>=':
         return E::ts('Age is %1 or older than %1', [1 => $this->getComparisonValue()]);
+
       case '<=':
         return E::ts('Age is %1 or younger than %1', [1 => $this->getComparisonValue()]);
-        break;
+
+      break;
       case '!=':
         return E::ts('Age is not %1', [1 => $this->getComparisonValue()]);
     }
@@ -71,4 +77,5 @@ class CRM_CivirulesConditions_Contact_AgeComparison extends CRM_CivirulesConditi
   protected function getComparisonValue() {
     return $this->conditionParams['value'];
   }
+
 }

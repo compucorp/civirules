@@ -1,5 +1,6 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class for CiviRules File HasTag condition
  *
@@ -7,7 +8,6 @@ use CRM_Civirules_ExtensionUtil as E;
  * @date 17 May 2021
  * @license AGPL-3.0
  */
-
 class CRM_CivirulesConditions_File_HasTag extends CRM_Civirules_Condition {
 
   /**
@@ -25,13 +25,15 @@ class CRM_CivirulesConditions_File_HasTag extends CRM_Civirules_Condition {
     }
     $generic = new CRM_CivirulesConditions_Generic_HasTag();
     $generic->setEntityTable('civicrm_file');
-    switch($this->conditionParams['operator']) {
+    switch ($this->conditionParams['operator']) {
       case 'in one of':
         $isConditionValid = $generic->entityHasOneOfTags($entityID, $this->conditionParams['tag_ids']);
         break;
+
       case 'in all of':
         $isConditionValid = $generic->entityHasAllTags($entityID, $this->conditionParams['tag_ids']);
         break;
+
       case 'not in':
         $isConditionValid = $generic->entityHasNotTag($entityID, $this->conditionParams['tag_ids']);
         break;
@@ -51,10 +53,11 @@ class CRM_CivirulesConditions_File_HasTag extends CRM_Civirules_Condition {
     $tags = $generic->getEntityTags();
     $params = parent::exportConditionParameters();
     if (!empty($params['tag_ids']) && is_array($params['tag_ids'])) {
-      foreach($params['tag_ids'] as $i => $j) {
+      foreach ($params['tag_ids'] as $i => $j) {
         $params['tag_ids'][$i] = $tags[$j];
       }
-    } elseif (!empty($params['tag_ids'])) {
+    }
+    elseif (!empty($params['tag_ids'])) {
       $params['tag_ids'] = $tags[$params['tag_ids']];
     }
     return $params;
@@ -71,10 +74,11 @@ class CRM_CivirulesConditions_File_HasTag extends CRM_Civirules_Condition {
     $generic->setEntityTable('civicrm_file');
     $tags = array_flip($generic->getEntityTags());
     if (!empty($condition_params['tag_ids']) && is_array($condition_params['tag_ids'])) {
-      foreach($condition_params['tag_ids'] as $i => $j) {
+      foreach ($condition_params['tag_ids'] as $i => $j) {
         $condition_params['tag_ids'][$i] = $tags[$j];
       }
-    } elseif (!empty($condition_params['tag_ids'])) {
+    }
+    elseif (!empty($condition_params['tag_ids'])) {
       $condition_params['tag_ids'] = $tags[$condition_params['tag_ids']];
     }
     return parent::importConditionParameters($condition_params);
@@ -113,13 +117,13 @@ class CRM_CivirulesConditions_File_HasTag extends CRM_Civirules_Condition {
       }
     }
     $tags = '';
-    foreach($this->conditionParams['tag_ids'] as $tid) {
+    foreach ($this->conditionParams['tag_ids'] as $tid) {
       if (strlen($tags)) {
         $tags .= ', ';
       }
       $tags .= civicrm_api3('Tag', 'getvalue', ['return' => 'name', 'id' => $tid]);
     }
-    return $operatorLabel .' tags (' . $tags . ')';
+    return $operatorLabel . ' tags (' . $tags . ')';
   }
 
   /**

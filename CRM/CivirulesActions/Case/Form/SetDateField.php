@@ -3,7 +3,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_Form_Form {
 
   protected function getFields() {
@@ -23,8 +22,8 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
     $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 
@@ -65,7 +64,7 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
     parent::addRules();
     $this->addFormRule([
       'CRM_CivirulesActions_Case_Form_SetDateField',
-      'validateDate'
+      'validateDate',
     ]);
   }
 
@@ -78,7 +77,7 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
    * @access public
    * @static
    */
-  static function validateDate($fields) {
+  public static function validateDate($fields) {
     $errors = [];
     if (!empty($fields['date'])) {
       $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');

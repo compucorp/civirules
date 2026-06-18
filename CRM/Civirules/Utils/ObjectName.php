@@ -11,7 +11,7 @@ class CRM_Civirules_Utils_ObjectName {
    */
   public static function convertToEntity($objectName) {
     $entity = $objectName;
-    switch($objectName) {
+    switch ($objectName) {
       case 'Individual':
       case 'Household':
       case 'Organization':

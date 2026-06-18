@@ -3,7 +3,6 @@
  * @author Jaap Jansma (CiviCooP) <jaap.jansma@civicoop.org>
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_SetJobTitle extends CRM_Civirules_Action {
 
   /**
@@ -34,9 +33,8 @@ class CRM_CivirulesActions_Contact_SetJobTitle extends CRM_Civirules_Action {
    */
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
-    $label = ts('Set job title to %1', array(1=>$params['job_title']));
+    $label = ts('Set job title to %1', [1 => $params['job_title']]);
     return $label;
   }
-
 
 }

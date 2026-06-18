@@ -4,7 +4,6 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_ContributionRecur_Form_CancelRecurring extends CRM_CivirulesActions_Form_Form {
 
-
   /**
    * Overridden parent method to build the form
    *
@@ -22,8 +21,8 @@ class CRM_CivirulesActions_ContributionRecur_Form_CancelRecurring extends CRM_Ci
     $this->add('select', 'status_id', E::ts('Set Status to'), ['' => E::ts('-- please select --')] + $statuses, TRUE);
     $this->add('text', 'cancel_reason', ts('Cancel Reason'), '', TRUE);
     $this->addButtons([
-      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => E::ts('Cancel')]
+      ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => E::ts('Cancel')],
     ]);
   }
 

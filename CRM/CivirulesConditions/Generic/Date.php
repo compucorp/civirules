@@ -6,7 +6,6 @@
  * @date 3 May 2018
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
 
   public function getExtraDataInputUrl($ruleConditionId) {
@@ -23,9 +22,12 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     if (!empty($this->ruleCondition['condition_params'])) {
       // convert from old format
       if (empty($data['compare_type'])) {
-        if (!empty($data['use_trigger_date'])) { // old verion of way trigger date was saved
+        // old verion of way trigger date was saved
+        if (!empty($data['use_trigger_date'])) {
           $this->conditionParams['compare_type'] = 'trigger';
-        } elseif (!empty($data['use_action_date'])) { // old verion of way action date was saved
+          // old verion of way action date was saved
+        }
+        elseif (!empty($data['use_action_date'])) {
           $this->conditionParams['compare_type'] = 'action';
         }
       }
@@ -42,24 +44,26 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * @access public
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    
+
     if (!empty($this->conditionParams['date_select'])) {
       list($source_entity, $source_field_id) = $this->parseRawFieldId($this->conditionParams['date_select']);
-    } else {
+    }
+    else {
       $source_entity = 'Activity';
       $source_field_id = 'activity_date_time';
     }
-    
+
     $entityData = $triggerData->getEntityData($source_entity);
 
     if (!empty($entityData[$source_field_id])) {
-      
+
       try {
         $activityDate = new DateTime($entityData[$source_field_id]);
-      } catch (Exception $ex) {
+      }
+      catch (Exception $ex) {
         Civi::log()->error(ts('Could not parse activity_date_time ') . $entityData[$source_field_id]
           . ts(' into a DateTime object in ') . __METHOD__ . ts(', condition returned as false'));
-        return false;
+        return FALSE;
       }
 
       if ($activityDate) {
@@ -69,29 +73,34 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
           try {
             $fromDate = new DateTime($this->conditionParams['activity_from_date']);
             $toDate = new DateTime($this->conditionParams['activity_to_date']);
-          } catch (Exception $ex) {
+          }
+          catch (Exception $ex) {
             Civi::log()->error(ts('Could not parse either from date or to date from the condition params into a DateTime object in ') . __METHOD__ . ts(', condition returned as false'));
             return FALSE;
           }
 
-          if ($fromDate >= $activityDate && $toDate <= $activityDate)
-            return true;
+          if ($fromDate >= $activityDate && $toDate <= $activityDate) {
+            return TRUE;
+          }
 
-        } else {
+        }
+        else {
 
           $compareDate = $this->getCompareDate($triggerData);
 
-          if ($compareDate===true)
-            return true;
-          if ($compareDate===false)
-            return false;
+          if ($compareDate === TRUE) {
+            return TRUE;
+          }
+          if ($compareDate === FALSE) {
+            return FALSE;
+          }
 
           return $this->compareDate($compareDate, $activityDate);
         }
       }
     }
-    
-    return false;
+
+    return FALSE;
   }
 
   /**
@@ -105,36 +114,41 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     switch ($this->conditionParams['operator']) {
       case 0:
         if ($activityDate == $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
+
       case 1:
         if ($activityDate > $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
+
       case 2:
         if ($activityDate >= $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
+
       case 3:
         if ($activityDate < $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
+
       case 4:
         if ($activityDate <= $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
+
       case 5:
         if ($activityDate != $compareDate) {
-          return true;
+          return TRUE;
         }
         break;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -154,48 +168,62 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
 
     $actionDate = date('YmdHis');
 
-
-    if ($this->conditionParams['compare_type']==='trigger') { // if use_trigger_date, compare with trigger date
+    // if use_trigger_date, compare with trigger date
+    if ($this->conditionParams['compare_type'] === 'trigger') {
       $dateToUse = $triggerDate;
-    } elseif ($this->conditionParams['use_action_date']==='action') { // if use_action_date, use date (only makes sense for actions with delays)
+      // if use_action_date, use date (only makes sense for actions with delays)
+    }
+    elseif ($this->conditionParams['use_action_date'] === 'action') {
       $dateToUse = $actionDate;
-    } else { // field or fixed dated
-      
-      if ($this->conditionParams['compare_type']==='field') { // some field value
+      // field or fixed dated
+    }
+    else {
+
+      // some field value
+      if ($this->conditionParams['compare_type'] === 'field') {
         try {
-          
-          if (empty($this->conditionParams['activity_compare_field']))
+
+          if (empty($this->conditionParams['activity_compare_field'])) {
             throw new Exception('No field set');
-          
+          }
+
           list($source_entity, $source_field_id) = $this->parseRawFieldId($this->_conditionParams['activity_compare_field']);
 
           if (in_array(strtolower($source_entity), ['contact', 'individual', 'organization', 'household'])) {
             // source is a contact field
             $source_entity_id = $triggerData->getContactId();
-          } else {
+          }
+          else {
             // source is the triggering entity
             $source_entity_data = $triggerData->getEntityData($source_entity);
-            if (empty($source_entity_data))
+            if (empty($source_entity_data)) {
               throw new Exception("Source Entity Data or ID is empty for '{$source_entity}'");
-            if (empty($source_entity_data['id']))
+            }
+            if (empty($source_entity_data['id'])) {
               throw new Exception("Source Entity ID is empty '{$source_entity_data['id']}'");
+            }
             $source_entity_id = $source_entity_data['id'];
           }
 
           $dateToUse = $this->getValue($source_entity, $source_field_id, $source_entity_id);
 
-        } catch (Exception $ex) {
-          Civi::log()->error(ts('Unable to field or contact to use ') . ' in ' . __METHOD__);
-          return false;
         }
-      } elseif ($this->_conditionParams['compare_type']==='fixed') { // some fixed falue
+        catch (Exception $ex) {
+          Civi::log()->error(ts('Unable to field or contact to use ') . ' in ' . __METHOD__);
+          return FALSE;
+        }
+        // some fixed falue
+      }
+      elseif ($this->_conditionParams['compare_type'] === 'fixed') {
 
-        if (!empty($this->_conditionParams['activity_compare_date']))
+        if (!empty($this->_conditionParams['activity_compare_date'])) {
           $dateToUse = $this->_conditionParams['activity_compare_date'];
+        }
 
-      } else {
+      }
+      else {
         Civi::log()->error(ts('Invalid comparison type ') . ' in ' . __METHOD__);
-        return false;
+        return FALSE;
       }
 
       if (empty($dateToUse)) {
@@ -203,14 +231,17 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
           case 'trigger':
             $dateToUse = $triggerDate;
             break;
+
           case 'action':
             $dateToUse = $actionDate;
             break;
+
           case 'true':
-            return true;
+            return TRUE;
+
           case 'false':
           default:
-            return false;
+            return FALSE;
         }
       }
     }
@@ -227,7 +258,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
       }
     }
 
-    return false;
+    return FALSE;
   }
 
   /**
@@ -247,19 +278,21 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
         'id' => $entity_id,
         'return' => "custom_{$field_id}",
       ]);
-    } elseif (!empty($field_id)) {
+    }
+    elseif (!empty($field_id)) {
       return civicrm_api3($entity_type, 'getvalue', [
         'id' => $entity_id,
         'return' => $field_id,
       ]);
-    } else {
+    }
+    else {
       throw new Exception("Unknown field id '{$field_id}'.");
     }
   }
 
   /**
    * Parse saved field id into entity type and field id (eg Contact:10 to Contact and 10)
-   * 
+   *
    * @param string $raw_field_id
    * @return array [entity_type, field_id]
    * @throws Exception when field id is invalid
@@ -267,9 +300,10 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
   protected function parseRawFieldId($raw_field_id) {
 
     $field_parts = explode('::', $raw_field_id);
-    
-    if (count($field_parts)!==2)
+
+    if (count($field_parts) !== 2) {
       throw new Exception("Invalid field format '{$raw_field_id}'.");
+    }
 
     list($entity_type, $field_id) = $field_parts;
 
@@ -278,8 +312,9 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     ]);
 
     $entities = array_map('strtolower', $entity_search['values']);
-    if (!in_array(strtolower($entity_type), $entities))
+    if (!in_array(strtolower($entity_type), $entities)) {
       throw new Exception("Invalid entity for field '{$raw_field_id}'.");
+    }
 
     return $field_parts;
   }
@@ -291,29 +326,33 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * @access public
    */
   public function userFriendlyConditionParams() {
-    
+
     $operatorOptions = CRM_Civirules_Utils::getActivityDateOperatorOptions();
 
     if (!empty($this->_conditionParams['date_select'])) {
-      switch($this->_conditionParams['date_select']) {
+      switch ($this->_conditionParams['date_select']) {
         case 'Event::start_date':
           $friendlyText = ts('Event Start Date');
           break;
+
         case 'Event::end_date':
           $friendlyText = ts('Event End Date');
           break;
+
         case 'Participant::participant_register_date':
           $friendlyText = ts('Participant Register Date');
           break;
+
         default:
           return 'Invalid date type!';
       }
-    } else {
+    }
+    else {
       $friendlyText = ts("Activity Date");
     }
 
     $friendlyText .= ' ' . ts($operatorOptions[$this->_conditionParams['operator']]);
-    
+
     if ($this->_conditionParams['operator'] == 6) {
       try {
         $fromDate = new DateTime($this->_conditionParams['activity_from_date']);
@@ -322,46 +361,62 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
       }
       catch (Exception $ex) {
       }
-    } elseif ($this->_conditionParams['compare_type'] === 'trigger') { // if use_trigger_date
+      // if use_trigger_date
+    }
+    elseif ($this->_conditionParams['compare_type'] === 'trigger') {
       $friendlyText .= ' the date the rule is triggered.';
-    } elseif ($this->_conditionParams['compare_type'] === 'action') { // if use_action_date
+      // if use_action_date
+    }
+    elseif ($this->_conditionParams['compare_type'] === 'action') {
       $friendlyText .= ' the date the action is executed.';
-    } elseif ($this->_conditionParams['compare_type'] === 'fixed') {
+    }
+    elseif ($this->_conditionParams['compare_type'] === 'fixed') {
       try {
         if (empty($this->_conditionParams['activity_compare_date'])) {
           if ($this->_conditionParams['empty_field'] === 'trigger') {
             $friendlyText .= ' the date the rule is triggered.';
-          } elseif ($this->_conditionParams['empty_field'] === 'action') {
+          }
+          elseif ($this->_conditionParams['empty_field'] === 'action') {
             $friendlyText .= ' the date the action is executed.';
-          } elseif ($this->_conditionParams['empty_field'] === 'true') {
+          }
+          elseif ($this->_conditionParams['empty_field'] === 'true') {
             $friendlyText = 'Will always evaluate true.';
-          } elseif ($this->_conditionParams['empty_field'] === 'false') {
+          }
+          elseif ($this->_conditionParams['empty_field'] === 'false') {
             $friendlyText = 'Will always evaluate false.';
-          } else {
+          }
+          else {
             $friendlyText = 'Invalid empty date value.';
           }
-        } else {
+        }
+        else {
           $compareDate = new DateTime($this->_conditionParams['activity_compare_date']);
           $friendlyText .= ' ' . $compareDate->format('j F Y');
         }
-      } catch (Exception $ex) {
+      }
+      catch (Exception $ex) {
         $friendlyText = 'Could not parse dates!';
       }
-    } elseif ($this->_conditionParams['compare_type'] === 'field') {
+    }
+    elseif ($this->_conditionParams['compare_type'] === 'field') {
       if (!empty($this->_conditionParams['activity_compare_field'])) {
         try {
           $parts = explode('::', $this->_conditionParams['activity_compare_field']);
-          if (count($parts)!=2)
-            throw new Exception;
+          if (count($parts) != 2) {
+            throw new Exception();
+          }
           $field = civicrm_api3('CustomField', 'getsingle', ['id' => $parts[1]]);
           $friendlyText .= ' ' . ucwords($parts[0]) . ' field "' . $field['label'] . '"';
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
           $friendlyText = 'Invalid field set';
         }
-      } else {
+      }
+      else {
         $friendlyText = 'No field set';
       }
-    } else {
+    }
+    else {
       $friendlyText = 'Invalid rule!';
     }
     return $friendlyText;
@@ -382,4 +437,5 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
   public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
     return $trigger->doesProvideEntity('Activity') || $trigger->doesProvideEntity('Participant');
   }
+
 }

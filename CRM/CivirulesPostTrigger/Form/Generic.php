@@ -15,8 +15,8 @@ class CRM_CivirulesPostTrigger_Form_Generic extends CRM_CivirulesTrigger_Form_Fo
     $this->add('hidden', 'rule_id');
 
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
-      ['type' => 'cancel', 'name' => ts('Cancel')]
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
     ]);
   }
 

@@ -16,7 +16,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     $entity = CRM_Civirules_Utils_ObjectName::convertToEntity($objectName);
 
-    $entityTags = array();
+    $entityTags = [];
     // $objectRef is either an object or an array.
     if (is_object($objectRef)) {
       $entityTags[] = [
@@ -26,8 +26,9 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
         'entity_table' => $objectRef->entity_table,
         'contact_id' => $objectRef->entity_id,
       ];
-    } elseif (is_array($objectRef)) {
-      foreach($objectRef['0'] as $entity_id) {
+    }
+    elseif (is_array($objectRef)) {
+      foreach ($objectRef['0'] as $entity_id) {
         $entityTags[] = [
           'tag_id' => $objectId,
           'entity_id' => $entity_id,
@@ -37,7 +38,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
       }
     }
 
-    foreach($entityTags as $entityTag) {
+    foreach ($entityTags as $entityTag) {
       //only execute entity tag for setting or removing tags from contacts
       //because we need to know the contact id for the trigger engine
       //and we only know this when the tag is on contact level
@@ -62,17 +63,17 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
       $triggerData->setEntityData('Activity', $activity);
 
       $custom_field_id = $this->triggerParams['event_id_custom_field'];
-      if (empty($activity['custom_'.$custom_field_id])) {
+      if (empty($activity['custom_' . $custom_field_id])) {
         continue;
       }
-      $event_id = $activity['custom_'.$custom_field_id];
+      $event_id = $activity['custom_' . $custom_field_id];
       $event = civicrm_api3('Event', 'getsingle', ['id' => $event_id]);
       $triggerData->setEntityData('Event', $event);
 
       $sql = "SELECT `p`.* FROM `civicrm_participant` `p` WHERE p.event_id = %1";
-      $params[1] = array($event_id, 'Integer');
-      $params[2] = array($this->ruleId, 'Integer');
-      $dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Event_DAO_Participant');
+      $params[1] = [$event_id, 'Integer'];
+      $params[2] = [$this->ruleId, 'Integer'];
+      $dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Event_DAO_Participant');
 
       while ($dao->fetch()) {
         $participant = [];
@@ -84,7 +85,6 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
         parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
       }
     }
-
 
   }
 
@@ -111,7 +111,7 @@ class CRM_CivirulesPostTrigger_RelatedParticipantWhenActivityIsTagged extends CR
    * @abstract
    */
   public function getExtraDataInputUrl($ruleId) {
-    return CRM_Utils_System::url('civicrm/civirule/form/trigger/relatedparticipantwhenactivityistagged', 'rule_id='.$ruleId);
+    return CRM_Utils_System::url('civicrm/civirule/form/trigger/relatedparticipantwhenactivityistagged', 'rule_id=' . $ruleId);
   }
 
 }

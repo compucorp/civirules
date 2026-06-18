@@ -11,7 +11,7 @@ use CRM_Civirules_ExtensionUtil as E;
  */
 function _civicrm_api3_civi_rules_rule_condition_create_spec(&$spec) {
   $spec['rule_id']['api.required'] = 1;
-  $spec['condition_id']['api.required'] =1;
+  $spec['condition_id']['api.required'] = 1;
   $spec['condition_params']['api.required'] = 0;
 }
 
@@ -28,7 +28,7 @@ function _civicrm_api3_civi_rules_rule_condition_create_spec(&$spec) {
 function civicrm_api3_civi_rules_rule_condition_create($params) {
   $returnValues = CRM_Civirules_BAO_CivirulesRuleCondition::writeRecord($params);
   $keyedReturnValues = [$returnValues->id => $returnValues->toArray()];
-  return civicrm_api3_create_success($keyedReturnValues, $params,'CiviRulesRuleCondition', 'create');
+  return civicrm_api3_create_success($keyedReturnValues, $params, 'CiviRulesRuleCondition', 'create');
 }
 
 /**

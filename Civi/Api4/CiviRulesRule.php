@@ -11,11 +11,11 @@ namespace Civi\Api4;
  * @package Civi\Api4
  */
 class CiviRulesRule extends Generic\DAOEntity {
-    /**
+  /**
      * @dependency CiviRulesRuleCondition:rule_id
      * @dependency CiviRulesRuleAction:rule_id
      */
-    use Generic\Traits\ManagedEntity;
+  use Generic\Traits\ManagedEntity;
 
   /**
    * @inheritDoc

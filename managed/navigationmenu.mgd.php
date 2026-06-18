@@ -16,7 +16,7 @@ return [
         'url' => NULL,
         'permission' => [
           'administer civirules',
-          'administer CiviCRM'
+          'administer CiviCRM',
         ],
         'permission_operator' => 'OR',
         'parent_id.name' => 'Administer',
@@ -41,7 +41,7 @@ return [
         'icon' => 'crm-i fa-list-alt',
         'permission' => [
           'administer civirules',
-          'administer CiviCRM'
+          'administer CiviCRM',
         ],
         'permission_operator' => 'OR',
         'parent_id.name' => 'CiviRules',
@@ -64,7 +64,7 @@ return [
         'icon' => 'crm-i fa-list-alt',
         'permission' => [
           'administer civirules',
-          'administer CiviCRM'
+          'administer CiviCRM',
         ],
         'permission_operator' => 'OR',
         'parent_id.name' => 'CiviRules',
@@ -87,7 +87,7 @@ return [
         'icon' => 'crm-i fa-tags',
         'permission' => [
           'administer civirules',
-          'administer CiviCRM'
+          'administer CiviCRM',
         ],
         'permission_operator' => 'OR',
         'parent_id.name' => 'CiviRules',

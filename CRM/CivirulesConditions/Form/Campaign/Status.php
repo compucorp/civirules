@@ -19,12 +19,12 @@ class CRM_CivirulesConditions_Form_Campaign_Status extends CRM_CivirulesConditio
     $campaignList = ['- select -'] + CRM_Civirules_Utils::getCampaignStatusList();
     asort($campaignList);
     $this->add('select', 'campaign_status_id', ts('Campaign Status(ss)'), $campaignList, TRUE,
-      ['id' => 'campaign_status_ids', 'multiple' => 'multiple','class' => 'crm-select2']);
+      ['id' => 'campaign_status_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'operator', ts('Operator'), ['is one of', 'is NOT one of'], TRUE);
     $this->addButtons([
-      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,],
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
-      ]);
+    ]);
     parent::buildQuickForm();
   }
 
@@ -60,4 +60,3 @@ class CRM_CivirulesConditions_Form_Campaign_Status extends CRM_CivirulesConditio
   }
 
 }
-

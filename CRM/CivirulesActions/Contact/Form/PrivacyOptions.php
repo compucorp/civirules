@@ -6,7 +6,6 @@
  * @date 29 Oct 2017
  * @license http://www.gnu.org/licenses/agpl-3.0.html
  */
-
 class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActions_Form_Form {
 
   /**
@@ -16,21 +15,22 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
    */
   public function buildQuickForm() {
     $this->add('hidden', 'rule_action_id');
-    $this->add('select', 'on_or_off', ts('Switch On or Off'), array('switch ON', 'switch OFF'), TRUE);
-    $privacyOptions = array(
+    $this->add('select', 'on_or_off', ts('Switch On or Off'), ['switch ON', 'switch OFF'], TRUE);
+    $privacyOptions = [
       'phone' => 'Do not phone',
       'email' => 'Do not email',
       'mail' => 'Do not mail',
       'sms' => 'Do not SMS',
       'trade' => 'Do not trade',
       'opt_out' => 'Is Opt-Out',
-    );
+    ];
     $this->add('select', 'privacy_options', ts('Privacy Option(s)'), $privacyOptions, FALSE,
-      array('id' => 'privacy_options', 'multiple' => 'multiple', 'class' => 'crm-select2'));
+      ['id' => 'privacy_options', 'multiple' => 'multiple', 'class' => 'crm-select2']);
 
-    $this->addButtons(array(
-      array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
-      array('type' => 'cancel', 'name' => ts('Cancel'))));
+    $this->addButtons([
+      ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
+      ['type' => 'cancel', 'name' => ts('Cancel')],
+    ]);
   }
 
   /**
@@ -45,7 +45,8 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
     if (isset($data['on_or_off'])) {
       if ($data['on_or_off'] == 1) {
         $defaultValues['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $defaultValues['on_or_off'] = 1;
       }
     }
@@ -61,11 +62,12 @@ class CRM_CivirulesActions_Contact_Form_PrivacyOptions extends CRM_CivirulesActi
    * @access public
    */
   public function postProcess() {
-    $data = array();
+    $data = [];
     if (isset($this->_submitValues['on_or_off'])) {
       if ($this->_submitValues['on_or_off'] == 1) {
         $data['on_or_off'] = 0;
-      } else {
+      }
+      else {
         $data['on_or_off'] = 1;
       }
     }

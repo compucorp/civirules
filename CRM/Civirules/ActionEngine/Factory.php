@@ -1,12 +1,12 @@
 <?php
 
 class CRM_Civirules_ActionEngine_Factory {
-  
-  private static $instances = array();
-  
+
+  private static $instances = [];
+
   /**
    * Returns the engine for executing actions.
-   * 
+   *
    * @param array $ruleAction
    *   Data from the ruleAction object.
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
@@ -22,5 +22,5 @@ class CRM_Civirules_ActionEngine_Factory {
     $engine->setTriggerData($triggerData);
     return $engine;
   }
-  
+
 }
