@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# Version 3.37.0 (2026-06-18)
+
+* [!354](https://lab.civicrm.org/extensions/civirules/-/merge_requests/354) Optimize SavedSearch CiviRules Rule Log Search by using LEFT JOIN to force index-ordered scan.
+* [!352](https://lab.civicrm.org/extensions/civirules/-/merge_requests/352) fix exporter, activity type id is a one of many condition, raise to civicrm_api4
+* [!353](https://lab.civicrm.org/extensions/civirules/-/merge_requests/353) Add index on log_date field in civirule_rule_log
+* [!350](https://lab.civicrm.org/extensions/civirules/-/merge_requests/350) Fix slow query in CiviRules search display
+* [!351](https://lab.civicrm.org/extensions/civirules/-/merge_requests/351) Clean up @property annotations in DAO classes.
+* [!349](https://lab.civicrm.org/extensions/civirules/-/merge_requests/349) Manage Rules - Improve filters section
+* [!348](https://lab.civicrm.org/extensions/civirules/-/merge_requests/348) Don't translate NULL
+* [!346](https://lab.civicrm.org/extensions/civirules/-/merge_requests/346) Fix syntax error in default case of Date.php.
+* [!347](https://lab.civicrm.org/extensions/civirules/-/merge_requests/347) CiviCase - Remove references to is_current_revision from activity queries.
+
 # Version 3.36.0 (2026-06-02)
 
 * Added action: Switch Head of Household. This action is needed when a person is marked as deceased. We will then mark the other household member as head of household.
