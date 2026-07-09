@@ -160,7 +160,7 @@ class CRM_CivirulesCronTrigger_MonthlyGroupMembership extends CRM_Civirules_Trig
       }
     }
 
-    $day = [$this->triggerParams['day']];
+    $day = $this->triggerParams['day'];
 
     $time = '';
     if (!empty($this->triggerParams['not_before_time']) && !empty($this->triggerParams['not_after_time'])) {
