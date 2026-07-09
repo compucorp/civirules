@@ -331,6 +331,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/trigger/monthlygroupmembership</path>
+    <page_callback>CRM_CivirulesCronTrigger_Form_MonthlyGroupMembership</page_callback>
+    <title>Group membership</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/trigger/event</path>
     <page_callback>CRM_CivirulesPostTrigger_Form_Event</page_callback>
     <title>Event</title>
