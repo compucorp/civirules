@@ -145,6 +145,9 @@ return [
           ],
           'actions' => FALSE,
           'classes' => ['table', 'table-striped'],
+          'cssRules' => [
+            ['disabled', 'is_active', '=', FALSE],
+          ],
           'draggable' => 'weight',
           'toolbar' => [
             [
