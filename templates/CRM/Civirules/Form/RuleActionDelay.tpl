@@ -1,4 +1,5 @@
 {* block for rule action delay configuration *}
+{crmScope extensionKey='org.civicoop.civirules'}
 <h3>{ts}Delay action{/ts}</h3>
 <div class="crm-block crm-form-block crm-civirule-rule_action_delay-block">
     <div class="crm-section">
@@ -23,12 +24,12 @@
         <div class="clear"></div>
     </div>
 </div>
+{/crmScope}
 
 {literal}
 <script type="text/javascript">
 cj(function() {
     cj('select#delay_select').change(triggerDelayChange);
-
     triggerDelayChange();
 });
 

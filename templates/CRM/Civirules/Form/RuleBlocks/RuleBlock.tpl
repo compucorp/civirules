@@ -1,5 +1,6 @@
 {* block for rule data *}
-<h3>Rule Details</h3>
+{crmScope extensionKey='org.civicoop.civirules'}
+<h3>{ts}Rule Details{/ts}</h3>
 <div class="crm-block crm-form-block crm-civirule-rule_label-block">
   <div class="crm-section">
     <div class="label">{$form.rule_label.label}</div>
@@ -25,8 +26,8 @@
     <div class="label">{$form.rule_is_active.label}</div>
     <div class="content">{$form.rule_is_active.html}
     {if !empty($clones)}
-        <br><span class="description font-red">{ts}This rule has the following duplicate(s) : {$clones}{/ts}</span>
-        <br><span class="description font-red">{ts}Enabling can result in unintended double actions{/ts}</span>
+        <br><span class="description font-red">{ts 1=$clones}Duplicate rules detected: %1{/ts}</span>
+        <br><span class="description font-red">{ts}Enabling can result in unintended duplicate actions{/ts}</span>
     {/if}
     </div>
     <div class="clear"></div>
@@ -43,7 +44,7 @@
   </div>
   {$postRuleBlock}
 </div>
-
+{/crmScope}
 {if !empty($clones)}
 {literal}
 <script>
