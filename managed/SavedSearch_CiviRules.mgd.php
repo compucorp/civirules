@@ -143,6 +143,16 @@ return [
                   'join' => '',
                   'target' => '',
                 ],
+              ],
+              'type' => 'buttons',
+              'alignment' => 'text-right',
+            ],
+            [
+              'text' => '',
+              'style' => 'default',
+              'size' => 'btn-xs',
+              'icon' => 'fa-bars',
+              'links' => [
                 [
                   'task' => 'disable',
                   'entity' => 'CiviRulesRule',
@@ -180,7 +190,7 @@ return [
                   'condition' => [],
                 ],
               ],
-              'type' => 'buttons',
+              'type' => 'menu',
               'alignment' => 'text-right',
             ],
           ],

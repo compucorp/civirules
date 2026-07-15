@@ -1,5 +1,6 @@
 {* block for linked trigger *}
-<h3>Linked Trigger</h3>
+{crmScope extensionKey='org.civicoop.civirules'}
+<h3>{ts}Linked Trigger{/ts}</h3>
 <div class="crm-block crm-form-block crm-civirule-trigger-block">
   {if empty($form.rule_trigger_label.value)}
     <div class="crm-section">
@@ -19,4 +20,4 @@
     </div>
   {/if}
 </div>
-
+{/crmScope}
