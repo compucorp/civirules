@@ -18,6 +18,7 @@
     </div>
     <div class="clear"></div>
   </div>
+  {include file="CRM/CivirulesConditions/Form/Utils/Period.tpl"}
 </div>
 <div class="crm-submit-buttons">
   {include file="CRM/common/formButtons.tpl" location="bottom"}

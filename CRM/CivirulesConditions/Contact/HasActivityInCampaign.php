@@ -35,6 +35,19 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       // add activity type and campaign clause(s)
       $this->addWhereClauses('activity_type_id');
       $this->addWhereClauses('campaign_id');
+      // add optional period (date range) clause
+      $periodStartDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToStartDate($this->conditionParams);
+      $periodEndDate = CRM_CivirulesConditions_Utils_Period::convertPeriodToEndDate($this->conditionParams);
+      if ($periodStartDate) {
+        $this->_index++;
+        $this->_query .= ' AND DATE(act.activity_date_time) >= %' . $this->_index;
+        $this->_queryParams[$this->_index] = array($periodStartDate->format('Y-m-d'), 'String');
+      }
+      if ($periodEndDate) {
+        $this->_index++;
+        $this->_query .= ' AND DATE(act.activity_date_time) <= %' . $this->_index;
+        $this->_queryParams[$this->_index] = array($periodEndDate->format('Y-m-d'), 'String');
+      }
       // only check if there are actually activity types and campaigns in the condition parameters
       if ($this->_index > 3) {
         $count = CRM_Core_DAO::singleValueQuery($this->_query, $this->_queryParams);
@@ -121,6 +134,9 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
     else {
       $text .= ts(' in campaign(s)') . ': ' . implode('; ', $this->conditionParams['campaign_id']);
 
+    }
+    if (!empty($this->conditionParams['period'])) {
+      $text .= ' (' . ts('period') . ': ' . CRM_CivirulesConditions_Utils_Period::userFriendlyConditionParams($this->conditionParams) . ')';
     }
     return $text;
   }

@@ -19,6 +19,9 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
       ['id' => 'activity_type_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
     $this->add('select', 'campaign_id', ts('Campaign(s)'), CRM_Civirules_Utils::getCampaignList(), TRUE,
       ['id' => 'campaign_ids', 'multiple' => 'multiple', 'class' => 'crm-select2']);
+
+    CRM_CivirulesConditions_Utils_Period::buildQuickForm($this);
+
     $this->addButtons([
       ['type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE],
       ['type' => 'cancel', 'name' => ts('Cancel')],
@@ -40,7 +43,14 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
     if (!empty($data['campaign_id'])) {
       $defaultValues['campaign_id'] = $data['campaign_id'];
     }
+
+    $defaultValues = CRM_CivirulesConditions_Utils_Period::setDefaultValues($defaultValues, $data);
+
     return $defaultValues;
+  }
+
+  public function addRules() {
+    CRM_CivirulesConditions_Utils_Period::addRules($this);
   }
 
   /**
@@ -52,6 +62,9 @@ class CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign extends CRM_Civ
   public function postProcess() {
     $data['activity_type_id'] = $this->_submitValues['activity_type_id'];
     $data['campaign_id'] = $this->_submitValues['campaign_id'];
+
+    $data = CRM_CivirulesConditions_Utils_Period::getConditionParams($this->_submitValues, $data);
+
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
 
