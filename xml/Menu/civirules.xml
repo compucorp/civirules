@@ -404,6 +404,18 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/action/generic/sumvalues</path>
+    <page_callback>CRM_CivirulesActions_Generic_Form_SumValues</page_callback>
+    <title>Sum Values</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/action/generic/subtractvalues</path>
+    <page_callback>CRM_CivirulesActions_Generic_Form_SubtractValues</page_callback>
+    <title>Subtract Values</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/generic/setcustomvalue</path>
     <page_callback>CRM_CivirulesActions_Generic_Form_SetCustomField</page_callback>
     <title>Set Custom Field</title>

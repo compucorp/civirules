@@ -1,0 +1,32 @@
+<h3>{$ruleActionHeader}</h3>
+<div class="crm-block crm-form-block crm-civirule-rule_action-block-generic_updatedate">
+    <div class="crm-section source_field_id-section">
+        <div class="label">{$form.source_fields.label}</div>
+        <div class="content">{$form.source_fields.html}</div>
+        <div class="clear"></div>
+    </div>
+    <div class="crm-section target_field_id-section">
+        <div class="label">{$form.target_field.label}</div>
+        <div class="content">{$form.target_field.html}</div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="crm-submit-buttons">
+    {include file="CRM/common/formButtons.tpl" location="bottom"}
+</div>
+{literal}
+  <script>
+    (function(CRM, $){
+        $(function(){
+            // Only display relevant fields for the chosen operation
+            function fieldDisplay() {
+                $('.source_field_id-section').toggle($('#update_operation').val()!=='set');
+            }
+            fieldDisplay();
+            $('#update_operation').on('change', function(){
+                fieldDisplay();
+            });
+        });
+    })(CRM, CRM.$);
+  </script>
+{/literal}
