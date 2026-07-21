@@ -17,6 +17,11 @@ class CRM_CivirulesActions_Generic_SubtractValues extends CRM_Civirules_Action {
    * @access public
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    static $alreadyDone = [];
+    if (isset($alreadyDone[$this->ruleAction['id']][$triggerData->getEntityId()])) {
+      return;
+    }
+    $alreadyDone[$this->ruleAction['id']][$triggerData->getEntityId()] = TRUE;
     $action_params = $this->getActionParameters();
     if (empty($action_params)) {
       return;
@@ -26,7 +31,7 @@ class CRM_CivirulesActions_Generic_SubtractValues extends CRM_Civirules_Action {
       try {
         list($source_entity, $source_field_id) = $this->parseRawFieldId($source_field);
         $entity = $triggerData->getEntityData($source_entity);
-        $newValue -= $this->getValue($source_entity, $source_field_id, $entity['id']);
+        $newValue -= $this->getValue($source_entity, $source_field_id, $entity['id'], $triggerData);
       }
       catch (Exception $e) {
         Civi::log()->debug('Error parsing source field name (' . $e->getMessage() . ')');
@@ -100,7 +105,11 @@ class CRM_CivirulesActions_Generic_SubtractValues extends CRM_Civirules_Action {
    * @return mixed              current value
    * @throws Exception when unable to retrieve value
    */
-  protected function getValue($entity_type, $field_id, $entity_id) {        
+  protected function getValue($entity_type, $field_id, $entity_id, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $entityData = $triggerData->getEntityData($entity_type);
+    if (isset($entityData[$field_id])) {
+      return $entityData[$field_id];
+    }        
     return civicrm_api3($entity_type, 'getvalue', [
       'id' => $entity_id,
       'return' => $field_id,

@@ -1,4 +1,6 @@
 # CHANGELOG
+# Version 3.41.0 (2026-07-21)
+* Fixed issue with action Sum Values and Subtract Values and case trigger.
 # Version 3.40.0 (2026-07-21)
 
 * added condition Is Membership Payment, made membership actions available if condition is part of a rule on a Contribution trigger and add Membership entity to TriggerData if membership payment
