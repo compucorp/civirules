@@ -111,5 +111,16 @@ class CRM_CivirulesActions_Membership_Add extends CRM_CivirulesActions_Generic_A
   protected function getApiAction() {
     return 'create';
   }
+  /**
+   * Validates whether this action works with the selected trigger.
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   *
+   * @return bool
+   */
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule): bool {
+    return CRM_CivirulesConditions_Utils_Membership::checkMembershipEntities($trigger, $rule);
+  }
 
 }

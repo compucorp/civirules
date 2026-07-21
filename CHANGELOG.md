@@ -1,4 +1,7 @@
 # CHANGELOG
+# Version 3.40.0 (2026-07-21)
+
+* added condition Is Membership Payment, made membership actions available if condition is part of a rule on a Contribution trigger and add Membership entity to TriggerData if membership payment
 
 # Version 3.39.0 (2026-07-17)
 

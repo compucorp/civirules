@@ -142,9 +142,8 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
    *
    * @return bool
    */
-  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
-    $entities = $trigger->getProvidedEntities();
-    return isset($entities['Membership']);
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule): bool {
+    return CRM_CivirulesConditions_Utils_Membership::checkMembershipEntities($trigger, $rule);
   }
 
 }
