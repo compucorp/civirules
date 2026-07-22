@@ -642,8 +642,100 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     CRM_Civirules_Utils_Upgrader::insertActionsFromJson(E::path('sql/actions.json'));
     return TRUE;
   }
+
   public function upgrade_3006() {
     CRM_Civirules_Utils_Upgrader::insertConditionsFromJson(E::path('sql/conditions.json'));
+    return TRUE;
+  }
+
+  /**
+   * Migrate CiviRules' own option-value-based rule tags (`civirule_rule_tag`,
+   * option group `civirule_rule_tag`) to standard CiviCRM Tags (`civicrm_tag`
+   * / `civicrm_entity_tag`), so rule tags can be shared with SearchKit,
+   * FormBuilder, etc. See issues #246 and #251.
+   *
+   * The old table/option group and legacy CiviRulesRuleTag/RuleTag shim
+   * classes are deliberately left in place (unused) for one release as a
+   * rollback safety net - actual cleanup is deferred to a future upgrade
+   * step.
+   *
+   * Safe to re-run: guarded by a table-existence check, tag matching is
+   * by-name find-or-create, and the entity_tag copy uses INSERT IGNORE
+   * against civicrm_entity_tag's unique index.
+   */
+  public function upgrade_3007() {
+    $this->ctx->log->info('Applying update 3007 - migrate CiviRules tags to CiviCRM Tags');
+
+    if (!CRM_Core_DAO::checkTableExists('civirule_rule_tag')) {
+      // Already migrated, or a fresh install with no legacy data - nothing to do.
+      return TRUE;
+    }
+
+    // 1. Build option-value-"value" => [name, label, description] map for the old tag
+    //    vocabulary. Note: civirule_rule_tag.rule_tag_id stores the OptionValue's `value`
+    //    column, NOT its `id` - this is the default key_column CiviCRM uses for a plain
+    //    `option_group_name` pseudoconstant (see Civi/Schema/EntityMetadataBase.php).
+    $optionValues = [];
+    $dao = CRM_Core_DAO::executeQuery(
+      "SELECT ov.value, ov.name, ov.label, ov.description
+       FROM civicrm_option_value ov
+       INNER JOIN civicrm_option_group og ON og.id = ov.option_group_id
+       WHERE og.name = %1",
+      [1 => ['civirule_rule_tag', 'String']]
+    );
+    while ($dao->fetch()) {
+      $optionValues[$dao->value] = ['name' => $dao->name, 'label' => $dao->label, 'description' => $dao->description];
+    }
+
+    // 2. For each old option value, find-or-create a matching civicrm_tag row
+    //    (reusing an existing same-named tag if one exists), ensuring its
+    //    used_for includes civirule_rule.
+    $tagIdMap = [];
+    foreach ($optionValues as $ovValue => $ov) {
+      $existingTagId = CRM_Core_DAO::singleValueQuery(
+        "SELECT id FROM civicrm_tag WHERE name = %1",
+        [1 => [$ov['name'], 'String']]
+      );
+      if ($existingTagId) {
+        $tagIdMap[$ovValue] = $existingTagId;
+        $usedFor = CRM_Core_DAO::singleValueQuery('SELECT used_for FROM civicrm_tag WHERE id = %1', [1 => [$existingTagId, 'Integer']]);
+        $usedForParts = $usedFor ? explode(',', $usedFor) : [];
+        if (!in_array('civirule_rule', $usedForParts, TRUE)) {
+          $usedForParts[] = 'civirule_rule';
+          CRM_Core_DAO::executeQuery(
+            'UPDATE civicrm_tag SET used_for = %1 WHERE id = %2',
+            [1 => [implode(',', $usedForParts), 'String'], 2 => [$existingTagId, 'Integer']]
+          );
+        }
+      }
+      else {
+        $newTag = \Civi\Api4\Tag::create(FALSE)
+          ->addValue('name', $ov['name'])
+          ->addValue('label', $ov['label'])
+          ->addValue('description', $ov['description'])
+          ->addValue('used_for', 'civirule_rule')
+          ->execute()
+          ->first();
+        $tagIdMap[$ovValue] = $newTag['id'];
+      }
+    }
+
+    // 3. Copy civirule_rule_tag rows into civicrm_entity_tag, idempotently.
+    if ($tagIdMap) {
+      $caseSql = [];
+      foreach ($tagIdMap as $ovValue => $tagId) {
+        $caseSql[] = 'WHEN ' . (int) $ovValue . ' THEN ' . (int) $tagId;
+      }
+      $caseExpr = 'CASE rule_tag_id ' . implode(' ', $caseSql) . ' END';
+      $ovValues = array_map('intval', array_keys($tagIdMap));
+      CRM_Core_DAO::executeQuery(
+        "INSERT IGNORE INTO civicrm_entity_tag (entity_table, entity_id, tag_id)
+         SELECT 'civirule_rule', rule_id, {$caseExpr}
+         FROM civirule_rule_tag
+         WHERE rule_tag_id IN (" . implode(',', $ovValues) . ')'
+      );
+    }
+
     return TRUE;
   }
 

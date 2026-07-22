@@ -18,7 +18,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
   /**
    * @var int
    */
-  private $tagOptionValueId;
+  private $tagId;
 
   public function setUpHeadless(): CiviEnvBuilder {
     return \Civi\Test::headless()
@@ -29,13 +29,12 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
   public function setUp(): void {
     parent::setUp();
 
-    // Create option value for rule tags
-    $this->tagOptionValueId = \Civi\Api4\OptionValue::create(FALSE)
+    // Create a standard CiviCRM Tag usable on CiviRules rules
+    $this->tagId = \Civi\Api4\Tag::create(FALSE)
       ->setValues([
-        'option_group_id:name' => 'civirule_rule_tag',
         'label' => 'Test PHPUnit Tag',
-        'value' => 10,
         'name' => 'test_phpunit_tag',
+        'used_for' => 'civirule_rule',
       ])
       ->execute()->first()['id'];
   }
@@ -55,19 +54,20 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
         'name' => 'phpunit_test_rule',
         'trigger_id' => 1, /* Activity is added */
         'is_active' => TRUE,
-        'tag_id' => [10],
+        'tag_id' => [$this->tagId],
       ])
       ->execute()->first();
 
     $this->assertNotEmpty($rule['id']);
     $this->assertEquals('phpunit_test_rule', $rule['name']);
 
-    // Verify tag is saved in the join table
-    $savedTags = \Civi\Api4\CiviRulesRuleTag::get(FALSE)
-      ->addWhere('rule_id', '=', $rule['id'])
+    // Verify tag is saved as a real EntityTag row
+    $savedTags = \Civi\Api4\EntityTag::get(FALSE)
+      ->addWhere('entity_table', '=', 'civirule_rule')
+      ->addWhere('entity_id', '=', $rule['id'])
       ->execute();
     $this->assertCount(1, $savedTags);
-    $this->assertEquals(10, $savedTags->first()['rule_tag_id']);
+    $this->assertEquals($this->tagId, $savedTags->first()['tag_id']);
 
     // 2. Fetch the rule via API and test virtual fields: trigger_id:label, tag_id, tag_id:label, last_run_date
     $fetched = \Civi\Api4\CiviRulesRule::get(FALSE)
@@ -76,7 +76,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->execute()->first();
 
     $this->assertEquals('Activity is added', $fetched['trigger_id:label']);
-    $this->assertEquals([10], $fetched['tag_id']);
+    $this->assertEquals([$this->tagId], $fetched['tag_id']);
     $this->assertEquals(['Test PHPUnit Tag'], $fetched['tag_id:label']);
     $this->assertNull($fetched['last_run_date']);
 
@@ -102,8 +102,9 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues(['tag_id' => []])
       ->execute();
 
-    $savedTagsAfterUpdate = \Civi\Api4\CiviRulesRuleTag::get(FALSE)
-      ->addWhere('rule_id', '=', $rule['id'])
+    $savedTagsAfterUpdate = \Civi\Api4\EntityTag::get(FALSE)
+      ->addWhere('entity_table', '=', 'civirule_rule')
+      ->addWhere('entity_id', '=', $rule['id'])
       ->execute();
     $this->assertCount(0, $savedTagsAfterUpdate);
 
@@ -116,6 +117,33 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->addWhere('id', '=', $rule['id'])
       ->execute();
     $this->assertCount(0, $checkDeleted);
+  }
+
+  /**
+   * Cloning a rule should also copy its tags (as real EntityTag rows).
+   */
+  public function testCloneRuleCopiesTags(): void {
+    $rule = \Civi\Api4\CiviRulesRule::create(FALSE)
+      ->setValues([
+        'label' => 'PHPUnit Clone Source Rule',
+        'name' => 'phpunit_clone_source_rule',
+        'trigger_id' => 1, /* Activity is added */
+        'is_active' => TRUE,
+        'tag_id' => [$this->tagId],
+      ])
+      ->execute()->first();
+
+    $cloneResult = \civicrm_api3('CiviRulesRule', 'clone', ['id' => $rule['id']]);
+    $cloneId = $cloneResult['values']['clone_id'];
+
+    $this->assertNotEquals($rule['id'], $cloneId);
+
+    $cloneTags = \Civi\Api4\EntityTag::get(FALSE)
+      ->addWhere('entity_table', '=', 'civirule_rule')
+      ->addWhere('entity_id', '=', $cloneId)
+      ->execute();
+    $this->assertCount(1, $cloneTags);
+    $this->assertEquals($this->tagId, $cloneTags->first()['tag_id']);
   }
 
 }

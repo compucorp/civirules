@@ -3,7 +3,7 @@
 use Civi\Api4\CiviRulesRule;
 use Civi\Api4\CiviRulesRuleAction;
 use Civi\Api4\CiviRulesRuleCondition;
-use Civi\Api4\CiviRulesRuleTag;
+use Civi\Api4\EntityTag;
 use CRM_Civirules_ExtensionUtil as E;
 
 /**
@@ -193,18 +193,20 @@ function civicrm_api3_civi_rules_rule_clone($params) {
       ->execute();
   }
 
-  $ruleTags = \Civi\Api4\CiviRulesRuleTag::get(FALSE)
-    ->addWhere('rule_id', '=', $ruleID)
+  $ruleTags = EntityTag::get(FALSE)
+    ->addWhere('entity_table', '=', 'civirule_rule')
+    ->addWhere('entity_id', '=', $ruleID)
+    ->addSelect('tag_id')
     ->execute();
   foreach ($ruleTags as $ruleTag) {
-    $newTag = [
-      'rule_id' => $cloneId,
-      'rule_tag_id' => $ruleTag['rule_tag_id'],
+    $newTags[] = [
+      'entity_table' => 'civirule_rule',
+      'entity_id' => $cloneId,
+      'tag_id' => $ruleTag['tag_id'],
     ];
-    $newTags[] = $newTag;
   }
   if (!empty($newTags)) {
-    CiviRulesRuleTag::save(FALSE)
+    EntityTag::save(FALSE)
       ->setRecords($newTags)
       ->execute();
   }

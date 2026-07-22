@@ -253,22 +253,18 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
       in_array($event->action, ['create', 'edit'], TRUE) &&
       isset($event->params['tag_id']) && $event->id
     ) {
-      $tags = (array) ($event->params['tag_id'] ?: []);
-      $newTags = [];
-      foreach ($tags as $tagId) {
-        if ($tagId) {
-          $newTags[] = ['rule_tag_id' => $tagId];
-        }
-      }
-      if ($newTags) {
-        \Civi\Api4\CiviRulesRuleTag::replace(FALSE)
-          ->addWhere('rule_id', '=', $event->id)
-          ->setRecords($newTags)
+      $tagIds = array_filter((array) ($event->params['tag_id'] ?: []));
+      if ($tagIds) {
+        \Civi\Api4\EntityTag::replace(FALSE)
+          ->addWhere('entity_table', '=', 'civirule_rule')
+          ->addWhere('entity_id', '=', $event->id)
+          ->setRecords(array_map(fn($tagId) => ['tag_id' => $tagId], $tagIds))
           ->execute();
       }
       else {
-        \Civi\Api4\CiviRulesRuleTag::delete(FALSE)
-          ->addWhere('rule_id', '=', $event->id)
+        \Civi\Api4\EntityTag::delete(FALSE)
+          ->addWhere('entity_table', '=', 'civirule_rule')
+          ->addWhere('entity_id', '=', $event->id)
           ->execute();
       }
     }

@@ -49,7 +49,7 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
       ->setSqlRenderer([__CLASS__, 'renderLastRunDate']);
     $spec->addFieldSpec($lastRun);
 
-    // Virtual field for rule tags
+    // Virtual field for rule tags (backed by civicrm_tag / civicrm_entity_tag)
     $tags = new FieldSpec('tag_id', 'CiviRulesRule', 'Array');
     $tags->setLabel(ts('Tags'))
       ->setTitle(ts('Tags'))
@@ -58,7 +58,7 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
       ->setInputType('Select')
       ->setInputAttrs(['multiple' => TRUE])
       ->setSerialize(\CRM_Core_DAO::SERIALIZE_COMMA)
-      ->setSuffixes(['id', 'name', 'label'])
+      ->setSuffixes(['id', 'name', 'label', 'description', 'color'])
       ->setOptionsCallback([__CLASS__, 'getTagOptions'])
       ->setColumnName('id')
       ->setSqlRenderer([__CLASS__, 'renderTags']);
@@ -89,11 +89,11 @@ class CiviRulesRuleGetSpecProvider extends \Civi\Core\Service\AutoService implem
   }
 
   public static function renderTags(array $field, Api4SelectQuery $query): string {
-    return '(SELECT GROUP_CONCAT(rule_tag_id) FROM civirule_rule_tag WHERE rule_id = ' . $field['sql_name'] . ')';
+    return '(SELECT GROUP_CONCAT(tag_id) FROM civicrm_entity_tag WHERE entity_table = "civirule_rule" AND entity_id = ' . $field['sql_name'] . ')';
   }
 
   public static function getTagOptions($field, $values, $returnFormat, $checkPermissions): array {
-    return \Civi::entity('CiviRulesRuleTag')->getOptions('rule_tag_id', $values, FALSE, $checkPermissions);
+    return \Civi::entity('EntityTag')->getOptions('tag_id', ['entity_table' => 'civirule_rule'], FALSE, $checkPermissions);
   }
 
 }
