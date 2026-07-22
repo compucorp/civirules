@@ -463,12 +463,13 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       ->first()['id'];
     // replace all tags for the rule with the ones submitted
     $tagIds = !empty($formValues['rule_tag_id'])
-      ? array_filter((array) explode(',', is_array($formValues['rule_tag_id']) ? implode(',', $formValues['rule_tag_id']) : $formValues['rule_tag_id']))
+      ? array_unique(array_filter((array) explode(',', is_array($formValues['rule_tag_id']) ? implode(',', $formValues['rule_tag_id']) : $formValues['rule_tag_id'])))
       : [];
     if ($tagIds) {
       EntityTag::replace(FALSE)
         ->addWhere('entity_table', '=', 'civirule_rule')
         ->addWhere('entity_id', '=', $this->ruleId)
+        ->setMatch(['entity_table', 'entity_id', 'tag_id'])
         ->setRecords(array_map(fn($tagId) => ['tag_id' => $tagId], $tagIds))
         ->execute();
     }

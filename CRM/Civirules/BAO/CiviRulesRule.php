@@ -253,11 +253,12 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
       in_array($event->action, ['create', 'edit'], TRUE) &&
       isset($event->params['tag_id']) && $event->id
     ) {
-      $tagIds = array_filter((array) ($event->params['tag_id'] ?: []));
+      $tagIds = array_unique(array_filter((array) ($event->params['tag_id'] ?: [])));
       if ($tagIds) {
         \Civi\Api4\EntityTag::replace(FALSE)
           ->addWhere('entity_table', '=', 'civirule_rule')
           ->addWhere('entity_id', '=', $event->id)
+          ->setMatch(['entity_table', 'entity_id', 'tag_id'])
           ->setRecords(array_map(fn($tagId) => ['tag_id' => $tagId], $tagIds))
           ->execute();
       }

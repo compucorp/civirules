@@ -206,4 +206,38 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
     $this->assertEqualsCanonicalizing([$ruleA['id'], $ruleB['id']], $sourceIds);
   }
 
+  /**
+   * Regression test: re-submitting a tag that's already attached to the rule
+   * (e.g. a UI "remove then re-add" of the same tag before saving) must not
+   * throw a duplicate-key DB error.
+   *
+   * self_hook_civicrm_post() replaces the rule's tags via EntityTag::replace(),
+   * which requires setMatch() to correctly identify rows that already exist;
+   * without it every submitted tag is (re-)inserted as if new.
+   */
+  public function testUpdateWithAlreadyAttachedTagDoesNotDuplicate(): void {
+    $rule = \Civi\Api4\CiviRulesRule::create(FALSE)
+      ->setValues([
+        'label' => 'PHPUnit Tag Resubmit Rule',
+        'name' => 'phpunit_tag_resubmit_rule',
+        'trigger_id' => 1, /* Activity is added */
+        'is_active' => TRUE,
+        'tag_id' => [$this->tagId],
+      ])
+      ->execute()->first();
+
+    // Re-submit the same, already-attached tag.
+    \Civi\Api4\CiviRulesRule::update(FALSE)
+      ->addWhere('id', '=', $rule['id'])
+      ->setValues(['tag_id' => [$this->tagId]])
+      ->execute();
+
+    $savedTags = \Civi\Api4\EntityTag::get(FALSE)
+      ->addWhere('entity_table', '=', 'civirule_rule')
+      ->addWhere('entity_id', '=', $rule['id'])
+      ->execute();
+    $this->assertCount(1, $savedTags);
+    $this->assertEquals($this->tagId, $savedTags->first()['tag_id']);
+  }
+
 }
