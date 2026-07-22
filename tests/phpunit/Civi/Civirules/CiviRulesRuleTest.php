@@ -146,4 +146,64 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
     $this->assertEquals($this->tagId, $cloneTags->first()['tag_id']);
   }
 
+  /**
+   * The APIv4 CiviRulesRule.copy action (used by the SearchKit "Clone" task)
+   * should clone a rule the same way the v3 clone API does: disabled by
+   * default, tags copied.
+   */
+  public function testApi4CopyActionClonesRuleIncludingTags(): void {
+    $rule = \Civi\Api4\CiviRulesRule::create(FALSE)
+      ->setValues([
+        'label' => 'PHPUnit Api4 Copy Source Rule',
+        'name' => 'phpunit_api4_copy_source_rule',
+        'trigger_id' => 1, /* Activity is added */
+        'is_active' => TRUE,
+        'tag_id' => [$this->tagId],
+      ])
+      ->execute()->first();
+
+    $copyResult = \Civi\Api4\CiviRulesRule::copy(FALSE)
+      ->addWhere('id', '=', $rule['id'])
+      ->execute();
+
+    $this->assertCount(1, $copyResult);
+    $cloneId = $copyResult->first()['clone_id'];
+    $this->assertNotEquals($rule['id'], $cloneId);
+
+    $clonedRule = \Civi\Api4\CiviRulesRule::get(FALSE)
+      ->addWhere('id', '=', $cloneId)
+      ->execute()->first();
+    $this->assertEquals('Clone of PHPUnit Api4 Copy Source Rule', $clonedRule['label']);
+    $this->assertFalse((bool) $clonedRule['is_active']);
+
+    $cloneTags = \Civi\Api4\EntityTag::get(FALSE)
+      ->addWhere('entity_table', '=', 'civirule_rule')
+      ->addWhere('entity_id', '=', $cloneId)
+      ->execute();
+    $this->assertCount(1, $cloneTags);
+    $this->assertEquals($this->tagId, $cloneTags->first()['tag_id']);
+  }
+
+  /**
+   * The copy action is a batch action (per AbstractBatchAction) - a `where`
+   * clause matching several rules should clone all of them in one call, as
+   * happens when cloning multiple selected rows from the SearchKit list.
+   */
+  public function testApi4CopyActionClonesMultipleMatchedRules(): void {
+    $ruleA = \Civi\Api4\CiviRulesRule::create(FALSE)
+      ->setValues(['label' => 'Batch Copy A', 'name' => 'batch_copy_a', 'trigger_id' => 1, 'is_active' => TRUE])
+      ->execute()->first();
+    $ruleB = \Civi\Api4\CiviRulesRule::create(FALSE)
+      ->setValues(['label' => 'Batch Copy B', 'name' => 'batch_copy_b', 'trigger_id' => 1, 'is_active' => TRUE])
+      ->execute()->first();
+
+    $copyResult = \Civi\Api4\CiviRulesRule::copy(FALSE)
+      ->addWhere('id', 'IN', [$ruleA['id'], $ruleB['id']])
+      ->execute();
+
+    $this->assertCount(2, $copyResult);
+    $sourceIds = $copyResult->column('id');
+    $this->assertEqualsCanonicalizing([$ruleA['id'], $ruleB['id']], $sourceIds);
+  }
+
 }
