@@ -154,6 +154,18 @@ return [
               'icon' => 'fa-bars',
               'links' => [
                 [
+                  'task' => 'copy',
+                  'entity' => 'CiviRulesRule',
+                  'join' => '',
+                  'target' => 'crm-popup',
+                  'icon' => 'fa-copy',
+                  'text' => E::ts('Clone'),
+                  'style' => 'default',
+                  'path' => '',
+                  'action' => '',
+                  'condition' => [],
+                ],
+                [
                   'task' => 'disable',
                   'entity' => 'CiviRulesRule',
                   'join' => '',
