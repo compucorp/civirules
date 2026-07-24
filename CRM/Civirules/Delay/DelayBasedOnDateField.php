@@ -27,8 +27,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
     $data = $triggerData->getEntityData($this->entity);
     // issue 163 ()
     $field = substr($this->field, strlen($this->entity)+1);
-    $entity = $triggerData->getEntity();
-    $data = $this->addInCustomField($field, $data, $entity);
+    $data = $this->addInCustomField($field, $data, $this->entity);
     if (isset($data[$field]) && !empty($data[$field])) {
       $newDate = new DateTime($data[$field]);
       $newDate->modify($this->getModifyString());
@@ -45,50 +44,34 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * @return array
    */
   private function addInCustomField(string $field, array $data, string $entity): array {
-    $customData = NULL;
-    if ($field && strpos($field, "custom_") !== FALSE) {
-      $customFieldId = (int) str_replace("custom_", "", $field);
-      if ($customFieldId) {
-        try {
-          $customField = Civi\Api4\CustomField::get(FALSE)
-            ->addSelect('custom_group_id:name', 'name')
-            ->addWhere('id', '=', $customFieldId)
-            ->setLimit(1)
-            ->execute()->first();
-          if ($customField['custom_group_id:name'] && $customField['name']) {
-            $customFieldName = $customField['custom_group_id:name'] . '.' . $customField['name'];
-            switch ($entity) {
-              case "Activity":
-                try {
-                  $customData = Civi\Api4\Activity::get(FALSE)
-                    ->addSelect($customFieldName)
-                    ->addWhere('id', '=', $data['id'])
-                    ->setLimit(1)
-                    ->execute()->first();
-                }
-                catch (API_Exception $ex) {
-                }
-                break;
-              default:
-                try {
-                  $customData = Civi\Api4\Contact::get()
-                    ->addSelect($customFieldName)
-                    ->addWhere('id', '=', $data['id'])
-                    ->setLimit(1)
-                    ->execute()->first();
-                }
-                catch (API_Exception $ex) {
-                }
-                break;
-            }
-            if ($customData[$customFieldName]) {
-              $data[$field] = $customData[$customFieldName];
-            }
-          }
-        }
-        catch (API_Exception $ex) {
+    if (!$field || strpos($field, "custom_") === FALSE) {
+      return $data;
+    }
+    $customFieldId = (int) str_replace("custom_", "", $field);
+    if (!$customFieldId || empty($data['id'])) {
+      return $data;
+    }
+    try {
+      $customField = Civi\Api4\CustomField::get(FALSE)
+        ->addSelect('custom_group_id:name', 'name')
+        ->addWhere('id', '=', $customFieldId)
+        ->setLimit(1)
+        ->execute()->first();
+      if (!empty($customField['custom_group_id:name']) && !empty($customField['name'])) {
+        $customFieldName = $customField['custom_group_id:name'] . '.' . $customField['name'];
+        $customData = civicrm_api4(ucfirst($entity), 'get', [
+          'select' => [$customFieldName],
+          'where' => [['id', '=', $data['id']]],
+          'checkPermissions' => FALSE,
+          'limit' => 1,
+        ])->first();
+        if (!empty($customData[$customFieldName])) {
+          $data[$field] = $customData[$customFieldName];
         }
       }
+    }
+    catch (Throwable $ex) {
+      \Civi::log('civirules')->warning('CRM_Civirules_Delay_DelayBasedOnDateField could not fetch value of ' . $field . ' for entity ' . $entity . ': ' . $ex->getMessage());
     }
     return $data;
   }
