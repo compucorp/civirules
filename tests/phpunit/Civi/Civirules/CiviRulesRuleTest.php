@@ -35,6 +35,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
         'label' => 'Test PHPUnit Tag',
         'name' => 'test_phpunit_tag',
         'used_for' => 'civirule_rule',
+        'color' => '#ff6600',
       ])
       ->execute()->first()['id'];
   }
@@ -69,15 +70,18 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
     $this->assertCount(1, $savedTags);
     $this->assertEquals($this->tagId, $savedTags->first()['tag_id']);
 
-    // 2. Fetch the rule via API and test virtual fields: trigger_id:label, tag_id, tag_id:label, last_run_date
+    // 2. Fetch the rule via API and test virtual fields: trigger_id:label, tag_id, tag_id:label, tag_id:color, last_run_date
     $fetched = \Civi\Api4\CiviRulesRule::get(FALSE)
-      ->addSelect('id', 'label', 'trigger_id:label', 'tag_id', 'tag_id:label', 'last_run_date')
+      ->addSelect('id', 'label', 'trigger_id:label', 'tag_id', 'tag_id:label', 'tag_id:color', 'last_run_date')
       ->addWhere('id', '=', $rule['id'])
       ->execute()->first();
 
     $this->assertEquals('Activity is added', $fetched['trigger_id:label']);
     $this->assertEquals([$this->tagId], $fetched['tag_id']);
     $this->assertEquals(['Test PHPUnit Tag'], $fetched['tag_id:label']);
+    // The color suffix is what SearchKit's `colors` column option (see
+    // managed/SavedSearch_CiviRules.mgd.php) relies on to render tag pills.
+    $this->assertEquals(['#ff6600'], $fetched['tag_id:color']);
     $this->assertNull($fetched['last_run_date']);
 
     // Create a log entry and check last_run_date
