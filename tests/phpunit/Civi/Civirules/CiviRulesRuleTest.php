@@ -20,6 +20,16 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
    */
   private $tagId;
 
+  /**
+   * ID of the "Activity is added" (new_activity) trigger. Looked up by name
+   * rather than assumed to be 1 - sql/triggers.json seeding order determines
+   * the actual id, and hardcoding 1 makes tests fail with an FK constraint
+   * violation on civirule_rule.trigger_id if that assumption ever doesn't hold.
+   *
+   * @var int
+   */
+  private $triggerId;
+
   public function setUpHeadless(): CiviEnvBuilder {
     return \Civi\Test::headless()
       ->installMe(__DIR__)
@@ -28,6 +38,10 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
 
   public function setUp(): void {
     parent::setUp();
+
+    $this->triggerId = \Civi\Api4\CiviRulesTrigger::get(FALSE)
+      ->addWhere('name', '=', 'new_activity')
+      ->execute()->first()['id'];
 
     // Create a standard CiviCRM Tag usable on CiviRules rules
     $this->tagId = \Civi\Api4\Tag::create(FALSE)
@@ -53,7 +67,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues([
         'label' => 'PHPUnit Test Rule',
         'name' => 'phpunit_test_rule',
-        'trigger_id' => 1, /* Activity is added */
+        'trigger_id' => $this->triggerId,
         'is_active' => TRUE,
         'tag_id' => [$this->tagId],
       ])
@@ -131,7 +145,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues([
         'label' => 'PHPUnit Clone Source Rule',
         'name' => 'phpunit_clone_source_rule',
-        'trigger_id' => 1, /* Activity is added */
+        'trigger_id' => $this->triggerId,
         'is_active' => TRUE,
         'tag_id' => [$this->tagId],
       ])
@@ -160,7 +174,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues([
         'label' => 'PHPUnit Api4 Copy Source Rule',
         'name' => 'phpunit_api4_copy_source_rule',
-        'trigger_id' => 1, /* Activity is added */
+        'trigger_id' => $this->triggerId,
         'is_active' => TRUE,
         'tag_id' => [$this->tagId],
       ])
@@ -195,10 +209,10 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
    */
   public function testApi4CopyActionClonesMultipleMatchedRules(): void {
     $ruleA = \Civi\Api4\CiviRulesRule::create(FALSE)
-      ->setValues(['label' => 'Batch Copy A', 'name' => 'batch_copy_a', 'trigger_id' => 1, 'is_active' => TRUE])
+      ->setValues(['label' => 'Batch Copy A', 'name' => 'batch_copy_a', 'trigger_id' => $this->triggerId, 'is_active' => TRUE])
       ->execute()->first();
     $ruleB = \Civi\Api4\CiviRulesRule::create(FALSE)
-      ->setValues(['label' => 'Batch Copy B', 'name' => 'batch_copy_b', 'trigger_id' => 1, 'is_active' => TRUE])
+      ->setValues(['label' => 'Batch Copy B', 'name' => 'batch_copy_b', 'trigger_id' => $this->triggerId, 'is_active' => TRUE])
       ->execute()->first();
 
     $copyResult = \Civi\Api4\CiviRulesRule::copy(FALSE)
@@ -224,7 +238,7 @@ class CiviRulesRuleTest extends \PHPUnit\Framework\TestCase implements HeadlessI
       ->setValues([
         'label' => 'PHPUnit Tag Resubmit Rule',
         'name' => 'phpunit_tag_resubmit_rule',
-        'trigger_id' => 1, /* Activity is added */
+        'trigger_id' => $this->triggerId,
         'is_active' => TRUE,
         'tag_id' => [$this->tagId],
       ])

@@ -1,18 +1,30 @@
 <?php
+/*
+ +--------------------------------------------------------------------+
+ | Copyright CiviCRM LLC. All rights reserved.                        |
+ |                                                                    |
+ | This work is published under the GNU AGPLv3 license with some      |
+ | permitted exceptions and without any warranty. For full license    |
+ | and copyright information, see https://civicrm.org/licensing       |
+ +--------------------------------------------------------------------+
+ */
 
 ini_set('memory_limit', '2G');
+define('CIVICRM_TEST', 1);
+// phpcs:ignore
+eval(cv('php:boot --level=settings', 'phpcode'));
 
-// phpcs:disable
-eval(cv('php:boot --level=classloader', 'phpcode'));
-// phpcs:enable
 // Allow autoloading of PHPUnit helper classes in this extension.
 $loader = new \Composer\Autoload\ClassLoader();
-$loader->add('CRM_', [__DIR__ . '/../..', __DIR__]);
-$loader->addPsr4('Civi\\', [__DIR__ . '/../../Civi', __DIR__ . '/Civi']);
-$loader->add('api_', [__DIR__ . '/../..', __DIR__]);
-$loader->addPsr4('api\\', [__DIR__ . '/../../api', __DIR__ . '/api']);
-
+$loader->add('CRM_', __DIR__);
+$loader->add('Civi\\', __DIR__);
+$loader->add('api_', __DIR__);
+$loader->add('api\\', __DIR__);
 $loader->register();
+
+if (CIVICRM_UF === 'UnitTests') {
+  Civi\Test::headless()->apply();
+}
 
 /**
  * Call the "cv" command.
@@ -21,21 +33,22 @@ $loader->register();
  *   The rest of the command to send.
  * @param string $decode
  *   Ex: 'json' or 'phpcode'.
- * @return mixed
+ * @return string
  *   Response output (if the command executed normally).
- *   For 'raw' or 'phpcode', this will be a string. For 'json', it could be any JSON value.
  * @throws \RuntimeException
  *   If the command terminates abnormally.
  */
-function cv(string $cmd, string $decode = 'json') {
+function cv($cmd, $decode = 'json') {
   $cmd = 'cv ' . $cmd;
-  $descriptorSpec = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => STDERR];
+  $descriptorSpec = array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => STDERR);
   $oldOutput = getenv('CV_OUTPUT');
-  putenv('CV_OUTPUT=json');
+  putenv("CV_OUTPUT=json");
 
   // Execute `cv` in the original folder. This is a work-around for
   // phpunit/codeception, which seem to manipulate PWD.
-  $cmd = sprintf('cd %s; %s', escapeshellarg(getenv('PWD')), $cmd);
+  if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+    $cmd = sprintf('cd %s; %s', escapeshellarg(getenv('PWD')), $cmd);
+  }
 
   $process = proc_open($cmd, $descriptorSpec, $pipes, __DIR__);
   putenv("CV_OUTPUT=$oldOutput");
@@ -51,7 +64,7 @@ function cv(string $cmd, string $decode = 'json') {
 
     case 'phpcode':
       // If the last output is /*PHPCODE*/, then we managed to complete execution.
-      if (substr(trim($result), 0, 12) !== '/*BEGINPHP*/' || substr(trim($result), -10) !== '/*ENDPHP*/') {
+      if (substr(trim($result), 0, 12) !== "/*BEGINPHP*/" || substr(trim($result), -10) !== "/*ENDPHP*/") {
         throw new \RuntimeException("Command failed ($cmd):\n$result");
       }
       return $result;
