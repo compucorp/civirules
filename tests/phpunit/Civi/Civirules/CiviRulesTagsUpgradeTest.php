@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Civi\Civirules;
 
 use Civi\Api4\CiviRulesRule;
+use Civi\Api4\CiviRulesTrigger;
 use Civi\Api4\EntityTag;
 use Civi\Api4\OptionValue;
 use Civi\Api4\Tag;
@@ -30,11 +31,17 @@ class CiviRulesTagsUpgradeTest extends \PHPUnit\Framework\TestCase implements He
 
   public function setUp(): void {
     parent::setUp();
+    // Looked up by name rather than assumed to be 1 - sql/triggers.json seeding
+    // order determines the actual id, and hardcoding 1 makes this fail with an
+    // FK constraint violation on civirule_rule.trigger_id if that ever doesn't hold.
+    $triggerId = CiviRulesTrigger::get(FALSE)
+      ->addWhere('name', '=', 'new_activity')
+      ->execute()->first()['id'];
     $this->ruleId = CiviRulesRule::create(FALSE)
       ->setValues([
         'label' => 'PHPUnit Upgrade Test Rule',
         'name' => 'phpunit_upgrade_test_rule',
-        'trigger_id' => 1, /* Activity is added */
+        'trigger_id' => $triggerId,
         'is_active' => TRUE,
       ])
       ->execute()->first()['id'];
