@@ -18,7 +18,19 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
    */
   protected $op;
 
-  public static ?CRM_Civirules_TriggerData_TriggerData $triggerDataCache = NULL;
+  /**
+   * Trigger data cached per trigger class, for one post event.
+   *
+   * Keyed by class name on purpose. Trigger data is only
+   * interchangeable between triggers of the same class: subclasses
+   * attach their own extra entities in getTriggerDataFromPost(), and
+   * triggerTrigger() skips that override when data is already set.
+   * Sharing one object across classes drops those entities, and
+   * conditions reading them silently evaluate against nothing.
+   *
+   * @var array<string, CRM_Civirules_TriggerData_TriggerData>
+   */
+  public static array $triggerDataCache = [];
 
   /**
    * Getter for object name
@@ -107,19 +119,21 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
       return;
     }
     // Delete the cached trigger data in case we modify the same record twice in one process.
-    self::$triggerDataCache = NULL;
+    self::$triggerDataCache = [];
 
     // find matching rules for this objectName and op
     $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op);
     foreach($triggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {
-        if (self::$triggerDataCache) {
-          $trigger->setTriggerData(self::$triggerDataCache);
+        $triggerClass = get_class($trigger);
+        if (isset(self::$triggerDataCache[$triggerClass])) {
+          $trigger->setTriggerData(self::$triggerDataCache[$triggerClass]);
         }
         $trigger->triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
-        // Capture the trigger data for the first trigger so we don't have to query again on future triggers.
+        // Capture the trigger data for the first trigger of each class,
+        // so further rules using that class need not query again.
         if ($trigger->hasTriggerData()) {
-          self::$triggerDataCache ??= $trigger->getTriggerData();
+          self::$triggerDataCache[$triggerClass] ??= $trigger->getTriggerData();
         }
       }
     }
