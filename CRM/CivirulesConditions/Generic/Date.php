@@ -173,7 +173,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
       $dateToUse = $triggerDate;
       // if use_action_date, use date (only makes sense for actions with delays)
     }
-    elseif ($this->conditionParams['use_action_date'] === 'action') {
+    elseif ($this->conditionParams['compare_type'] === 'action') {
       $dateToUse = $actionDate;
       // field or fixed dated
     }
