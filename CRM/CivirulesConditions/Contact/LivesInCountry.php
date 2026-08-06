@@ -141,10 +141,10 @@ class CRM_CivirulesConditions_Contact_LivesInCountry extends CRM_Civirules_Condi
     else {
       $text .= ' (checking primary address)';
     }
-    if ($this->_conditionParams['no_address_found']) {
+    if ($this->conditionParams['no_address_found']) {
       $text .= ', using default country if contact has no address';
     }
-    if ($this->_conditionParams['no_address_found']) {
+    if ($this->conditionParams['no_address_found']) {
       $text .= ', using default country if address has no country';
     }
     return $text;

@@ -129,8 +129,8 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
     }
     else {
       // if compare date has been used
-      if (!empty($this->conditionParams['activity_compare_date']) && !$this->_conditionParams['use_trigger_date'] && !$this->_conditionParams['use_action_date']) {
-        $dateToUse = $this->_conditionParams['activity_compare_date'];
+      if (!empty($this->conditionParams['activity_compare_date']) && !$this->conditionParams['use_trigger_date'] && !$this->conditionParams['use_action_date']) {
+        $dateToUse = $this->conditionParams['activity_compare_date'];
       }
     }
     if ($dateToUse) {
@@ -141,7 +141,7 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
         return $compareDate;
       }
       catch (Exception $ex) {
-        Civi::log()->error(ts('Could not parse date ') . $this->_conditionParams['activity_compare_date'] . ' in ' . __METHOD__);
+        Civi::log()->error(ts('Could not parse date ') . $this->conditionParams['activity_compare_date'] . ' in ' . __METHOD__);
       }
     }
     return FALSE;
@@ -156,11 +156,11 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
   public function userFriendlyConditionParams() {
     $operatorOptions = CRM_Civirules_Utils::getActivityDateOperatorOptions();
     // @todo ts() usage here makes it difficult to correctly translate
-    $friendlyText = E::ts('Activity Date') . ' ' . ts($operatorOptions[$this->_conditionParams['operator']]);
-    if ($this->_conditionParams['operator'] == 6) {
+    $friendlyText = E::ts('Activity Date') . ' ' . ts($operatorOptions[$this->conditionParams['operator']]);
+    if ($this->conditionParams['operator'] == 6) {
       try {
-        $fromDate = new DateTime($this->_conditionParams['activity_from_date']);
-        $toDate = new DateTime($this->_conditionParams['activity_to_date']);
+        $fromDate = new DateTime($this->conditionParams['activity_from_date']);
+        $toDate = new DateTime($this->conditionParams['activity_to_date']);
         $friendlyText .= ' ' . $fromDate->format('j F Y') . ' ' . ts('and') . ' ' . $toDate->format('j F Y');
       }
       catch (Exception $ex) {
@@ -168,16 +168,16 @@ class CRM_CivirulesConditions_Activity_Date extends CRM_Civirules_Condition {
     }
     else {
       // if use_trigger_date
-      if ($this->_conditionParams['use_trigger_date'] == 1) {
+      if ($this->conditionParams['use_trigger_date'] == 1) {
         $friendlyText .= ' ' . E::ts('the date the rule is triggered.');
       }
-      elseif ($this->_conditionParams['use_action_date'] == 1) {
+      elseif ($this->conditionParams['use_action_date'] == 1) {
         // if use_action_date
         $friendlyText .= ' ' . E::ts('the date the action is executed.');
       }
       else {
         try {
-          $compareDate = new DateTime($this->_conditionParams['activity_compare_date']);
+          $compareDate = new DateTime($this->conditionParams['activity_compare_date']);
           $friendlyText .= ' ' . $compareDate->format('j F Y');
         }
         catch (Exception $ex) {
