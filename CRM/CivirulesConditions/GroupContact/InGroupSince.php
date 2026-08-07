@@ -154,17 +154,17 @@ class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Co
         $text .= $groupTitle;
       }
       else {
-        $text .= $this->_conditionParams['group_id'];
+        $text .= $this->conditionParams['group_id'];
       }
     }
-    if (isset($this->_conditionParams['operator']) && !empty($this->_conditionParams['operator'])) {
-      $text .= " " . $this->_conditionParams['operator'] . " than ";
+    if (isset($this->conditionParams['operator']) && !empty($this->conditionParams['operator'])) {
+      $text .= " " . $this->conditionParams['operator'] . " than ";
     }
-    if (isset($this->_conditionParams['number']) && !empty($this->_conditionParams['number'])) {
-      $text .= $this->_conditionParams['number'] . " ";
+    if (isset($this->conditionParams['number']) && !empty($this->conditionParams['number'])) {
+      $text .= $this->conditionParams['number'] . " ";
     }
-    if (isset($this->_conditionParams['period']) && !empty($this->_conditionParams['period'])) {
-      $text .= $periodLabels[$this->_conditionParams['period']];
+    if (isset($this->conditionParams['period']) && !empty($this->conditionParams['period'])) {
+      $text .= $periodLabels[$this->conditionParams['period']];
     }
     return $text;
   }

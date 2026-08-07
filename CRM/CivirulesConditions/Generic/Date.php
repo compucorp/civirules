@@ -187,7 +187,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
             throw new Exception('No field set');
           }
 
-          list($source_entity, $source_field_id) = $this->parseRawFieldId($this->_conditionParams['activity_compare_field']);
+          list($source_entity, $source_field_id) = $this->parseRawFieldId($this->conditionParams['activity_compare_field']);
 
           if (in_array(strtolower($source_entity), ['contact', 'individual', 'organization', 'household'])) {
             // source is a contact field
@@ -214,10 +214,10 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
         }
         // some fixed falue
       }
-      elseif ($this->_conditionParams['compare_type'] === 'fixed') {
+      elseif ($this->conditionParams['compare_type'] === 'fixed') {
 
-        if (!empty($this->_conditionParams['activity_compare_date'])) {
-          $dateToUse = $this->_conditionParams['activity_compare_date'];
+        if (!empty($this->conditionParams['activity_compare_date'])) {
+          $dateToUse = $this->conditionParams['activity_compare_date'];
         }
 
       }
@@ -227,7 +227,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
       }
 
       if (empty($dateToUse)) {
-        switch ($this->_conditionParams['empty_field']) {
+        switch ($this->conditionParams['empty_field']) {
           case 'trigger':
             $dateToUse = $triggerDate;
             break;
@@ -254,7 +254,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
         return $compareDate;
       }
       catch (Exception $ex) {
-        Civi::log()->error(ts('Could not parse date ') . $this->_conditionParams['activity_compare_date'] . ' in ' . __METHOD__);
+        Civi::log()->error(ts('Could not parse date ') . $this->conditionParams['activity_compare_date'] . ' in ' . __METHOD__);
       }
     }
 
@@ -329,8 +329,8 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
 
     $operatorOptions = CRM_Civirules_Utils::getActivityDateOperatorOptions();
 
-    if (!empty($this->_conditionParams['date_select'])) {
-      switch ($this->_conditionParams['date_select']) {
+    if (!empty($this->conditionParams['date_select'])) {
+      switch ($this->conditionParams['date_select']) {
         case 'Event::start_date':
           $friendlyText = ts('Event Start Date');
           break;
@@ -351,38 +351,38 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
       $friendlyText = ts("Activity Date");
     }
 
-    $friendlyText .= ' ' . ts($operatorOptions[$this->_conditionParams['operator']]);
+    $friendlyText .= ' ' . ts($operatorOptions[$this->conditionParams['operator']]);
 
-    if ($this->_conditionParams['operator'] == 6) {
+    if ($this->conditionParams['operator'] == 6) {
       try {
-        $fromDate = new DateTime($this->_conditionParams['activity_from_date']);
-        $toDate = new DateTime($this->_conditionParams['activity_to_date']);
+        $fromDate = new DateTime($this->conditionParams['activity_from_date']);
+        $toDate = new DateTime($this->conditionParams['activity_to_date']);
         $friendlyText .= ' ' . $fromDate->format('j F Y') . ts(' and ') . $toDate->format('j F Y');
       }
       catch (Exception $ex) {
       }
       // if use_trigger_date
     }
-    elseif ($this->_conditionParams['compare_type'] === 'trigger') {
+    elseif ($this->conditionParams['compare_type'] === 'trigger') {
       $friendlyText .= ' the date the rule is triggered.';
       // if use_action_date
     }
-    elseif ($this->_conditionParams['compare_type'] === 'action') {
+    elseif ($this->conditionParams['compare_type'] === 'action') {
       $friendlyText .= ' the date the action is executed.';
     }
-    elseif ($this->_conditionParams['compare_type'] === 'fixed') {
+    elseif ($this->conditionParams['compare_type'] === 'fixed') {
       try {
-        if (empty($this->_conditionParams['activity_compare_date'])) {
-          if ($this->_conditionParams['empty_field'] === 'trigger') {
+        if (empty($this->conditionParams['activity_compare_date'])) {
+          if ($this->conditionParams['empty_field'] === 'trigger') {
             $friendlyText .= ' the date the rule is triggered.';
           }
-          elseif ($this->_conditionParams['empty_field'] === 'action') {
+          elseif ($this->conditionParams['empty_field'] === 'action') {
             $friendlyText .= ' the date the action is executed.';
           }
-          elseif ($this->_conditionParams['empty_field'] === 'true') {
+          elseif ($this->conditionParams['empty_field'] === 'true') {
             $friendlyText = 'Will always evaluate true.';
           }
-          elseif ($this->_conditionParams['empty_field'] === 'false') {
+          elseif ($this->conditionParams['empty_field'] === 'false') {
             $friendlyText = 'Will always evaluate false.';
           }
           else {
@@ -390,7 +390,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
           }
         }
         else {
-          $compareDate = new DateTime($this->_conditionParams['activity_compare_date']);
+          $compareDate = new DateTime($this->conditionParams['activity_compare_date']);
           $friendlyText .= ' ' . $compareDate->format('j F Y');
         }
       }
@@ -398,10 +398,10 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
         $friendlyText = 'Could not parse dates!';
       }
     }
-    elseif ($this->_conditionParams['compare_type'] === 'field') {
-      if (!empty($this->_conditionParams['activity_compare_field'])) {
+    elseif ($this->conditionParams['compare_type'] === 'field') {
+      if (!empty($this->conditionParams['activity_compare_field'])) {
         try {
-          $parts = explode('::', $this->_conditionParams['activity_compare_field']);
+          $parts = explode('::', $this->conditionParams['activity_compare_field']);
           if (count($parts) != 2) {
             throw new Exception();
           }

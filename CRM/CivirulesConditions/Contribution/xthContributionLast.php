@@ -154,20 +154,20 @@ class CRM_CivirulesConditions_Contribution_xthContributionLast extends CRM_Civir
     $operators = CRM_Civirules_Utils::getGenericComparisonOperatorOptions();
     $financialTypes = CRM_Civirules_Utils::getFinancialTypes();
     $finTypesTxt = [];
-    foreach ($this->_conditionParams['financial_type'] as $financialType) {
+    foreach ($this->conditionParams['financial_type'] as $financialType) {
       $finTypesTxt[] = $financialTypes[$financialType];
     }
     $statuses = CRM_Civirules_Utils_OptionGroup::getActiveValues(CRM_Civirules_Utils::getOptionGroupIdWithName('contribution_status'));
     $statusesTxt = [];
-    foreach ($this->_conditionParams['contribution_status'] as $status) {
+    foreach ($this->conditionParams['contribution_status'] as $status) {
       $statusesTxt[] = $statuses[$status];
     }
     $units = CRM_CivirulesConditions_Form_Contribution_xthContributionLast::getIntervalUnits();
     return ts('Number of ') . implode(' or ', $statusesTxt) . ts(' contributions in the last ')
-      . $this->_conditionParams['interval'] . ' ' . $units[$this->_conditionParams['interval_unit']]
+      . $this->conditionParams['interval'] . ' ' . $units[$this->conditionParams['interval_unit']]
       . ts(' of financial type ') . implode(' or ', $finTypesTxt)
-      . ' ' . $operators[$this->_conditionParams['operator']] . ' '
-      . $this->_conditionParams['number_contributions'];
+      . ' ' . $operators[$this->conditionParams['operator']] . ' '
+      . $this->conditionParams['number_contributions'];
   }
 
 }
