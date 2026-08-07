@@ -32,6 +32,15 @@
     </div>
     <div class="clear"></div>
   </div>
+  {if !empty($form.rule_is_debug)}
+  <div class="crm-section">
+    <div class="label">{$form.rule_is_debug.label}</div>
+    <div class="content">{$form.rule_is_debug.html}
+    <br><span class="description">{ts}When enabled, detailed condition evaluation and the full trigger data for each firing are written to the CiviRules debug log.{/ts}</span>
+    </div>
+    <div class="clear"></div>
+  </div>
+  {/if}
   <div class="crm-section">
     <div class="label">{$form.rule_created_date.label}</div>
     <div class="content">{$form.rule_created_date.value}</div>

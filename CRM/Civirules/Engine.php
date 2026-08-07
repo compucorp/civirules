@@ -363,6 +363,7 @@ class CRM_Civirules_Engine {
         $context['conditions_valid'] = ($isValid ? 'true' : 'false') . '; Detail: ' . implode(';', $conditionsValid ?? []);
         $context['contact_id'] = $triggerData->getContactId();
         $context['entity_id'] = $triggerData->getEntityId();
+        $context['trigger_data'] = $triggerData->getAllEntityData();
         CRM_Civirules_Utils_LoggerFactory::log("Rule {$context['rule_id']}: Conditions: {$context['conditions_valid']}",
           $context,
           \Psr\Log\LogLevel::DEBUG);
