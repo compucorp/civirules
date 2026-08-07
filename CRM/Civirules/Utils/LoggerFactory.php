@@ -23,6 +23,20 @@ class CRM_Civirules_Utils_LoggerFactory {
     return self::$logger;
   }
 
+  /**
+   * Whether a hook implementation (e.g. the civiruleslogger extension) has
+   * registered a dedicated logger, as opposed to relying on the Civi::log()
+   * fallback in getLogger().
+   *
+   * @return bool
+   */
+  public static function hasDedicatedLogger(): bool {
+    $logger = NULL;
+    $hook = CRM_Civirules_Utils_HookInvoker::singleton();
+    $hook->hook_civirules_getlogger($logger);
+    return !empty($logger);
+  }
+
   public static function log($message, $context = [], $level = \Psr\Log\LogLevel::INFO) {
     $logger = CRM_Civirules_Utils_LoggerFactory::getLogger();
     if (empty($logger)) {

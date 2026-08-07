@@ -16,6 +16,8 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
 
   protected $ruleId = NULL;
 
+  protected bool $debugLoggingAvailable = FALSE;
+
   protected CRM_Civirules_BAO_CiviRulesRule $rule;
 
   protected CRM_Civirules_BAO_CiviRulesTrigger $trigger;
@@ -264,6 +266,12 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $this->add('select2', 'rule_tag_id', E::ts('Civirule Tag(s)'), CRM_Core_BAO_Tag::getColorTags('civirule_rule'), FALSE,
         ['id' => 'rule_tag_id', 'multiple' => 'multiple', 'class' => 'huge']);
       $this->add('checkbox', 'rule_is_active', E::ts('Enabled'));
+      // Only offer debug mode when a hook implementation (e.g. civiruleslogger) is
+      // actually registered to receive it - otherwise there's no way to view it.
+      $this->debugLoggingAvailable = CRM_Civirules_Utils_LoggerFactory::hasDedicatedLogger();
+      if ($this->debugLoggingAvailable) {
+        $this->add('checkbox', 'rule_is_debug', E::ts('Enable Debug Logging'));
+      }
       $this->add('text', 'rule_created_date', E::ts('Created Date'));
       $this->add('text', 'rule_created_contact', E::ts('Created By'));
 
@@ -382,6 +390,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $defaults['rule_help_text'] = $ruleData['help_text'];
     }
     $defaults['rule_is_active'] = $ruleData['is_active'];
+    $defaults['rule_is_debug'] = $ruleData['is_debug'] ?? 0;
     $defaults['rule_created_date'] = date('d-m-Y', strtotime($ruleData['created_date']));
     $defaults['rule_created_contact'] = CRM_Civirules_Utils::getContactName($ruleData['created_user_id']);
     if (!empty($ruleData['trigger_id'])) {
@@ -457,6 +466,9 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $ruleParams['help_text'] = $formValues['rule_help_text'] ?? '';
     $ruleParams['name'] = CRM_Civirules_Utils::buildNameFromLabel($formValues['rule_label']);
     $ruleParams['is_active'] = $formValues['rule_is_active'] ?? 0;
+    if (!empty($this->debugLoggingAvailable)) {
+      $ruleParams['is_debug'] = $formValues['rule_is_debug'] ?? 0;
+    }
     $this->ruleId = CiviRulesRule::save(FALSE)
       ->setRecords([$ruleParams])
       ->execute()
