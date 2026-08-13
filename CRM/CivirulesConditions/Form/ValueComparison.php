@@ -122,7 +122,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
 
     $session = CRM_Core_Session::singleton();
     $session->setStatus('Condition ' . $this->condition->label . ' parameters updated to CiviRule '
-      . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleCondition->rule_id),
+      . CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->ruleCondition->rule_id),
       'Condition parameters updated', 'success');
 
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->ruleCondition->rule_id, TRUE);
@@ -147,7 +147,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
     $title = 'CiviRules Edit Condition parameters';
     $this->assign('ruleConditionHeader', E::ts("Edit Condition '%1' for CiviRule '%2'", [
       1 => $conditionLabel,
-      2 => CRM_Civirules_BAO_Rule::getRuleLabelWithId($ruleCondition->rule_id),
+      2 => CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($ruleCondition->rule_id),
     ])
     );
     CRM_Utils_System::setTitle($title);

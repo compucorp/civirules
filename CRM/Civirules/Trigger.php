@@ -156,7 +156,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function getRuleTitle(): string {
     if (!isset($this->ruleTitle) && !empty($this->ruleId)) {
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $this->ruleId;
       if ($rule->find(TRUE)) {
         $this->ruleTitle = $rule->label;
@@ -170,7 +170,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function getRuleDebugEnabled(): bool {
     if (!isset($this->ruleDebugEnabled) && !empty($this->ruleId)) {
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $this->ruleId;
       if ($rule->find(TRUE)) {
         $this->ruleDebugEnabled = $rule->is_debug;

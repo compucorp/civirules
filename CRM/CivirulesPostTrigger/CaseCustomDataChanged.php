@@ -17,7 +17,7 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
 
   private static function getTriggers() {
     if (!self::$triggers) {
-      self::$triggers = CRM_Civirules_BAO_Rule::findRulesByClassname('CRM_CivirulesPostTrigger_CaseCustomDataChanged');
+      self::$triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByClassname('CRM_CivirulesPostTrigger_CaseCustomDataChanged');
     }
     return self::$triggers;
   }
