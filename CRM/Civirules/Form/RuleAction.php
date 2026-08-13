@@ -25,6 +25,11 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   protected CRM_Civirules_BAO_CiviRulesRule $rule;
 
   /**
+   * @var \CRM_Civirules_Trigger
+   */
+  protected \CRM_Civirules_Trigger $triggerObject;
+
+  /**
    * If TRUE, only edit the delay params
    * @var bool
    */
@@ -61,6 +66,12 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
     $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->rule->id = $this->ruleId;
     $this->rule->find(TRUE);
+
+    $trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
+    $trigger->id = $this->rule->trigger_id;
+    $trigger->find(TRUE);
+    $this->triggerObject = CRM_Civirules_BAO_CiviRulesTrigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
+    $this->triggerObject->setTriggerId($trigger->id);
 
     if ($this->ruleActionId) {
       $this->ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
@@ -134,6 +145,26 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   }
 
   /**
+   * Returns whether the action works with the trigger attached to this rule
+   *
+   * @param int $actionID
+   *
+   * @return bool
+   */
+  protected function doesActionWorkWithTrigger(int $actionID): bool {
+    try {
+      $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($actionID, FALSE);
+      if (!$actionClass) {
+        return FALSE;
+      }
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
+    return $actionClass->doesWorkWithTrigger($this->triggerObject, $this->rule);
+  }
+
+  /**
    * Function to add the form elements
    *
    * @access protected
@@ -151,6 +182,9 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       ->execute()
       ->indexBy('id');
     foreach ($actionList as $id => $detail) {
+      if (!$this->doesActionWorkWithTrigger($id)) {
+        continue;
+      }
       $description = '';
       if (!empty($detail['class_name'])) {
         try {
