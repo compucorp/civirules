@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# Version 3.43.0 (2026-08-13)
+
+* [!384](https://lab.civicrm.org/extensions/civirules/-/merge_requests/384) Filter RuleAction's dropdown by trigger compatibility, like RuleCondition already does
+* [!376](https://lab.civicrm.org/extensions/civirules/-/merge_requests/376) Key the trigger data cache by trigger class
+* [!381](https://lab.civicrm.org/extensions/civirules/-/merge_requests/381) Fix getProvidedEntities() cache to be instance-scoped, not global
+* [!383](https://lab.civicrm.org/extensions/civirules/-/merge_requests/383) Use CRM_Civirules_BAO_CiviRulesRule directly instead of the CRM_Civirules_BAO_Rule alias
+* [!382](https://lab.civicrm.org/extensions/civirules/-/merge_requests/382) Use the concrete CiviRulesRule class, not the CRM_Civirules_BAO_Rule alias, in doesWorkWithTrigger() type hints
+
 # Version 3.42.0 (2026-08-13)
 
 * [!375](https://lab.civicrm.org/extensions/civirules/-/merge_requests/375) Add Setting For Relationship End Date Trigger
