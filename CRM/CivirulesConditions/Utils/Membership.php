@@ -24,10 +24,10 @@ class CRM_CivirulesConditions_Utils_Membership {
 
   /**
    * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return bool
    */
-  public static function checkMembershipEntities(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule): bool {
+  public static function checkMembershipEntities(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule): bool {
     $works = FALSE;
     $entities = $trigger->getProvidedEntities();
     if (self::hasMembershipPaymentCondition($rule->id)) {
