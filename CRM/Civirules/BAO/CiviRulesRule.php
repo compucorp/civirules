@@ -14,7 +14,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
    */
   public static function getValues($params) {
     $result = [];
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     if (!empty($params)) {
       $fields = self::fields();
       foreach ($params as $key => $value) {
@@ -68,7 +68,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
       $query = 'DELETE FROM civirule_rule_log WHERE rule_id = %1';
       CRM_Core_DAO::executeQuery($query, [1 => [$ruleId, 'Integer']]);
     }
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->id = $ruleId;
     $rule->delete();
     CRM_Utils_Hook::post('delete', 'CiviRuleRule', $ruleId, CRM_Core_DAO::$_nullArray);
@@ -85,7 +85,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
     if (empty($ruleId)) {
       return '';
     }
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->id = $ruleId;
     $rule->find(TRUE);
     return $rule->label;
@@ -98,7 +98,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
    * @return bool
    */
   public static function labelExists($labelToBeChecked) {
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->label = $labelToBeChecked;
     if ($rule->count() > 0) {
       return TRUE;

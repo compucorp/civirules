@@ -67,7 +67,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       return;
     }
 
-    $this->rule = new CRM_Civirules_BAO_Rule();
+    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->rule->id = $this->ruleId;
     $this->rule->find(TRUE);
     $this->trigger = new CRM_Civirules_BAO_Trigger();
@@ -104,7 +104,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     if (empty($redirectUrl)) {
       $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->_submitValues['rule_id'], TRUE);
       if (empty($this->ruleConditionId)) {
-        $session->setStatus('Condition added to CiviRule ' . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->_submitValues['rule_id']),
+        $session->setStatus('Condition added to CiviRule ' . CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->_submitValues['rule_id']),
           'Condition added', 'success');
       }
     }
@@ -198,7 +198,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    */
   protected function setFormTitle() {
     $title = 'CiviRules Add Condition';
-    $this->assign('ruleConditionHeader', 'Add Condition to CiviRule ' . CRM_Civirules_BAO_Rule::getRuleLabelWithId($this->ruleId));
+    $this->assign('ruleConditionHeader', 'Add Condition to CiviRule ' . CRM_Civirules_BAO_CiviRulesRule::getRuleLabelWithId($this->ruleId));
     CRM_Utils_System::setTitle($title);
   }
 
@@ -223,7 +223,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       return $errors;
     }
 
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->id = $fields['rule_id'];
     $rule->find(TRUE);
     $trigger = new CRM_Civirules_BAO_Trigger();

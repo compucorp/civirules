@@ -157,7 +157,7 @@ abstract class CRM_Civirules_Action {
     $context = [];
     $context['message'] = $message;
     $context['rule_id'] = $this->ruleAction['rule_id'];
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->id = $this->ruleAction['rule_id'];
     $context['rule_title'] = '';
     if ($rule->find(TRUE)) {
