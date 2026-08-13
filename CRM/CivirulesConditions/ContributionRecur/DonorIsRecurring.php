@@ -116,10 +116,10 @@ class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civ
    * this kind of validation and return false/true
    *
    * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return bool
    */
-  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule) {
     return $trigger->doesProvideEntity('Contact');
   }
 

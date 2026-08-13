@@ -100,10 +100,10 @@ class CRM_CivirulesConditions_Contribution_IsMembershipPayment extends CRM_Civir
    * This function validates whether this condition works with the selected trigger.
    *
    * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return bool
    */
-  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule): bool {
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule): bool {
     return $trigger->doesProvideEntity('Contribution');
   }
 

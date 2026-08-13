@@ -155,7 +155,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * Get the values
    *
    * @param prefix - The prefix for the form field name
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return array
    */
   public function getValues($prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
