@@ -84,4 +84,28 @@ class CRM_Civirules_Utils_HookInvoker {
     );
   }
 
+  /**
+   * Lets extensions alter/remove entries from the list of triggers offered
+   * on the "Select Trigger" dropdown when adding a new rule. $triggerList is
+   * indexed by civirule_trigger.id, each entry carrying the full row
+   * (id, label, name, class_name, object_name, op).
+   *
+   * @param array $triggerList
+   *
+   * @return void
+   */
+  public function hook_civirules_alterTriggerList(array &$triggerList) {
+    $null = NULL;
+    CRM_Utils_Hook::singleton()->invoke(
+      ['triggerList'],
+      $triggerList,
+      $null,
+      $null,
+      $null,
+      $null,
+      $null,
+      'civirules_alter_trigger_list'
+    );
+  }
+
 }
