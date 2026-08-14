@@ -281,7 +281,9 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
           ->addOrderBy('label', 'ASC')
           ->addWhere('is_active', '=', TRUE)
           ->execute()
-          ->indexBy('id');
+          ->indexBy('id')
+          ->getArrayCopy();
+        CRM_Civirules_Utils_HookInvoker::singleton()->hook_civirules_alterTriggerList($triggerList);
         foreach ($triggerList as $id => $detail) {
           $description = '';
           if (!empty($detail['class_name'])) {

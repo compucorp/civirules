@@ -23,6 +23,7 @@ nav:
   - Add logging: add-logging.md
 - Hooks:
   - hook_civirules_alter_trigger_data: hooks/hook_civirules_alter_trigger_data.md
+  - hook_civirules_alter_trigger_list: hooks/hook_civirules_alter_trigger_list.md
   - hook_civirules_logger: hooks/hook_civirules_logger.md
 
 markdown_extensions:
