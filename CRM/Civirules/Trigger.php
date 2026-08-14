@@ -51,6 +51,13 @@ abstract class CRM_Civirules_Trigger {
   protected array $ruleConditions;
 
   /**
+   * Cache for getProvidedEntities(), scoped to this instance.
+   *
+   * @var array|null
+   */
+  protected ?array $providedEntities = NULL;
+
+  /**
    * If this trigger is associated with an entity this will return the entity name (eg. Contact)
    *
    * @return string|null
@@ -156,7 +163,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function getRuleTitle(): string {
     if (!isset($this->ruleTitle) && !empty($this->ruleId)) {
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $this->ruleId;
       if ($rule->find(TRUE)) {
         $this->ruleTitle = $rule->label;
@@ -170,7 +177,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function getRuleDebugEnabled(): bool {
     if (!isset($this->ruleDebugEnabled) && !empty($this->ruleId)) {
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $this->ruleId;
       if ($rule->find(TRUE)) {
         $this->ruleDebugEnabled = $rule->is_debug;
@@ -220,7 +227,7 @@ abstract class CRM_Civirules_Trigger {
    * @return array of CRM_Civirules_TriggerData_EntityDefinition
    */
   public function getProvidedEntities(): array {
-    if (empty(\Civi::$statics[__CLASS__]['getProvidedEntities'])) {
+    if ($this->providedEntities === NULL) {
       $additionalEntities = $this->getAdditionalEntities();
       foreach ($additionalEntities as $entity) {
         $entities[$entity->key] = $entity;
@@ -228,10 +235,10 @@ abstract class CRM_Civirules_Trigger {
 
       $entity = $this->reactOnEntity();
       $entities[$entity->key] = $entity;
-      \Civi::$statics[__CLASS__]['getProvidedEntities'] = $entities;
+      $this->providedEntities = $entities;
     }
 
-    return \Civi::$statics[__CLASS__]['getProvidedEntities'];
+    return $this->providedEntities;
   }
 
   /**

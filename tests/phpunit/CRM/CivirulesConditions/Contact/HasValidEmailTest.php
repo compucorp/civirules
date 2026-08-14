@@ -131,7 +131,7 @@ class CRM_CivirulesConditions_Contact_HasValidEmailTest extends \PHPUnit\Framewo
     // civirule_trigger row) - reactOnEntity() relies on it to report which entity
     // the trigger provides.
     $trigger = new CRM_CivirulesPostTrigger_ContactTrashed(['id' => 1, 'name' => 'trashed_contact', 'object_name' => 'Contact', 'op' => 'update']);
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->assertTrue($this->condition->doesWorkWithTrigger($trigger, $rule));
   }
 

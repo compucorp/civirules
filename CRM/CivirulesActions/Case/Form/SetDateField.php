@@ -84,7 +84,7 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
       $ruleAction = new CRM_Civirules_BAO_RuleAction();
       $ruleAction->id = $ruleActionId;
       $ruleAction->find(TRUE);
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $ruleAction->rule_id;
       $rule->find(TRUE);
 

@@ -143,7 +143,7 @@ class CRM_CivirulesActions_Activity_Form_CreateActivityFromEvent extends CRM_Civ
       $ruleAction = new CRM_Civirules_BAO_RuleAction();
       $ruleAction->id = $ruleActionId;
       $ruleAction->find(TRUE);
-      $rule = new CRM_Civirules_BAO_Rule();
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
       $rule->id = $ruleAction->rule_id;
       $rule->find(TRUE);
 

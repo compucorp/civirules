@@ -30,7 +30,7 @@ class CRM_Civirules_Utils_PreData {
       return;
     }
     // Don't execute this if no rules exist for this entity.
-    $triggers = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($objectName, $op);
+    $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op);
     if (empty($triggers)) {
       return;
     }

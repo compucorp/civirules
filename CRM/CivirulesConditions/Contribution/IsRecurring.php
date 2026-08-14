@@ -55,10 +55,10 @@ class CRM_CivirulesConditions_Contribution_IsRecurring extends CRM_Civirules_Con
    * This function validates whether this condition works with the selected trigger.
    *
    * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return bool
    */
-  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule) {
     return $trigger->doesProvideEntity('Contribution');
   }
 

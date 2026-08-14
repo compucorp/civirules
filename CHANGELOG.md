@@ -1,4 +1,27 @@
 # CHANGELOG
+
+# Version 3.43.0 (2026-08-13)
+
+* [!384](https://lab.civicrm.org/extensions/civirules/-/merge_requests/384) Filter RuleAction's dropdown by trigger compatibility, like RuleCondition already does
+* [!376](https://lab.civicrm.org/extensions/civirules/-/merge_requests/376) Key the trigger data cache by trigger class
+* [!381](https://lab.civicrm.org/extensions/civirules/-/merge_requests/381) Fix getProvidedEntities() cache to be instance-scoped, not global
+* [!383](https://lab.civicrm.org/extensions/civirules/-/merge_requests/383) Use CRM_Civirules_BAO_CiviRulesRule directly instead of the CRM_Civirules_BAO_Rule alias
+* [!382](https://lab.civicrm.org/extensions/civirules/-/merge_requests/382) Use the concrete CiviRulesRule class, not the CRM_Civirules_BAO_Rule alias, in doesWorkWithTrigger() type hints
+
+# Version 3.42.0 (2026-08-13)
+
+* [!375](https://lab.civicrm.org/extensions/civirules/-/merge_requests/375) Add Setting For Relationship End Date Trigger
+* [!378](https://lab.civicrm.org/extensions/civirules/-/merge_requests/378) Fix wrong params key for the 'action' comparison type
+* [!377](https://lab.civicrm.org/extensions/civirules/-/merge_requests/377) Fix leftover $this->_conditionParams reads after params refactor
+* [!379](https://lab.civicrm.org/extensions/civirules/-/merge_requests/379) Expose is_debug on the rule form; include trigger data in debug log context
+* [!374](https://lab.civicrm.org/extensions/civirules/-/merge_requests/374) Fix Orphaned Rule Log Rows
+* [!373](https://lab.civicrm.org/extensions/civirules/-/merge_requests/373) Add civicarrot.json
+* [!370](https://lab.civicrm.org/extensions/civirules/-/merge_requests/370) Render rule tags as colored pills on the Manage Rules list
+* [!372](https://lab.civicrm.org/extensions/civirules/-/merge_requests/372) Fix Delay Based Date Calculation
+* [!371](https://lab.civicrm.org/extensions/civirules/-/merge_requests/371) Clone Rule: show more helpful success message
+* [!366](https://lab.civicrm.org/extensions/civirules/-/merge_requests/366) Use standard CiviCRM Tags instead of CiviRules' own tag system
+* [!369](https://lab.civicrm.org/extensions/civirules/-/merge_requests/369) Add PHPUnit tests for a trigger, condition, and action
+
 # Version 3.41.0 (2026-07-21)
 * Fixed issue with action Sum Values and Subtract Values and case trigger.
 # Version 3.40.0 (2026-07-21)

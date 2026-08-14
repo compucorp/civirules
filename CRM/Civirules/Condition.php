@@ -111,11 +111,11 @@ abstract class CRM_Civirules_Condition {
    * this kind of validation and return false/TRUE
    *
    * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_Rule $rule
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    *
    * @return bool
    */
-  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule) {
     return TRUE;
   }
 
@@ -130,7 +130,7 @@ abstract class CRM_Civirules_Condition {
     $context = [];
     $context['message'] = $message;
     $context['rule_id'] = $this->ruleCondition['rule_id'];
-    $rule = new CRM_Civirules_BAO_Rule();
+    $rule = new CRM_Civirules_BAO_CiviRulesRule();
     $rule->id = $this->ruleCondition['rule_id'];
     $context['rule_title'] = '';
     if ($rule->find(TRUE)) {

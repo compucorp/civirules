@@ -22,9 +22,9 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
    */
   private static function getTriggers() {
     $get_called_class = get_called_class();
-    $triggers = CRM_Civirules_BAO_Rule::findRulesByClassname($get_called_class);
+    $triggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByClassname($get_called_class);
 
-    $contactTriggers = CRM_Civirules_BAO_Rule::findRulesByObjectNameAndOp($get_called_class::getObjectName(), 'edit');
+    $contactTriggers = CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($get_called_class::getObjectName(), 'edit');
     foreach ($contactTriggers as $trigger) {
       if ($trigger instanceof CRM_Civirules_Trigger_Post) {
         $triggers[] = $trigger;
