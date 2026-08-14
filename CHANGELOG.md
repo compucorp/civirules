@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# Version 3.44.0 (2026-08-14)
+
+* [!387](https://lab.civicrm.org/extensions/civirules/-/merge_requests/387) Unserializebug
+* [!386](https://lab.civicrm.org/extensions/civirules/-/merge_requests/386) Add hook_civirules_alter_trigger_list
+
 # Version 3.43.0 (2026-08-13)
 
 * [!384](https://lab.civicrm.org/extensions/civirules/-/merge_requests/384) Filter RuleAction's dropdown by trigger compatibility, like RuleCondition already does
