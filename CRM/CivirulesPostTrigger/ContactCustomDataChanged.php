@@ -78,6 +78,44 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
   }
 
   /**
+   * Contacts already fetched during the CURRENT hook invocation.
+   *
+   * hook_civicrm_custom invokes five of these classes in a row (Case, Contact,
+   * Individual, Organization, Household) with identical arguments. Their entity
+   * lists overlap by design: getEntityExtensions() returns
+   * ['Contact','Individual','Organization','Household'] for 'Contact' and the
+   * own name for the subtypes, so that the "of any Type" trigger also fires for
+   * subtypes. As a result a write to a custom group extending Individual passes
+   * the guard in both the Contact and the Individual class, and each performed
+   * the same full Contact.getsingle for the same row.
+   *
+   * The cache deliberately lives for one hook invocation only:
+   * civirules_civicrm_custom() clears it up front, so a later write to the same
+   * contact can never observe stale data.
+   *
+   * Re-entrancy needs no stack here (unlike the one in
+   * CRM_Civirules_Trigger_Post). If a rule action modifies the contact and that
+   * fires a nested hook_civicrm_custom, the nested invocation clears this cache
+   * and repopulates it with the post-modification row. The outer classes that
+   * still have to run then read exactly what an uncached lookup would have
+   * returned at that point — the freshest data — so nesting cannot make the
+   * result diverge from the unpatched behaviour.
+   *
+   * @var array
+   */
+  private static array $contactCache = [];
+
+  /**
+   * Clears the per-invocation contact cache. Called from
+   * civirules_civicrm_custom() before the five classes run.
+   *
+   * @return void
+   */
+  public static function resetContactCache() {
+    self::$contactCache = [];
+  }
+
+  /**
    * @param string $op
    * @param int $groupID
    * @param int $entityID
@@ -98,7 +136,12 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
     }
     $contact = [];
     if (!empty($entityID)) {
-      $contact = civicrm_api3('Contact', 'getsingle', ['id' => $entityID]);
+      if (!array_key_exists($entityID, self::$contactCache)) {
+        self::$contactCache[$entityID] = civicrm_api3('Contact', 'getsingle', ['id' => $entityID]);
+      }
+      // Copy: below, each class augments the contact with the custom fields of
+      // its own group, which must not leak into the cache for the next class.
+      $contact = self::$contactCache[$entityID];
       foreach ($params as $field) {
         if (!empty($field['custom_field_id'])) {
           $value = $field['value'];

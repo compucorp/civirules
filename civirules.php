@@ -367,6 +367,12 @@ function civirules_civicrm_custom($op, $groupID, $entityID, &$params) {
   }
   /** End ugly hack */
 
+  // The five classes below receive identical arguments and their entity lists
+  // overlap, so several of them fetched the same contact. They now share a
+  // single lookup; that cache must not outlive this one hook invocation, so
+  // clear it here.
+  CRM_CivirulesPostTrigger_ContactCustomDataChanged::resetContactCache();
+
   CRM_CivirulesPostTrigger_CaseCustomDataChanged::custom($op, $groupID, $entityID, $params);
   CRM_CivirulesPostTrigger_ContactCustomDataChanged::custom($op, $groupID, $entityID, $params);
   CRM_CivirulesPostTrigger_IndividualCustomDataChanged::custom($op, $groupID, $entityID, $params);
