@@ -88,6 +88,14 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
    * @throws \Civi\API\Exception\UnauthorizedException
    */
   public static function custom($op, $groupID, $entityID, &$params) {
+    // Nothing listens to this trigger: skip the contact lookup below entirely.
+    // Mirrors the early exit CRM_Civirules_Utils_PreData::pre() already applies.
+    // The triggers are handed to trigger() so they are looked up only once.
+    $triggers = self::getTriggers();
+    if (empty($triggers)) {
+      return;
+    }
+
     $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
     $custom_group = $config->getCustomGroupById($groupID);
     $get_called_class = get_called_class();
@@ -116,7 +124,7 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
     $oldData = CRM_Civirules_Utils_PreData::getPreData($objectName, $entityID, 1);
     $triggerData = new CRM_Civirules_TriggerData_Edit('Contact', $entityID, $contact, $oldData);
 
-    self::trigger($triggerData);
+    self::trigger($triggerData, $triggers);
   }
 
   /**
@@ -124,9 +132,9 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
    *
    * @return void
    */
-  protected static function trigger(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  protected static function trigger(CRM_Civirules_TriggerData_TriggerData $triggerData, ?array $triggers = NULL) {
     //find matching rules for this objectName and op
-    $triggers = self::getTriggers();
+    $triggers = $triggers ?? self::getTriggers();
     foreach ($triggers as $trigger) {
       $trigger->alterTriggerData($triggerData);
       CRM_Civirules_Engine::triggerRule($trigger, $triggerData);

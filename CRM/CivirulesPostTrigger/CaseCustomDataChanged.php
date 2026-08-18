@@ -47,6 +47,14 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
   }
 
   public static function custom($op, $groupID, $entityID, &$params) {
+    // Nothing listens to this trigger: skip the case lookup below entirely.
+    // Mirrors the early exit CRM_Civirules_Utils_PreData::pre() already applies.
+    // The triggers are handed to trigger() so they are looked up only once.
+    $triggers = self::getTriggers();
+    if (empty($triggers)) {
+      return;
+    }
+
     $config = \Civi\CiviRules\Config\ConfigContainer::getInstance();
     $custom_group = $config->getCustomGroupById($groupID);
     if ($custom_group['extends'] != 'Case') {
@@ -73,7 +81,7 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
       $triggerData = clone $t;
       $triggerData->setEntityData('Relationship', NULL);
       $triggerData->setContactId((int) $client);
-      self::trigger($triggerData);
+      self::trigger($triggerData, $triggers);
     }
 
     //trigger for each case role
@@ -89,13 +97,13 @@ class CRM_CivirulesPostTrigger_CaseCustomDataChanged extends CRM_Civirules_Trigg
       }
       $triggerData->setEntityData('Relationship', $relationshipData);
       $triggerData->setContactId($contact['contact_id']);
-      self::trigger($triggerData);
+      self::trigger($triggerData, $triggers);
     }
   }
 
-  protected static function trigger(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  protected static function trigger(CRM_Civirules_TriggerData_TriggerData $triggerData, ?array $triggers = NULL) {
     //find matching rules for this objectName and op
-    $triggers = self::getTriggers();
+    $triggers = $triggers ?? self::getTriggers();
     foreach ($triggers as $trigger) {
       CRM_Civirules_Engine::triggerRule($trigger, $triggerData);
     }
