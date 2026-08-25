@@ -88,8 +88,48 @@ class CRM_Civirules_Engine {
       ->addOrderBy('id', 'ASC')
       ->execute();
     foreach ($ruleActions as $ruleAction) {
+      if (!CRM_Civirules_Utils_ConfigurationStatus::isRuleActionConfigured($ruleAction)) {
+        // Skipped here rather than in executeAction() so an unconfigured action is
+        // never even queued for delayed execution.
+        self::logUnconfigured('action', $ruleAction, $triggerData);
+        continue;
+      }
       self::executeAction($triggerData, $ruleAction);
     }
+  }
+
+  /**
+   * Report a rule action/condition that was added but never configured.
+   *
+   * De-duplicated per request: a rule on a high-volume trigger would otherwise log
+   * once per triggered entity.
+   *
+   * @param string $type 'action' or 'condition'
+   * @param array $row
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   *
+   * @return void
+   */
+  private static function logUnconfigured(string $type, array $row, CRM_Civirules_TriggerData_TriggerData $triggerData): void {
+    $key = $type . ':' . ($row['id'] ?? '');
+    if (isset(Civi::$statics[__CLASS__]['unconfigured'][$key])) {
+      return;
+    }
+    Civi::$statics[__CLASS__]['unconfigured'][$key] = TRUE;
+
+    if ($type === 'action') {
+      $reason = E::ts('Action is not configured and was skipped');
+      $label = CRM_Civirules_BAO_CiviRulesAction::getActionLabelWithId($row['action_id'] ?? NULL);
+    }
+    else {
+      $reason = E::ts('Condition is not configured and was treated as not met');
+      $label = CRM_Civirules_BAO_CiviRulesCondition::getConditionLabelWithId($row['condition_id'] ?? NULL);
+    }
+    $detail = E::ts('"%1" (id %2) has no saved configuration. Edit the rule and either configure or remove it.', [
+      1 => $label,
+      2 => $row['id'] ?? '?',
+    ]);
+    CRM_Civirules_Utils_LoggerFactory::logError($reason, $detail, $triggerData, $row);
   }
 
   /**
@@ -315,10 +355,13 @@ class CRM_Civirules_Engine {
 
     $ruleConditions = $triggerData->getTrigger()->getRuleConditions();
     foreach ($ruleConditions as $ruleConditionId => $ruleCondition) {
+      // An unconfigured condition is always false, which is otherwise indistinguishable
+      // from a genuine no-match in the debug trace.
+      $note = CRM_Civirules_Utils_ConfigurationStatus::isRuleConditionConfigured($ruleCondition) ? '' : '(unconfigured)';
       if ($firstCondition) {
         // Always check the first condition
         $isValid = self::checkCondition($ruleCondition, $triggerData);
-        $conditionsValid[$ruleConditionId] = $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
+        $conditionsValid[$ruleConditionId] = $ruleConditionId . '=' . ($isValid ? 'true' : 'false') . $note;
         $firstCondition = FALSE;
         // We always check the next condition because it might have condition_link=OR.
         continue;
@@ -332,7 +375,7 @@ class CRM_Civirules_Engine {
             break 2;
           }
           $isValid = self::checkCondition($ruleCondition, $triggerData);
-          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
+          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false') . $note;
           break;
 
         case 'OR':
@@ -342,7 +385,7 @@ class CRM_Civirules_Engine {
             break;
           }
           $isValid = self::checkCondition($ruleCondition, $triggerData);
-          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false');
+          $conditionsValid[$ruleConditionId] = $ruleCondition['condition_link'] . $ruleConditionId . '=' . ($isValid ? 'true' : 'false') . $note;
           break;
 
         default:
@@ -383,6 +426,13 @@ class CRM_Civirules_Engine {
    * @throws \Exception
    */
   public static function checkCondition(array $ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData): bool {
+    if (!CRM_Civirules_Utils_ConfigurationStatus::isRuleConditionConfigured($ruleCondition)) {
+      // Deliberately "not met" rather than skipped: areConditionsValid() starts from
+      // TRUE and only assigns inside its loop, so dropping the only condition of a rule
+      // would make that rule fire on every trigger instead of never.
+      self::logUnconfigured('condition', $ruleCondition, $triggerData);
+      return FALSE;
+    }
     $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], FALSE);
     if (!$condition) {
       return FALSE;
