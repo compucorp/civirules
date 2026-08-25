@@ -65,9 +65,6 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
       return;
     }
 
-    if (in_array($event->action, ['create', 'edit'])) {
-      CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleCondition');
-    }
     if (property_exists($event->object, 'rule_id') && !empty($event->object->rule_id)) {
       $ruleID = $event->object->rule_id;
     }
@@ -77,6 +74,11 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
         ->addWhere('id', '=', $event->id)
         ->execute()
         ->first()['rule_id'];
+    }
+    if ($ruleID && in_array($event->action, ['create', 'edit'])) {
+      // Scope to the rule being edited: unscoped, this treats the whole table as one
+      // ordered list and renumbers every other rule's conditions too.
+      CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleCondition', ['rule_id' => $ruleID]);
     }
     if ($ruleID && !isset(\Civi::$statics[__CLASS__]['validateconditionlinks'])) {
       self::checkAndValidateConditionLinks($ruleID);

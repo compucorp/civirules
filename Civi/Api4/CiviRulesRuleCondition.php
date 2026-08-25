@@ -9,6 +9,7 @@ namespace Civi\Api4;
  *
  * @searchable secondary
  * @orderBy weight
+ * @groupWeightsBy rule_id
  * @package Civi\Api4
  */
 class CiviRulesRuleCondition extends Generic\DAOEntity {

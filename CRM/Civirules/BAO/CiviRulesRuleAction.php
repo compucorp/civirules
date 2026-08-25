@@ -25,9 +25,16 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_CiviRulesR
    * @param \Civi\Core\Event\PostEvent $event
    */
   public static function self_hook_civicrm_post(\Civi\Core\Event\PostEvent $event) {
-    if (in_array($event->action, ['create', 'edit'])) {
-      CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleAction');
+    if (!in_array($event->action, ['create', 'edit'])) {
+      return;
     }
+    // Scope to the rule being edited: unscoped, this treats the whole table as one
+    // ordered list and renumbers every other rule's actions too.
+    $ruleId = $event->object->rule_id ?? CRM_Core_DAO::getFieldValue('CRM_Civirules_DAO_CiviRulesRuleAction', $event->id, 'rule_id');
+    if (empty($ruleId)) {
+      return;
+    }
+    CRM_Utils_Weight::correctDuplicateWeights('CRM_Civirules_DAO_CiviRulesRuleAction', ['rule_id' => $ruleId]);
   }
 
 }
