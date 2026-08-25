@@ -84,6 +84,14 @@ class CRM_CivirulesConditions_Case_HasTag extends CRM_Civirules_Condition {
     return parent::importConditionParameters($condition_params);
   }
 
+  public function getConfigFormPath(): ?string {
+    return 'civicrm/civirule/form/condition/entity_hastag';
+  }
+
+  public function getConfigFormParams(): array {
+    return ['tn' => 'civicrm_case'];
+  }
+
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
    *

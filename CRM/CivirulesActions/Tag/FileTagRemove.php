@@ -20,6 +20,14 @@ class CRM_CivirulesActions_Tag_FileTagRemove extends CRM_Civirules_Action {
     }
   }
 
+  public function getConfigFormPath(): ?string {
+    return 'civicrm/civirule/form/action/tag/entitytag';
+  }
+
+  public function getConfigFormParams(): array {
+    return ['tn' => 'civicrm_file'];
+  }
+
   /**
    * Method to return the url for additional form processing for action
    * and return false if none is needed
