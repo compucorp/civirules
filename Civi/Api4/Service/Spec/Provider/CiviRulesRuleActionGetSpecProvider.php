@@ -92,6 +92,12 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
         $value = '⚠ ' . ts('Action class not found');
         return;
       }
+      if (!\CRM_Civirules_Utils_ConfigurationStatus::isRuleActionConfigured(['action_params' => $value, 'action_id' => $row['action_id']])) {
+        // userFriendlyConditionParams() would describe the missing parameters as
+        // though they had been set, e.g. "unknown groups (), with statuses (Added)".
+        $value = '⚠ ' . ts('Not configured');
+        return;
+      }
       $actionClass->setRuleActionData(['action_params' => $value]);
       $value = (string) $actionClass->userFriendlyConditionParams();
     }

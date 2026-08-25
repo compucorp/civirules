@@ -74,6 +74,12 @@ class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoServi
         $value = '⚠ ' . ts('Condition class not found');
         return;
       }
+      if (!\CRM_Civirules_Utils_ConfigurationStatus::isRuleConditionConfigured(['condition_params' => $value, 'condition_id' => $row['condition_id']])) {
+        // userFriendlyConditionParams() would describe the missing parameters as
+        // though they had been set, e.g. "unknown groups (), with statuses (Added)".
+        $value = '⚠ ' . ts('Not configured');
+        return;
+      }
       $conditionClass->setRuleConditionData(['condition_params' => $value]);
       $value = (string) $conditionClass->userFriendlyConditionParams();
     }

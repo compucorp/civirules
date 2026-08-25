@@ -23,6 +23,7 @@ return [
             'condition_params_display',
             'condition_id',
             'rule_id',
+            'is_configured',
           ],
           'orderBy' => [],
           'where' => [],
@@ -69,6 +70,13 @@ return [
               'dataType' => 'String',
               'label' => E::ts('Condition'),
               'sortable' => TRUE,
+              'icons' => [
+                [
+                  'icon' => 'fa-exclamation-triangle',
+                  'side' => 'left',
+                  'if' => ['is_configured', '=', FALSE],
+                ],
+              ],
             ],
             [
               'type' => 'field',
@@ -147,6 +155,7 @@ return [
           'classes' => ['table', 'table-striped'],
           'cssRules' => [
             ['disabled', 'is_active', '=', FALSE],
+            ['bg-warning', 'is_configured', '=', FALSE],
           ],
           'draggable' => 'weight',
           'toolbar' => [
