@@ -79,12 +79,126 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
   }
 
   /**
+   * Select2 options for the conditions available on a given trigger.
+   *
+   * Shared with the configuration forms, which render the same picker so the type can
+   * be changed without leaving the dialog.
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
+   *
+   * @return array
+   */
+  public static function getConditionOptions(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule): array {
+    $options = [];
+    $conditions = CiviRulesCondition::get(FALSE)
+      ->addSelect('id', 'label')
+      ->addOrderBy('label', 'ASC')
+      ->execute()
+      ->indexBy('id')
+      ->column('label');
+    foreach ($conditions as $conditionId => $label) {
+      $conditionClass = CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($conditionId, FALSE);
+      if (!$conditionClass) {
+        continue;
+      }
+      try {
+        // Some implementations dereference trigger data that this trigger does not
+        // provide; treat that as "not available" rather than letting it escape.
+        if (!$conditionClass->doesWorkWithTrigger($trigger, $rule)) {
+          continue;
+        }
+      }
+      catch (Throwable $e) {
+        continue;
+      }
+      $options[] = ['id' => $conditionId, 'text' => $label];
+    }
+    return $options;
+  }
+
+  /**
+   * Map of condition id => url to swap the dialog to when that type is picked.
+   *
+   * Conditions with no configuration form of their own map back to the picker with the
+   * type preselected, so every option leads somewhere sensible.
+   *
+   * @param array $options
+   * @param int $ruleId
+   * @param string|null $conditionLink
+   *
+   * @return array
+   */
+  public static function getTypeUrlMap(array $options, int $ruleId, ?string $conditionLink = NULL): array {
+    $urls = [];
+    foreach ($options as $option) {
+      $urls[$option['id']] = self::getAddConfigUrl((int) $option['id'], $ruleId, $conditionLink)
+        ?: CRM_Utils_System::url(
+          'civicrm/civirule/form/rule_condition',
+          ['reset' => 1, 'action' => 'add', 'rule_id' => $ruleId, 'preselect' => $option['id']],
+          FALSE, NULL, FALSE, FALSE, TRUE
+        );
+    }
+    return $urls;
+  }
+
+  /**
+   * URL of a condition's configuration form, addressed by type rather than by row.
+   *
+   * Returns NULL when the condition needs no configuration, or when its class predates
+   * getConfigFormPath() - in both cases the caller creates the row itself, which for
+   * the latter preserves the old two-step behaviour.
+   *
+   * @param int $conditionId
+   * @param int $ruleId
+   * @param string|null $conditionLink
+   *
+   * @return string|null
+   */
+  public static function getAddConfigUrl(int $conditionId, int $ruleId, ?string $conditionLink = NULL): ?string {
+    $conditionClass = CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($conditionId, FALSE);
+    if (!$conditionClass) {
+      return NULL;
+    }
+    $path = $conditionClass->getConfigFormPath();
+    if (!$path) {
+      if (!empty($conditionClass->getExtraDataInputUrl(0))) {
+        CRM_Core_Error::deprecatedWarning(
+          'CiviRules: ' . get_class($conditionClass) . ' builds its configuration form url by hand; '
+          . 'implement getConfigFormPath() so it can be added in one step.'
+        );
+      }
+      return NULL;
+    }
+    $params = $conditionClass->getConfigFormParams() + ['rule_id' => $ruleId, 'condition_id' => $conditionId];
+    if ($conditionLink !== NULL && $conditionLink !== '') {
+      $params['condition_link'] = $conditionLink;
+    }
+    return CRM_Utils_System::url($path, $params, FALSE, NULL, FALSE, FALSE, TRUE);
+  }
+
+  /**
    * Function to perform post save processing (extends parent function)
    *
    * @access public
    */
   public function postProcess() {
     $session = CRM_Core_Session::singleton();
+
+    // Adding a condition that has a configuration form: hand straight over to it and
+    // let it create the row, so cancelling there leaves nothing behind.
+    if (!empty($this->_submitValues['rule_condition_select'])) {
+      $conditionId = (int) $this->_submitValues['rule_condition_select'];
+      $configUrl = self::getAddConfigUrl(
+        $conditionId,
+        (int) $this->_submitValues['rule_id'],
+        $this->_submitValues['rule_condition_link_select'] ?? NULL
+      );
+      if ($configUrl) {
+        CRM_Utils_System::redirect($configUrl);
+      }
+    }
+
     $saveParams = [
       'rule_id' => $this->_submitValues['rule_id'],
       'condition_id' => $this->_submitValues['rule_condition_select'],
@@ -176,7 +290,16 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     else {
       $conditionList = [' - select - '];
     }
-    $this->add('select', 'rule_condition_select', E::ts('Select Condition'), $conditionList, TRUE, ['class' => 'crm-select2 huge']);
+    $conditionOptions = self::getConditionOptions($this->triggerObject, $this->rule);
+    $this->add('select', 'rule_condition_select', E::ts('Select Condition'), $conditionList, TRUE, [
+      'class' => 'crm-select2 huge crm-civirules-type-select',
+      'data-civirules-type-urls' => json_encode(self::getTypeUrlMap($conditionOptions, (int) $this->ruleId)),
+    ]);
+    $preselect = CRM_Utils_Request::retrieve('preselect', 'Integer');
+    if ($preselect) {
+      $this->setDefaults(['rule_condition_select' => $preselect]);
+    }
+    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.civirules', 'js/civirules-add.js');
 
     $this->addButtons([
       ['type' => 'next', 'name' => E::ts('Save'), 'isDefault' => TRUE],

@@ -111,6 +111,35 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
       $helpText = $this->actionClass->getHelpText('actionParamsHelp');
     }
     $this->assign('ruleActionHelp', $helpText ?? '');
+
+    if ($this->_action === CRM_Core_Action::ADD) {
+      $this->addTypePicker();
+    }
+  }
+
+  /**
+   * Render the action picker above this form's own fields, so choosing a type and
+   * configuring it happen in one dialog.
+   *
+   * Done through the form-top region rather than the per-action templates, none of
+   * which need to change.
+   *
+   * @return void
+   */
+  private function addTypePicker(): void {
+    $options = CRM_Civirules_Form_RuleAction::getActionOptions($this->triggerClass, $this->rule);
+    $this->add('select2', 'rule_action_select', E::ts('Action'), $options, TRUE, [
+      'class' => 'huge crm-civirules-type-select',
+      'data-civirules-type-urls' => json_encode(
+        CRM_Civirules_Form_RuleAction::getTypeUrlMap($options, (int) $this->ruleAction->rule_id)
+      ),
+    ]);
+    $this->setDefaults(['rule_action_select' => $this->ruleAction->action_id]);
+    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.civirules', 'js/civirules-add.js');
+    CRM_Core_Region::instance('form-top')->add([
+      'template' => 'CRM/Civirules/Form/TypePicker.tpl',
+      'weight' => -100,
+    ]);
   }
 
   /**

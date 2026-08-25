@@ -59,6 +59,11 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
       $this->ruleCondition->rule_id = CRM_Utils_Request::retrieve('rule_id', 'Integer', NULL, TRUE);
       $this->ruleCondition->condition_id = CRM_Utils_Request::retrieve('condition_id', 'Integer', NULL, TRUE);
       $this->ruleCondition->is_active = 1;
+      $conditionLink = CRM_Utils_Request::retrieve('condition_link', 'String');
+      if ($conditionLink) {
+        // Chosen in the type picker; normalised later by checkAndValidateConditionLinks().
+        $this->ruleCondition->condition_link = $conditionLink;
+      }
       $this->ruleCondition->weight = CRM_Utils_Weight::getDefaultWeight(
         'CRM_Civirules_DAO_CiviRulesRuleCondition',
         ['rule_id' => $this->ruleCondition->rule_id]
@@ -67,9 +72,11 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
       // surviving submission.
       $this->add('hidden', 'rule_id');
       $this->add('hidden', 'condition_id');
+      $this->add('hidden', 'condition_link');
       $this->setDefaults([
         'rule_id' => $this->ruleCondition->rule_id,
         'condition_id' => $this->ruleCondition->condition_id,
+        'condition_link' => $this->ruleCondition->condition_link,
       ]);
     }
     $ruleConditionData = [];
@@ -109,6 +116,37 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
     $session = CRM_Core_Session::singleton();
     $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
+
+    if ($this->_action === CRM_Core_Action::ADD) {
+      $this->addTypePicker();
+    }
+  }
+
+  /**
+   * Render the condition picker above this form's own fields, so choosing a type and
+   * configuring it happen in one dialog.
+   *
+   * Done through the form-top region rather than the per-condition templates, none of
+   * which need to change.
+   *
+   * @return void
+   */
+  private function addTypePicker(): void {
+    $options = CRM_Civirules_Form_RuleCondition::getConditionOptions($this->triggerClass, $this->rule);
+    $this->add('select2', 'rule_condition_select', E::ts('Condition'), $options, TRUE, [
+      'class' => 'huge crm-civirules-type-select',
+      'data-civirules-type-urls' => json_encode(CRM_Civirules_Form_RuleCondition::getTypeUrlMap(
+        $options,
+        (int) $this->ruleCondition->rule_id,
+        $this->ruleCondition->condition_link
+      )),
+    ]);
+    $this->setDefaults(['rule_condition_select' => $this->ruleCondition->condition_id]);
+    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.civirules', 'js/civirules-add.js');
+    CRM_Core_Region::instance('form-top')->add([
+      'template' => 'CRM/Civirules/Form/TypePicker.tpl',
+      'weight' => -100,
+    ]);
   }
 
   /**
