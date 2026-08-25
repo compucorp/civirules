@@ -50,27 +50,51 @@ class CiviRulesConditionLinksProvider extends \Civi\Core\Service\AutoSubscriber 
         if ($ruleID) {
           // Ensure links contain exactly the return values requested in the SELECT clause
           $editLink = self::getCiviRulesConditionEditLink($ruleConditionID, $conditionID, $request->getCheckPermissions());
-          $links[$editLinkIndex] = array_merge($links[$editLinkIndex], $editLink);
+          if ($editLink === NULL) {
+            // This condition needs no configuration, or its class is unavailable: offer no edit link.
+            unset($links[$editLinkIndex]);
+          }
+          else {
+            $links[$editLinkIndex] = array_merge($links[$editLinkIndex], $editLink);
+          }
         }
       }
       $e->getResponse()->exchangeArray(array_values($links));
     }
   }
 
-  private static function getCiviRulesConditionEditLink($ruleConditionID, $conditionID, $checkPermissions): array {
+  /**
+   * @return array|null NULL when this condition has no configuration form to link to.
+   */
+  private static function getCiviRulesConditionEditLink($ruleConditionID, $conditionID, $checkPermissions): ?array {
     $condition = CiviRulesCondition::get($checkPermissions)
       ->addWhere('id', '=', $conditionID)
       ->execute()
       ->first();
 
-    if (!empty($condition['class_name'])) {
-      $conditionClass = new $condition['class_name']();
-      $editLink['path'] = $conditionClass->getExtraDataInputUrl($ruleConditionID);
-      $editLink['icon'] = $condition['icon'] ?? 'fa-plus-square-o';
-      $editLink['text'] = $condition['label'];
-      return $editLink;
+    if (empty($condition['class_name']) || !class_exists($condition['class_name'])) {
+      return NULL;
     }
-    return [];
+    try {
+      $conditionClass = new $condition['class_name']();
+      if (!$conditionClass instanceof \CRM_Civirules_Condition) {
+        return NULL;
+      }
+      $path = $conditionClass->getExtraDataInputUrl($ruleConditionID);
+    }
+    catch (\Throwable $e) {
+      // Instantiating a stale class here is fatal inside a civi.api.respond listener,
+      // which would take down the whole SearchDisplay run.
+      return NULL;
+    }
+    if (empty($path)) {
+      return NULL;
+    }
+    return [
+      'path' => $path,
+      'icon' => $condition['icon'] ?? 'fa-plus-square-o',
+      'text' => $condition['label'],
+    ];
   }
 
 }

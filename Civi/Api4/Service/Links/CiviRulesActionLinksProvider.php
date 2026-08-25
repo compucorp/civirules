@@ -50,27 +50,51 @@ class CiviRulesActionLinksProvider extends \Civi\Core\Service\AutoSubscriber {
         if ($ruleID) {
           // Ensure links contain exactly the return values requested in the SELECT clause
           $editLink = self::getCiviRulesActionEditLink($ruleActionID, $actionID, $request->getCheckPermissions());
-          $links[$editLinkIndex] = array_merge($links[$editLinkIndex], $editLink);
+          if ($editLink === NULL) {
+            // This action needs no configuration, or its class is unavailable: offer no edit link.
+            unset($links[$editLinkIndex]);
+          }
+          else {
+            $links[$editLinkIndex] = array_merge($links[$editLinkIndex], $editLink);
+          }
         }
       }
       $e->getResponse()->exchangeArray(array_values($links));
     }
   }
 
-  private static function getCiviRulesActionEditLink($ruleActionID, $actionID, $checkPermissions): array {
+  /**
+   * @return array|null NULL when this action has no configuration form to link to.
+   */
+  private static function getCiviRulesActionEditLink($ruleActionID, $actionID, $checkPermissions): ?array {
     $action = CiviRulesAction::get($checkPermissions)
       ->addWhere('id', '=', $actionID)
       ->execute()
       ->first();
 
-    if (!empty($action['class_name'])) {
-      $actionClass = new $action['class_name']();
-      $editLink['path'] = $actionClass->getExtraDataInputUrl($ruleActionID);
-      $editLink['icon'] = $action['icon'] ?? 'fa-plus-square-o';
-      $editLink['text'] = $action['label'];
-      return $editLink;
+    if (empty($action['class_name']) || !class_exists($action['class_name'])) {
+      return NULL;
     }
-    return [];
+    try {
+      $actionClass = new $action['class_name']();
+      if (!$actionClass instanceof \CRM_Civirules_Action) {
+        return NULL;
+      }
+      $path = $actionClass->getExtraDataInputUrl($ruleActionID);
+    }
+    catch (\Throwable $e) {
+      // Instantiating a stale class here is fatal inside a civi.api.respond listener,
+      // which would take down the whole SearchDisplay run.
+      return NULL;
+    }
+    if (empty($path)) {
+      return NULL;
+    }
+    return [
+      'path' => $path,
+      'icon' => $action['icon'] ?? 'fa-plus-square-o',
+      'text' => $action['label'],
+    ];
   }
 
 }

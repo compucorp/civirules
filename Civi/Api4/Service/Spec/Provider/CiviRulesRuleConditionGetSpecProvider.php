@@ -50,15 +50,29 @@ class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoServi
   }
 
   public static function conditionParamsDisplay(&$value, $row) {
-    if (!empty($row['condition_id'])) {
-      $conditionClass = \CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($row['condition_id']);
-      if ($conditionClass) {
-        $conditionClass->setRuleConditionData(['condition_params' => $value]);
-        $value = $conditionClass->userFriendlyConditionParams();
-      }
-    }
-    else {
+    if (empty($row['condition_id'])) {
       $value = '';
+      return;
+    }
+    try {
+      // $abort = FALSE: a row whose class was removed with an uninstalled extension
+      // must not throw, or it takes out the whole SearchDisplay rather than one row.
+      $conditionClass = \CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($row['condition_id'], FALSE);
+      if (!$conditionClass) {
+        $value = '⚠ ' . ts('Condition class not found');
+        return;
+      }
+      $conditionClass->setRuleConditionData(['condition_params' => $value]);
+      $value = (string) $conditionClass->userFriendlyConditionParams();
+    }
+    catch (\Throwable $e) {
+      // userFriendlyConditionParams() implementations resolve stored ids against the
+      // database, so a param referencing a deleted record can throw.
+      \Civi::log('civirules')->warning('CiviRules: could not describe condition params for RuleCondition {id}: {msg}', [
+        'id' => $row['id'] ?? NULL,
+        'msg' => $e->getMessage(),
+      ]);
+      $value = '⚠ ' . ts('Unable to display configuration');
     }
   }
 
