@@ -1,7 +1,6 @@
 <?php
 
 use Civi\Api4\CiviRulesAction;
-use Civi\Api4\CiviRulesRuleAction;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
@@ -30,17 +29,41 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
    * Overridden parent method to perform processing before form is build
    */
   public function preProcess() {
-    $this->ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
+    $this->ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer') ?: NULL;
 
     $this->ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
-    $this->ruleAction->id = $this->ruleActionId;
-
     $this->action = new CRM_Civirules_BAO_CiviRulesAction();
     $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
     $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
-    if (!$this->ruleAction->find(TRUE)) {
-      throw new Exception('Civirules could not find ruleAction (Form)');
+    if ($this->ruleActionId) {
+      $this->_action = CRM_Core_Action::UPDATE;
+      $this->ruleAction->id = $this->ruleActionId;
+      if (!$this->ruleAction->find(TRUE)) {
+        throw new Exception('Civirules could not find ruleAction (Form)');
+      }
+    }
+    else {
+      // Add mode: populate an unsaved row from the request. Subclasses all end their
+      // postProcess() with $this->ruleAction->save(), which inserts it - so nothing
+      // is written if the form is abandoned.
+      $this->_action = CRM_Core_Action::ADD;
+      $this->ruleAction->rule_id = CRM_Utils_Request::retrieve('rule_id', 'Integer', NULL, TRUE);
+      $this->ruleAction->action_id = CRM_Utils_Request::retrieve('action_id', 'Integer', NULL, TRUE);
+      $this->ruleAction->is_active = 1;
+      $this->ruleAction->ignore_condition_with_delay = 0;
+      $this->ruleAction->weight = CRM_Utils_Weight::getDefaultWeight(
+        'CRM_Civirules_DAO_CiviRulesRuleAction',
+        ['rule_id' => $this->ruleAction->rule_id]
+      );
+      // Carried in the POST so the form does not depend on the query string
+      // surviving submission.
+      $this->add('hidden', 'rule_id');
+      $this->add('hidden', 'action_id');
+      $this->setDefaults([
+        'rule_id' => $this->ruleAction->rule_id,
+        'action_id' => $this->ruleAction->action_id,
+      ]);
     }
 
     $this->action->id = $this->ruleAction->action_id;
@@ -90,14 +113,6 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
     $this->assign('ruleActionHelp', $helpText ?? '');
   }
 
-  public function cancelAction() {
-    if (!empty($this->getSubmittedValue('rule_action_id')) && $this->_action == CRM_Core_Action::ADD) {
-      CiviRulesRuleAction::delete(FALSE)
-        ->addWhere('id', '=', $this->getSubmittedValue('rule_action_id'))
-        ->execute();
-    }
-  }
-
   /**
    * Overridden parent method to set default values
    *
@@ -110,10 +125,39 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
   }
 
   public function postProcess() {
+    if ($this->_action === CRM_Core_Action::ADD) {
+      // Subclasses save conditionally in a few cases, so make sure the row exists.
+      if (empty($this->ruleAction->id)) {
+        $this->ruleAction->save();
+      }
+      // DAO::save() does not fire hook_civicrm_post.
+      CRM_Utils_Hook::post('create', 'CiviRulesRuleAction', $this->ruleAction->id, $this->ruleAction);
+      CRM_Core_Session::setStatus(
+        E::ts("Action '%1' added to CiviRule '%2'", [1 => $this->action->label, 2 => $this->rule->label]),
+        E::ts('Action added'),
+        'success'
+      );
+      return;
+    }
     CRM_Core_Session::setStatus(E::ts("Action '%1' parameters updated for CiviRule '%2'", [1 => $this->action->label, 2 => $this->rule->label]),
       E::ts('Action parameters updated'),
       'success'
     );
+  }
+
+  /**
+   * Store configuration parameters and, in add mode, create the row.
+   *
+   * Subclasses currently assign to the DAO and call save() directly; this is the
+   * supported way to do it.
+   *
+   * @param array $params
+   *
+   * @return void
+   */
+  protected function saveActionParams(array $params): void {
+    $this->ruleAction->action_params = serialize($params);
+    $this->ruleAction->save();
   }
 
   /**
