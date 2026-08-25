@@ -40,6 +40,8 @@ class CRM_Civirules_Utils_Upgrader {
         ->setMatch(['name'])
         ->execute();
     }
+    // class_name may have changed, so which actions need configuring may have too.
+    CRM_Civirules_Utils_ConfigurationStatus::flushCache();
   }
 
   /**
@@ -73,6 +75,8 @@ class CRM_Civirules_Utils_Upgrader {
         ->setMatch(['name'])
         ->execute();
     }
+    // class_name may have changed, so which conditions need configuring may have too.
+    CRM_Civirules_Utils_ConfigurationStatus::flushCache();
   }
 
   /**

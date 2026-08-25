@@ -753,4 +753,19 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     return TRUE;
   }
 
+  /**
+   * Normalise empty-string action/condition params to NULL.
+   *
+   * '' and NULL mean the same thing to every consumer, but the configuration import
+   * wrote '' for "no parameters", which defeats the IS NOT NULL test now used to tell
+   * a never-configured row from one whose form was saved empty. Nothing is deleted and
+   * no configured row is touched: a saved form stores serialize($data), never ''.
+   */
+  public function upgrade_3009() {
+    $this->ctx->log->info('Applying update 3009 - normalise empty action/condition params to NULL');
+    CRM_Core_DAO::executeQuery("UPDATE `civirule_rule_action` SET `action_params` = NULL WHERE `action_params` = ''");
+    CRM_Core_DAO::executeQuery("UPDATE `civirule_rule_condition` SET `condition_params` = NULL WHERE `condition_params` = ''");
+    return TRUE;
+  }
+
 }

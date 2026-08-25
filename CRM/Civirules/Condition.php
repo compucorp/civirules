@@ -99,7 +99,9 @@ abstract class CRM_Civirules_Condition {
     if (!empty($condition_params)) {
       return serialize($condition_params);
     }
-    return '';
+    // NULL, not '': an unset params column is how a never-configured condition is
+    // distinguished from one whose form was saved with nothing filled in.
+    return NULL;
   }
 
   /**

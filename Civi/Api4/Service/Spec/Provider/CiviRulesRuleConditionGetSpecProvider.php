@@ -37,6 +37,18 @@ class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoServi
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'conditionParamsDisplay']);
     $spec->addFieldSpec($field);
+
+    // Calculated so it cannot go stale: whether a condition needs configuring is
+    // defined by its class, not by anything stored on the row.
+    $field = new FieldSpec('is_configured', 'CiviRulesRuleCondition', 'Boolean');
+    $field->setLabel(ts('Is Configured'))
+      ->setTitle(ts('Is Configured'))
+      ->setColumnName('condition_params')
+      ->setDescription(ts('FALSE if this condition requires configuration but none has been saved'))
+      ->setType('Extra')
+      ->setReadonly(TRUE)
+      ->setSqlRenderer(['CRM_Civirules_Utils_ConfigurationStatus', 'renderConditionIsConfigured']);
+    $spec->addFieldSpec($field);
   }
 
   /**

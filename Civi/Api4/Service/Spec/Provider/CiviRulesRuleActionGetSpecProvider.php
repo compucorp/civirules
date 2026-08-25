@@ -48,6 +48,18 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'actionDelayDisplay']);
     $spec->addFieldSpec($field);
+
+    // Calculated so it cannot go stale: whether an action needs configuring is
+    // defined by its class, not by anything stored on the row.
+    $field = new FieldSpec('is_configured', 'CiviRulesRuleAction', 'Boolean');
+    $field->setLabel(ts('Is Configured'))
+      ->setTitle(ts('Is Configured'))
+      ->setColumnName('action_params')
+      ->setDescription(ts('FALSE if this action requires configuration but none has been saved'))
+      ->setType('Extra')
+      ->setReadonly(TRUE)
+      ->setSqlRenderer(['CRM_Civirules_Utils_ConfigurationStatus', 'renderActionIsConfigured']);
+    $spec->addFieldSpec($field);
   }
 
   /**
