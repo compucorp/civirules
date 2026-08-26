@@ -430,12 +430,17 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   public static function validateDelay($fields) {
     $errors = [];
     if (!empty($fields['delay_select'])) {
-      $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
-      $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
-      $ruleAction->id = $ruleActionId;
-      $ruleAction->find(TRUE);
+      // When adding, the rule action does not exist yet, so the rule is identified
+      // directly rather than looked up through it.
+      $ruleId = $fields['rule_id'] ?? NULL;
+      if (empty($ruleId)) {
+        $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
+        $ruleAction->id = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
+        $ruleAction->find(TRUE);
+        $ruleId = $ruleAction->rule_id;
+      }
       $rule = new CRM_Civirules_BAO_CiviRulesRule();
-      $rule->id = $ruleAction->rule_id;
+      $rule->id = $ruleId;
       $rule->find(TRUE);
 
       $delayClass = CRM_Civirules_Delay_Factory::getDelayClassByName($fields['delay_select']);

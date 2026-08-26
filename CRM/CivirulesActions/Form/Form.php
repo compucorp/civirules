@@ -114,7 +114,32 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
 
     if ($this->_action === CRM_Core_Action::ADD) {
       $this->addTypePicker();
+      $this->addDelayFields();
     }
+  }
+
+  /**
+   * Render the delay options below this form's own fields.
+   *
+   * The delay used to be set on the type picker, which the configuration form now
+   * replaces - without this, setting a delay while adding an action would mean
+   * saving it and then reopening it via "Edit Delay".
+   *
+   * @return void
+   */
+  private function addDelayFields(): void {
+    $this->add('select', 'delay_select', E::ts('Delay action to'),
+      [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList());
+    foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delayClass) {
+      $delayClass->addElements($this, '', $this->rule);
+    }
+    $this->add('checkbox', 'ignore_condition_with_delay', E::ts("Don't recheck condition upon processing of delayed action"));
+    $this->assign('delayClasses', CRM_Civirules_Delay_Factory::getAllDelayClasses());
+    $this->assign('delayPrefix', '');
+    $this->addFormRule(['CRM_Civirules_Form_RuleAction', 'validateDelay']);
+    CRM_Core_Region::instance('form-bottom')->add([
+      'template' => 'CRM/Civirules/Form/RuleActionDelay.tpl',
+    ]);
   }
 
   /**
@@ -155,8 +180,10 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
 
   public function postProcess() {
     if ($this->_action === CRM_Core_Action::ADD) {
+      $this->applyDelayToRuleAction();
       // Subclasses save conditionally in a few cases, so make sure the row exists.
-      if (empty($this->ruleAction->id)) {
+      // They save before calling us, so a delay chosen here needs saving again.
+      if (empty($this->ruleAction->id) || $this->ruleAction->delay !== NULL) {
         $this->ruleAction->save();
       }
       // DAO::save() does not fire hook_civicrm_post.
@@ -172,6 +199,25 @@ class CRM_CivirulesActions_Form_Form extends CRM_Core_Form {
       E::ts('Action parameters updated'),
       'success'
     );
+  }
+
+  /**
+   * Copy the chosen delay onto the rule action, ready to be saved with it.
+   *
+   * @return void
+   */
+  private function applyDelayToRuleAction(): void {
+    $delayName = $this->_submitValues['delay_select'] ?? NULL;
+    if (empty($delayName)) {
+      return;
+    }
+    $delayClass = CRM_Civirules_Delay_Factory::getDelayClassByName($delayName);
+    if (!$delayClass) {
+      return;
+    }
+    $delayClass->setValues($this->_submitValues, '', $this->rule);
+    $this->ruleAction->delay = serialize($delayClass);
+    $this->ruleAction->ignore_condition_with_delay = empty($this->_submitValues['ignore_condition_with_delay']) ? 0 : 1;
   }
 
   /**
