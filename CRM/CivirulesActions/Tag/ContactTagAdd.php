@@ -20,14 +20,6 @@ class CRM_CivirulesActions_Tag_ContactTagAdd extends CRM_Civirules_Action {
     }
   }
 
-  public function getConfigFormPath(): ?string {
-    return 'civicrm/civirule/form/action/tag/entitytag';
-  }
-
-  public function getConfigFormParams(): array {
-    return ['tn' => 'civicrm_contact'];
-  }
-
   /**
    * Method to return the url for additional form processing for action
    * and return false if none is needed

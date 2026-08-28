@@ -96,16 +96,6 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    * @access public
    */
   public function postProcess() {
-    // Adding an action that has a configuration form: hand straight over to it and
-    // let it create the row, so cancelling there leaves nothing behind.
-    if (!$this->ruleActionId && !empty($this->getSubmittedValue('rule_action_select'))) {
-      $actionId = (int) $this->getSubmittedValue('rule_action_select');
-      $configUrl = self::getAddConfigUrl($actionId, (int) $this->getSubmittedValue('rule_id'));
-      if ($configUrl) {
-        CRM_Utils_System::redirect($configUrl);
-      }
-    }
-
     $saveParams = [];
     $saveParams['rule_id'] = $this->getSubmittedValue('rule_id');
     $saveParams['delay'] = NULL;
@@ -175,111 +165,6 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   }
 
   /**
-   * Select2 options for the actions available on a given trigger.
-   *
-   * Shared with the configuration forms, which render the same picker so the type can
-   * be changed without leaving the dialog.
-   *
-   * @param CRM_Civirules_Trigger $trigger
-   * @param CRM_Civirules_BAO_CiviRulesRule $rule
-   *
-   * @return array
-   */
-  public static function getActionOptions(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_CiviRulesRule $rule): array {
-    $options = [];
-    $actionList = CiviRulesAction::get(FALSE)
-      ->addSelect('id', 'label', 'name', 'class_name')
-      ->addOrderBy('label', 'ASC')
-      ->addWhere('is_active', '=', TRUE)
-      ->execute()
-      ->indexBy('id');
-    foreach ($actionList as $id => $detail) {
-      $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($id, FALSE);
-      if (!$actionClass) {
-        continue;
-      }
-      try {
-        // Some implementations dereference trigger data that this trigger does not
-        // provide; treat that as "not available" rather than letting it escape.
-        if (!$actionClass->doesWorkWithTrigger($trigger, $rule)) {
-          continue;
-        }
-      }
-      catch (Throwable $e) {
-        continue;
-      }
-      $description = '';
-      try {
-        $description = $actionClass->getHelpText('actionDescription');
-      }
-      catch (Throwable $e) {
-        // Do nothing, we'll continue without description
-      }
-      $options[] = [
-        'id' => $id,
-        'text' => $detail['label'],
-        'description' => $description,
-      ];
-    }
-    return $options;
-  }
-
-  /**
-   * Map of action id => url to swap the dialog to when that type is picked.
-   *
-   * Actions with no configuration form of their own map back to the picker with the
-   * type preselected, so every option leads somewhere sensible.
-   *
-   * @param array $options
-   * @param int $ruleId
-   *
-   * @return array
-   */
-  public static function getTypeUrlMap(array $options, int $ruleId): array {
-    $urls = [];
-    foreach ($options as $option) {
-      $urls[$option['id']] = self::getAddConfigUrl((int) $option['id'], $ruleId)
-        ?: CRM_Utils_System::url(
-          'civicrm/civirule/form/rule_action',
-          ['reset' => 1, 'action' => 'add', 'rule_id' => $ruleId, 'preselect' => $option['id']],
-          FALSE, NULL, FALSE, FALSE, TRUE
-        );
-    }
-    return $urls;
-  }
-
-  /**
-   * URL of an action's configuration form, addressed by type rather than by row.
-   *
-   * Returns NULL when the action needs no configuration, or when its class predates
-   * getConfigFormPath() - in both cases the caller creates the row itself, which for
-   * the latter preserves the old two-step behaviour.
-   *
-   * @param int $actionId
-   * @param int $ruleId
-   *
-   * @return string|null
-   */
-  public static function getAddConfigUrl(int $actionId, int $ruleId): ?string {
-    $actionClass = CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($actionId, FALSE);
-    if (!$actionClass) {
-      return NULL;
-    }
-    $path = $actionClass->getConfigFormPath();
-    if (!$path) {
-      if (!empty($actionClass->getExtraDataInputUrl(0))) {
-        CRM_Core_Error::deprecatedWarning(
-          'CiviRules: ' . get_class($actionClass) . ' builds its configuration form url by hand; '
-          . 'implement getConfigFormPath() so it can be added in one step.'
-        );
-      }
-      return NULL;
-    }
-    $params = $actionClass->getConfigFormParams() + ['rule_id' => $ruleId, 'action_id' => $actionId];
-    return CRM_Utils_System::url($path, $params, FALSE, NULL, FALSE, FALSE, TRUE);
-  }
-
-  /**
    * Function to add the form elements
    *
    * @access protected
@@ -290,18 +175,34 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       $this->add('hidden', 'id');
     }
 
-    $actions = self::getActionOptions($this->triggerObject, $this->rule);
+    $actionList = CiviRulesAction::get(FALSE)
+      ->addSelect('id', 'label', 'name', 'class_name')
+      ->addOrderBy('label', 'ASC')
+      ->addWhere('is_active', '=', TRUE)
+      ->execute()
+      ->indexBy('id');
+    foreach ($actionList as $id => $detail) {
+      if (!$this->doesActionWorkWithTrigger($id)) {
+        continue;
+      }
+      $description = '';
+      if (!empty($detail['class_name'])) {
+        try {
+          $description = (new $detail['class_name']($detail))->getHelpText('actionDescription');
+        }
+        catch (Throwable $e) {
+          // Do nothing, we'll continue without description
+        }
+      }
+      $actions[] = [
+        'id' => $id,
+        'text' => $detail['label'],
+        'description' => $description,
+      ];
+    }
 
     if ($this->getAction() === CRM_Core_Action::ADD) {
-      $this->add('select2', 'rule_action_select', E::ts('Select Action'), $actions, TRUE, [
-        'class' => 'huge crm-civirules-type-select',
-        'data-civirules-type-urls' => json_encode(self::getTypeUrlMap($actions, (int) $this->ruleId)),
-      ]);
-      $preselect = CRM_Utils_Request::retrieve('preselect', 'Integer');
-      if ($preselect) {
-        $this->setDefaults(['rule_action_select' => $preselect]);
-      }
-      CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.civirules', 'js/civirules-add.js');
+      $this->add('select2', 'rule_action_select', E::ts('Select Action'), $actions, TRUE, ['class' => 'huge']);
     }
 
     $delayList = [' - No Delay - '] + CRM_Civirules_Delay_Factory::getOptionList();
@@ -430,17 +331,12 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
   public static function validateDelay($fields) {
     $errors = [];
     if (!empty($fields['delay_select'])) {
-      // When adding, the rule action does not exist yet, so the rule is identified
-      // directly rather than looked up through it.
-      $ruleId = $fields['rule_id'] ?? NULL;
-      if (empty($ruleId)) {
-        $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
-        $ruleAction->id = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
-        $ruleAction->find(TRUE);
-        $ruleId = $ruleAction->rule_id;
-      }
+      $ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
+      $ruleAction = new CRM_Civirules_BAO_CiviRulesRuleAction();
+      $ruleAction->id = $ruleActionId;
+      $ruleAction->find(TRUE);
       $rule = new CRM_Civirules_BAO_CiviRulesRule();
-      $rule->id = $ruleId;
+      $rule->id = $ruleAction->rule_id;
       $rule->find(TRUE);
 
       $delayClass = CRM_Civirules_Delay_Factory::getDelayClassByName($fields['delay_select']);

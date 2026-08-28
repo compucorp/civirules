@@ -1,5 +1,6 @@
 <?php
 
+use Civi\Api4\CiviRulesRuleCondition;
 use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
@@ -36,51 +37,20 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
    * @access public
    */
   public function preProcess() {
-    $this->ruleConditionId = CRM_Utils_Request::retrieve('rule_condition_id', 'Integer') ?: NULL;
+    $this->ruleConditionId = CRM_Utils_Request::retrieve('rule_condition_id', 'Integer');
     $this->ruleConditionName = CRM_Utils_Request::retrieve('condition_name', 'String');
 
     $this->ruleCondition = new CRM_Civirules_BAO_CiviRulesRuleCondition();
-    $this->condition = new CRM_Civirules_BAO_CiviRulesCondition();
-    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
-    $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
-
-    if ($this->ruleConditionId) {
-      $this->_action = CRM_Core_Action::UPDATE;
-      $this->ruleCondition->id = $this->ruleConditionId;
-      if (!$this->ruleCondition->find(TRUE)) {
-        throw new Exception('Civirules could not find ruleCondition');
-      }
-    }
-    else {
-      // Add mode: populate an unsaved row from the request. Subclasses all end their
-      // postProcess() with $this->ruleCondition->save(), which inserts it - so nothing
-      // is written if the form is abandoned.
-      $this->_action = CRM_Core_Action::ADD;
-      $this->ruleCondition->rule_id = CRM_Utils_Request::retrieve('rule_id', 'Integer', NULL, TRUE);
-      $this->ruleCondition->condition_id = CRM_Utils_Request::retrieve('condition_id', 'Integer', NULL, TRUE);
-      $this->ruleCondition->is_active = 1;
-      $conditionLink = CRM_Utils_Request::retrieve('condition_link', 'String');
-      if ($conditionLink) {
-        // Chosen in the type picker; normalised later by checkAndValidateConditionLinks().
-        $this->ruleCondition->condition_link = $conditionLink;
-      }
-      $this->ruleCondition->weight = CRM_Utils_Weight::getDefaultWeight(
-        'CRM_Civirules_DAO_CiviRulesRuleCondition',
-        ['rule_id' => $this->ruleCondition->rule_id]
-      );
-      // Carried in the POST so the form does not depend on the query string
-      // surviving submission.
-      $this->add('hidden', 'rule_id');
-      $this->add('hidden', 'condition_id');
-      $this->add('hidden', 'condition_link');
-      $this->setDefaults([
-        'rule_id' => $this->ruleCondition->rule_id,
-        'condition_id' => $this->ruleCondition->condition_id,
-        'condition_link' => $this->ruleCondition->condition_link,
-      ]);
+    $this->ruleCondition->id = $this->ruleConditionId;
+    if (!$this->ruleCondition->find(TRUE)) {
+      throw new Exception('Civirules could not find ruleCondition');
     }
     $ruleConditionData = [];
     CRM_Core_DAO::storeValues($this->ruleCondition, $ruleConditionData);
+
+    $this->condition = new CRM_Civirules_BAO_CiviRulesCondition();
+    $this->rule = new CRM_Civirules_BAO_CiviRulesRule();
+    $this->trigger = new CRM_Civirules_BAO_CiviRulesTrigger();
 
     $this->condition->id = $this->ruleCondition->condition_id;
     if (!$this->condition->find(TRUE)) {
@@ -116,37 +86,14 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
     $session = CRM_Core_Session::singleton();
     $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($editUrl);
-
-    if ($this->_action === CRM_Core_Action::ADD) {
-      $this->addTypePicker();
-    }
   }
 
-  /**
-   * Render the condition picker above this form's own fields, so choosing a type and
-   * configuring it happen in one dialog.
-   *
-   * Done through the form-top region rather than the per-condition templates, none of
-   * which need to change.
-   *
-   * @return void
-   */
-  private function addTypePicker(): void {
-    $options = CRM_Civirules_Form_RuleCondition::getConditionOptions($this->triggerClass, $this->rule);
-    $this->add('select2', 'rule_condition_select', E::ts('Condition'), $options, TRUE, [
-      'class' => 'huge crm-civirules-type-select',
-      'data-civirules-type-urls' => json_encode(CRM_Civirules_Form_RuleCondition::getTypeUrlMap(
-        $options,
-        (int) $this->ruleCondition->rule_id,
-        $this->ruleCondition->condition_link
-      )),
-    ]);
-    $this->setDefaults(['rule_condition_select' => $this->ruleCondition->condition_id]);
-    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.civirules', 'js/civirules-add.js');
-    CRM_Core_Region::instance('form-top')->add([
-      'template' => 'CRM/Civirules/Form/TypePicker.tpl',
-      'weight' => -100,
-    ]);
+  public function cancelAction() {
+    if (!empty($this->getSubmittedValue('rule_condition_id')) && $this->_action == CRM_Core_Action::ADD) {
+      CiviRulesRuleCondition::delete(FALSE)
+        ->addWhere('id', '=', $this->getSubmittedValue('rule_condition_id'))
+        ->execute();
+    }
   }
 
   /**
@@ -163,39 +110,10 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form {
 
   public function postProcess() {
     $session = CRM_Core_Session::singleton();
-    if ($this->_action === CRM_Core_Action::ADD) {
-      // Subclasses save conditionally in a few cases, so make sure the row exists.
-      if (empty($this->ruleCondition->id)) {
-        $this->ruleCondition->save();
-      }
-      // DAO::save() does not fire hook_civicrm_post, and condition_link needs
-      // normalising for the rule as a whole once a condition is added.
-      CRM_Utils_Hook::post('create', 'CiviRulesRuleCondition', $this->ruleCondition->id, $this->ruleCondition);
-      $session->setStatus(
-        E::ts("Condition '%1' added to CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]),
-        E::ts('Condition added'), 'success');
-    }
-    else {
-      $session->setStatus(E::ts("Condition '%1' parameters updated for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]), 'Condition parameters updated', 'success');
-    }
+    $session->setStatus(E::ts("Condition '%1' parameters updated for CiviRule '%2'", [1 => $this->condition->label, 2 => $this->rule->label]), 'Condition parameters updated', 'success');
 
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
     $session->pushUserContext($redirectUrl);
-  }
-
-  /**
-   * Store configuration parameters and, in add mode, create the row.
-   *
-   * Subclasses currently assign to the DAO and call save() directly; this is the
-   * supported way to do it.
-   *
-   * @param array $params
-   *
-   * @return void
-   */
-  protected function saveConditionParams(array $params): void {
-    $this->ruleCondition->condition_params = serialize($params);
-    $this->ruleCondition->save();
   }
 
   /**
