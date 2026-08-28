@@ -69,14 +69,6 @@ class CRM_CivirulesConditions_ContributionRecur_DonorIsRecurring extends CRM_Civ
     return $isConditionValid;
   }
 
-  public function getConfigFormPath(): ?string {
-    return 'civicrm/civirule/form/condition/contribution_recur_donorisrecurring';
-  }
-
-  public function getConfigFormParams(): array {
-    return ['condition_name' => $this->getConditionName()];
-  }
-
   /**
    * Method is mandatory, in this case no additional data input is required
    * so it returns FALSE

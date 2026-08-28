@@ -41,14 +41,6 @@ class CRM_CivirulesConditions_Activity_HasTag extends CRM_Civirules_Condition {
     return $isConditionValid;
   }
 
-  public function getConfigFormPath(): ?string {
-    return 'civicrm/civirule/form/condition/entity_hastag';
-  }
-
-  public function getConfigFormParams(): array {
-    return ['tn' => 'civicrm_activity'];
-  }
-
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
    *

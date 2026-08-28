@@ -82,17 +82,6 @@ class CRM_CivirulesConditions_Contact_HasRecur extends CRM_CivirulesConditions_G
     return FALSE;
   }
 
-  public function getConfigFormPath(): ?string {
-    return 'civicrm/civirule/form/condition/status';
-  }
-
-  public function getConfigFormParams(): array {
-    return [
-      'entity' => $this->getEntity(),
-      'condition_name' => $this->getConditionName(),
-    ];
-  }
-
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
    *

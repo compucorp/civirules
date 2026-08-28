@@ -56,57 +56,12 @@ abstract class CRM_Civirules_Condition {
   abstract public function getExtraDataInputUrl($ruleConditionId);
 
   /**
-   * Id passed to getExtraDataInputUrl() when all we want to know is whether a
-   * configuration form exists, before any rule condition row has been created.
-   */
-  protected const CONFIG_PROBE_ID = 0;
-
-  /**
-   * Menu path recorded by the last getFormattedExtraDataInputUrl() call.
-   *
-   * @var string|null
-   */
-  private ?string $probedConfigFormPath = NULL;
-
-  /**
-   * Menu path of this condition's configuration form, or NULL if it needs no
-   * configuration.
-   *
-   * Unlike getExtraDataInputUrl() this does not require the rule condition to
-   * exist yet, so the form can be reached before the row is created.
-   *
-   * @return string|null
-   */
-  public function getConfigFormPath(): ?string {
-    $this->probedConfigFormPath = NULL;
-    if (empty($this->getExtraDataInputUrl(static::CONFIG_PROBE_ID))) {
-      return NULL;
-    }
-    return $this->probedConfigFormPath;
-  }
-
-  /**
-   * Fixed query parameters the configuration form needs in addition to the rule
-   * condition id, e.g. ['tn' => 'civicrm_contact'].
-   *
-   * These depend only on the class, never on the row.
-   *
-   * @return array
-   */
-  public function getConfigFormParams(): array {
-    return [];
-  }
-
-  /**
    * @param string $url
    * @param int $ruleConditionID
    *
    * @return string
    */
   public function getFormattedExtraDataInputUrl(string $url, int $ruleConditionID): string {
-    // Recorded so getConfigFormPath() can recover the route without parsing the
-    // generated URL, which is CMS-dependent.
-    $this->probedConfigFormPath = $url;
     return CRM_Utils_System::url($url, 'rule_condition_id=' . $ruleConditionID, FALSE, NULL, FALSE, FALSE, TRUE);
   }
 
