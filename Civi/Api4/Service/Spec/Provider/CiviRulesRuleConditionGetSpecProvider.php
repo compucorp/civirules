@@ -37,6 +37,18 @@ class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoServi
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'conditionParamsDisplay']);
     $spec->addFieldSpec($field);
+
+    // Calculated so it cannot go stale: whether a condition needs configuring is
+    // defined by its class, not by anything stored on the row.
+    $field = new FieldSpec('is_configured', 'CiviRulesRuleCondition', 'Boolean');
+    $field->setLabel(ts('Is Configured'))
+      ->setTitle(ts('Is Configured'))
+      ->setColumnName('condition_params')
+      ->setDescription(ts('FALSE if this condition requires configuration but none has been saved'))
+      ->setType('Extra')
+      ->setReadonly(TRUE)
+      ->setSqlRenderer(['CRM_Civirules_Utils_ConfigurationStatus', 'renderConditionIsConfigured']);
+    $spec->addFieldSpec($field);
   }
 
   /**
@@ -50,15 +62,35 @@ class CiviRulesRuleConditionGetSpecProvider extends \Civi\Core\Service\AutoServi
   }
 
   public static function conditionParamsDisplay(&$value, $row) {
-    if (!empty($row['condition_id'])) {
-      $conditionClass = \CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($row['condition_id']);
-      if ($conditionClass) {
-        $conditionClass->setRuleConditionData(['condition_params' => $value]);
-        $value = $conditionClass->userFriendlyConditionParams();
-      }
-    }
-    else {
+    if (empty($row['condition_id'])) {
       $value = '';
+      return;
+    }
+    try {
+      // $abort = FALSE: a row whose class was removed with an uninstalled extension
+      // must not throw, or it takes out the whole SearchDisplay rather than one row.
+      $conditionClass = \CRM_Civirules_BAO_CiviRulesCondition::getConditionObjectById($row['condition_id'], FALSE);
+      if (!$conditionClass) {
+        $value = '⚠ ' . ts('Condition class not found');
+        return;
+      }
+      if (!\CRM_Civirules_Utils_ConfigurationStatus::isRuleConditionConfigured(['condition_params' => $value, 'condition_id' => $row['condition_id']])) {
+        // userFriendlyConditionParams() would describe the missing parameters as
+        // though they had been set, e.g. "unknown groups (), with statuses (Added)".
+        $value = '⚠ ' . ts('Not configured');
+        return;
+      }
+      $conditionClass->setRuleConditionData(['condition_params' => $value]);
+      $value = (string) $conditionClass->userFriendlyConditionParams();
+    }
+    catch (\Throwable $e) {
+      // userFriendlyConditionParams() implementations resolve stored ids against the
+      // database, so a param referencing a deleted record can throw.
+      \Civi::log('civirules')->warning('CiviRules: could not describe condition params for RuleCondition {id}: {msg}', [
+        'id' => $row['id'] ?? NULL,
+        'msg' => $e->getMessage(),
+      ]);
+      $value = '⚠ ' . ts('Unable to display configuration');
     }
   }
 

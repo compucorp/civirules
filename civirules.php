@@ -397,6 +397,16 @@ function civirules_civicrm_apiWrappers(&$wrappers, $apiRequest) {
 }
 
 /**
+ * Implements hook_civicrm_check().
+ */
+function civirules_civicrm_check(&$messages, $statusNames = [], $includeDisabled = FALSE) {
+  if ($statusNames && !in_array(CRM_Civirules_Utils_StatusCheck::NAME, $statusNames, TRUE)) {
+    return;
+  }
+  $messages = array_merge($messages, CRM_Civirules_Utils_StatusCheck::checkUnconfigured());
+}
+
+/**
  * Implements hook_civicrm_permission().
  */
 function civirules_civicrm_permission(&$permissions) {

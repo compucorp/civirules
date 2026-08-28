@@ -84,7 +84,9 @@ abstract class CRM_Civirules_Action {
     if (!empty($action_params)) {
       return serialize($action_params);
     }
-    return '';
+    // NULL, not '': an unset params column is how a never-configured action is
+    // distinguished from one whose form was saved with nothing filled in.
+    return NULL;
   }
 
   /**

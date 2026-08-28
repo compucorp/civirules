@@ -26,6 +26,7 @@ return [
             'action_params_display',
             'action_id',
             'action_delay_display',
+            'is_configured',
           ],
           'orderBy' => [],
           'where' => [],
@@ -66,6 +67,13 @@ return [
               'dataType' => 'String',
               'label' => E::ts('Action'),
               'sortable' => TRUE,
+              'icons' => [
+                [
+                  'icon' => 'fa-exclamation-triangle',
+                  'side' => 'left',
+                  'if' => ['is_configured', '=', FALSE],
+                ],
+              ],
             ],
             [
               'type' => 'html',
@@ -171,6 +179,7 @@ return [
           'classes' => ['table', 'table-striped'],
           'cssRules' => [
             ['disabled', 'is_active', '=', FALSE],
+            ['bg-warning', 'is_configured', '=', FALSE],
           ],
           'toolbar' => [
             [

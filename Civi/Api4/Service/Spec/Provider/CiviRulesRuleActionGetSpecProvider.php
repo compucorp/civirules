@@ -48,6 +48,18 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
       ->setReadonly(TRUE)
       ->addOutputFormatter([__CLASS__, 'actionDelayDisplay']);
     $spec->addFieldSpec($field);
+
+    // Calculated so it cannot go stale: whether an action needs configuring is
+    // defined by its class, not by anything stored on the row.
+    $field = new FieldSpec('is_configured', 'CiviRulesRuleAction', 'Boolean');
+    $field->setLabel(ts('Is Configured'))
+      ->setTitle(ts('Is Configured'))
+      ->setColumnName('action_params')
+      ->setDescription(ts('FALSE if this action requires configuration but none has been saved'))
+      ->setType('Extra')
+      ->setReadonly(TRUE)
+      ->setSqlRenderer(['CRM_Civirules_Utils_ConfigurationStatus', 'renderActionIsConfigured']);
+    $spec->addFieldSpec($field);
   }
 
   /**
@@ -66,18 +78,37 @@ class CiviRulesRuleActionGetSpecProvider extends \Civi\Core\Service\AutoService 
    * @param $value
    * @param $row
    * @return void
-   * @throws \Exception
    */
   public static function actionParamsDisplay(&$value, $row) {
-    if (!empty($row['action_id'])) {
-      $actionClass = \CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($row['action_id']);
-      if ($actionClass) {
-        $actionClass->setRuleActionData(['action_params' => $value]);
-        $value = $actionClass->userFriendlyConditionParams();
-      }
-    }
-    else {
+    if (empty($row['action_id'])) {
       $value = '';
+      return;
+    }
+    try {
+      // $abort = FALSE: a row whose class was removed with an uninstalled extension
+      // must not throw, or it takes out the whole SearchDisplay rather than one row.
+      $actionClass = \CRM_Civirules_BAO_CiviRulesAction::getActionObjectById($row['action_id'], FALSE);
+      if (!$actionClass) {
+        $value = '⚠ ' . ts('Action class not found');
+        return;
+      }
+      if (!\CRM_Civirules_Utils_ConfigurationStatus::isRuleActionConfigured(['action_params' => $value, 'action_id' => $row['action_id']])) {
+        // userFriendlyConditionParams() would describe the missing parameters as
+        // though they had been set, e.g. "unknown groups (), with statuses (Added)".
+        $value = '⚠ ' . ts('Not configured');
+        return;
+      }
+      $actionClass->setRuleActionData(['action_params' => $value]);
+      $value = (string) $actionClass->userFriendlyConditionParams();
+    }
+    catch (\Throwable $e) {
+      // userFriendlyConditionParams() implementations resolve stored ids against the
+      // database, so a param referencing a deleted record can throw.
+      \Civi::log('civirules')->warning('CiviRules: could not describe action params for RuleAction {id}: {msg}', [
+        'id' => $row['id'] ?? NULL,
+        'msg' => $e->getMessage(),
+      ]);
+      $value = '⚠ ' . ts('Unable to display configuration');
     }
   }
 
