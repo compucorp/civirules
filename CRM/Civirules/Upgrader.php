@@ -768,4 +768,43 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     return TRUE;
   }
 
+  /**
+   * Renumber action/condition weights so they run from 1 within each rule.
+   *
+   * Weights were previously allocated across the whole table, so a rule's first
+   * action could be weight 400. Existing order within each rule is preserved.
+   */
+  public function upgrade_3010() {
+    $this->ctx->log->info('Applying update 3010 - renumber action/condition weights per rule');
+    foreach (['civirule_rule_action', 'civirule_rule_condition'] as $table) {
+      self::renumberWeightsPerRule($table);
+    }
+    return TRUE;
+  }
+
+  /**
+   * Done row by row rather than with a window function, which needs MySQL 8 /
+   * MariaDB 10.2 and is not guaranteed by CiviCRM's own requirements.
+   *
+   * @param string $table
+   *
+   * @return void
+   */
+  private static function renumberWeightsPerRule(string $table): void {
+    $dao = CRM_Core_DAO::executeQuery("SELECT `id`, `rule_id` FROM `{$table}` ORDER BY `rule_id`, `weight`, `id`");
+    $currentRule = NULL;
+    $weight = 0;
+    while ($dao->fetch()) {
+      if ($dao->rule_id !== $currentRule) {
+        $currentRule = $dao->rule_id;
+        $weight = 0;
+      }
+      $weight++;
+      CRM_Core_DAO::executeQuery(
+        "UPDATE `{$table}` SET `weight` = %1 WHERE `id` = %2",
+        [1 => [$weight, 'Integer'], 2 => [$dao->id, 'Integer']]
+      );
+    }
+  }
+
 }
