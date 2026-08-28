@@ -123,6 +123,14 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
     return $isConditionValid;
   }
 
+  public function getConfigFormPath(): ?string {
+    return 'civicrm/civirule/form/condition/status';
+  }
+
+  public function getConfigFormParams(): array {
+    return ['entity' => $this->getEntity()];
+  }
+
   /**
    * Returns a redirect url to extra data input from the user after adding a condition
    *
