@@ -13,6 +13,13 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
    */
   private $dao = NULL;
 
+  /**
+   * Events already fetched during this run, keyed by event id.
+   *
+   * @var array
+   */
+  private array $eventCache = [];
+
   public function getEntityName(): ?string {
     // Event|Participant
     return NULL;
@@ -30,7 +37,6 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
    * @return CRM_Civirules_TriggerData_TriggerData|FALSE
    */
   protected function getNextEntityTriggerData() {
-    static $_eventCache = [];
     if (!$this->dao) {
       if (!$this->queryForTriggerEntities()) {
         return FALSE;
@@ -41,16 +47,16 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       CRM_Core_DAO::storeValues($this->dao, $data);
       if (!array_key_exists('run_type', $this->triggerParams) || $this->triggerParams['run_type'] == 'participant') {
         $triggerData = new CRM_Civirules_TriggerData_Cron($this->dao->contact_id, 'Participant', $data, NULL, $this);
-        if (!isset($_eventCache[$data['event_id']])) {
-          $_eventCache[$data['event_id']] = civicrm_api3('Event', 'getsingle', ['id' => $data['event_id']]);
+        if (!isset($this->eventCache[$data['event_id']])) {
+          $this->eventCache[$data['event_id']] = civicrm_api3('Event', 'getsingle', ['id' => $data['event_id']]);
         }
-        $triggerData->setEntityData('Event', $_eventCache[$data['event_id']]);
+        $triggerData->setEntityData('Event', $this->eventCache[$data['event_id']]);
       }
       else {
-        if (!isset($_eventCache[$data['id']])) {
-          $_eventCache[$data['id']] = civicrm_api3('Event', 'getsingle', ['id' => $data['id']]);
+        if (!isset($this->eventCache[$data['id']])) {
+          $this->eventCache[$data['id']] = civicrm_api3('Event', 'getsingle', ['id' => $data['id']]);
         }
-        $triggerData = new CRM_Civirules_TriggerData_Cron(NULL, 'Event', $_eventCache[$data['id']], NULL, $this);
+        $triggerData = new CRM_Civirules_TriggerData_Cron(NULL, 'Event', $this->eventCache[$data['id']], NULL, $this);
       }
       return $triggerData;
     }
