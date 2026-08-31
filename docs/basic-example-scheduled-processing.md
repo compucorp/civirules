@@ -59,3 +59,13 @@ In this example I will first select the Remove Contact from Group action:
 and then hit Save and select the group Regular Donors. Next I do the same for the Add Contact to Group action and the group Downgraded Donors and I have completed the setup of my CiviRule: 
 
 ![](./img/CiviRules_cookbook_print17.png)
+
+## Trigger From Date
+
+Date-based triggers scan for entities that already exist, so the first time one runs it can act on everything matching in your database. **Trigger From Date**, on the trigger configuration form, is the earliest entity date the rule will act on. The triggers that offer it are *Event Date reached*, *Activity date reached* and *Activity scheduled date reached*.
+
+It is pre-filled with the date the rule was created, and leaving it empty means the same thing. The reason to change it is a rule that was created some time ago and is only being switched on now: without adjusting it, the rule acts on everything between its creation and today. Set it to today instead. Conversely, set it to an earlier date if you *do* want the rule to work through a backlog.
+
+Where the trigger has an offset ("7 days before the start date"), the offset applies to the cutoff as well. An event starting in three days is already inside a "7 days before" window, so it fires on the next cron run even if you set the Trigger From Date to today.
+
+Changing the Trigger From Date never causes a rule to act twice on the same entity — CiviRules records what each rule has already triggered for.
