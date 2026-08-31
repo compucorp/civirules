@@ -71,6 +71,10 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
       $this->add('select2', 'trigger_op', E::ts('Trigger on'), self::getTriggerOptions(), TRUE, ['multiple' => TRUE]);
     }
 
+    if ($this->triggerClass->supportsTriggerFromDate()) {
+      $this->add('datepicker', 'trigger_from_date', E::ts('Trigger From Date'), [], FALSE, ['time' => TRUE]);
+    }
+
     //set user context
     $session = CRM_Core_Session::singleton();
     $editUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id=' . $this->rule->id, TRUE);
@@ -88,12 +92,20 @@ class CRM_CivirulesTrigger_Form_Form extends CRM_Core_Form {
     if ($this->supportsMultipleTriggerOps()) {
       $defaultValues['trigger_op'] = $this->triggerClass->getTriggerParams()['trigger_op'] ?? 'create';
     }
+    if ($this->triggerClass->supportsTriggerFromDate()) {
+      $defaultValues['trigger_from_date'] = $this->triggerClass->getTriggerParams()['trigger_from_date'] ?? $this->rule->created_date;
+    }
     return $defaultValues;
   }
 
   public function postProcess() {
     if ($this->supportsMultipleTriggerOps()) {
       $this->triggerParams['trigger_op'] = $this->getSubmittedValue('trigger_op');
+    }
+    if ($this->triggerClass->supportsTriggerFromDate()) {
+      // A datepicker gets no server-side validation, so normalise or discard.
+      $triggerFromDate = strtotime($this->getSubmittedValue('trigger_from_date') ?? '');
+      $this->triggerParams['trigger_from_date'] = $triggerFromDate ? date('Y-m-d H:i:s', $triggerFromDate) : '';
     }
     $this->rule->trigger_params = serialize($this->triggerParams);
     $this->rule->save();

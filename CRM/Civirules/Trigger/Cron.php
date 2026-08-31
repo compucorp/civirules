@@ -53,6 +53,28 @@ abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
   }
 
   /**
+   * The earliest entity date this rule acts on, as 'YmdHis'.
+   *
+   * Taken from the trigger_from_date trigger param, falling back to the date
+   * the rule was created. Returns NULL when neither is usable: callers must
+   * then skip the query entirely rather than run it without a lower bound.
+   *
+   * Bind the result as a 'Timestamp' parameter - an empty 'String' parameter
+   * becomes `date_field > ''`, which MySQL reads as the zero date and matches
+   * every historical row.
+   *
+   * @return string|null
+   */
+  protected function getTriggerFromDate(): ?string {
+    $date = $this->triggerParams['trigger_from_date'] ?? '';
+    if (empty($date)) {
+      $date = $this->getRuleCreatedDate();
+    }
+    $timestamp = empty($date) ? FALSE : strtotime($date);
+    return $timestamp ? date('YmdHis', $timestamp) : NULL;
+  }
+
+  /**
    * Acquires a lock. Returns true when the lock was free and is acquired
    * Returns false when the lock was not free or could not be acquired.
    *
