@@ -18,6 +18,10 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
     return NULL;
   }
 
+  public function supportsTriggerFromDate(): bool {
+    return TRUE;
+  }
+
   /**
    * This function returns a CRM_Civirules_TriggerData_TriggerData this entity is used for triggering the rule
    *
@@ -77,6 +81,10 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
     if (empty($this->triggerParams['date_field'])) {
       return FALSE;
     }
+    $triggerFromDate = $this->getTriggerFromDate();
+    if (empty($triggerFromDate)) {
+      return FALSE;
+    }
 
     $dateField = $this->triggerParams['date_field'];
     if (!empty($this->triggerParams['offset'])) {
@@ -88,21 +96,21 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       if ($this->triggerParams['offset_type'] == '-') {
         // Trigger X units BEFORE the event date
         $dateExpression = "DATE_SUB(`e`.`" . $dateField . "`, INTERVAL " . $offset . " " . $unit . ") < NOW()";
-        // Don't trigger for events with dates before this rule was created.
-        $dateExpression .= " AND `e`.`" . $dateField . "` > DATE_SUB(`rule`.`created_date`, INTERVAL " . $offset . " " . $unit . ")";
+        // Don't trigger for events dated before the rule's trigger from date.
+        $dateExpression .= " AND `e`.`" . $dateField . "` > DATE_SUB(%3, INTERVAL " . $offset . " " . $unit . ")";
       }
       else {
         // Trigger X units AFTER the event date
         $dateExpression = "DATE_ADD(`e`.`" . $dateField . "`, INTERVAL " . $offset . " " . $unit . ") < NOW()";
-        // Don't trigger for events with dates before this rule was created.
-        $dateExpression .= " AND `e`.`" . $dateField . "` > DATE_ADD(`rule`.`created_date`, INTERVAL " . $offset . " " . $unit . ")";
+        // Don't trigger for events dated before the rule's trigger from date.
+        $dateExpression .= " AND `e`.`" . $dateField . "` > DATE_ADD(%3, INTERVAL " . $offset . " " . $unit . ")";
       }
     }
     else {
       // Trigger when the event date is reached
       $dateExpression = "`e`.`" . $dateField . "` < NOW()";
-      // Don't trigger for events with dates before this rule was created.
-      $dateExpression .= " AND `e`.`" . $dateField . "` > `rule`.`created_date`";
+      // Don't trigger for events dated before the rule's trigger from date.
+      $dateExpression .= " AND `e`.`" . $dateField . "` > %3";
     }
 
     $sqlEventTypeID = '';
@@ -116,7 +124,6 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
             FROM `civicrm_participant` `p`
             INNER JOIN `civicrm_event` `e` ON `e`.`id` = `p`.`event_id`
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_participant' AND `rule_log`.entity_id = p.id AND `rule_log`.`contact_id` = `p`.`contact_id` AND `rule_log`.`rule_id` = %2
-            LEFT JOIN `civirule_rule` `rule` ON `rule`.`id` = %2
             WHERE {$dateExpression}
             AND `e`.`is_active` = 1
             AND `rule_log`.`id` IS NULL
@@ -132,7 +139,6 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       $sql = "SELECT `e`.*
             FROM `civicrm_event` `e` 
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_event' AND `rule_log`.entity_id = e.id AND `rule_log`.`rule_id` = %2
-            LEFT JOIN `civirule_rule` `rule` ON `rule`.`id` = %2
             WHERE {$dateExpression}
             AND `e`.`is_active` = 1
             AND `rule_log`.`id` IS NULL
@@ -144,6 +150,7 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
             )";
     }
     $params[2] = [$this->ruleId, 'Integer'];
+    $params[3] = [$triggerFromDate, 'Timestamp'];
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, $daoName);
 
     return TRUE;
@@ -198,7 +205,7 @@ class CRM_CivirulesCronTrigger_EventDate extends CRM_Civirules_Trigger_Cron {
       2 => $fieldLabel,
       3 => $offsetLabel,
     ]);
-    $description .= ' <br/><em>This rule will not trigger for event dates before the rule was created.</em>';
+    $description .= ' <br/><em>' . $this->getTriggerFromDateDescription() . '</em>';
     return $description;
   }
 

@@ -8,6 +8,10 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTrigger_Activity {
 
+  public function supportsTriggerFromDate(): bool {
+    return TRUE;
+  }
+
   public static function intervals() {
     return [
       '-minutes' => ts('Minutes(s) before scheduled date/time'),
@@ -28,6 +32,10 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
    */
   protected function queryForTriggerEntities() {
     if (empty($this->triggerParams['activity_type_id']) || empty($this->triggerParams['activity_status_id'])) {
+      return FALSE;
+    }
+    $triggerFromDate = $this->getTriggerFromDate();
+    if (empty($triggerFromDate)) {
       return FALSE;
     }
 
@@ -107,6 +115,7 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
             WHERE `a`.`activity_type_id` IN (%3)
               AND `a`.`status_id` IN (%4)
               AND `a`.`is_deleted` = 0
+              AND `a`.`activity_date_time` > %6
               AND `rule_log`.`id` IS NULL
               {$activity_date_time_statement}
               {$activityContactWhereClause}
@@ -122,6 +131,7 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
     $params[1] = [$this->ruleId, 'Integer'];
     $params[3] = [implode(',', $this->triggerParams['activity_type_id']), 'CommaSeparatedIntegers'];
     $params[4] = [implode(',', $this->triggerParams['activity_status_id']), 'CommaSeparatedIntegers'];
+    $params[6] = [$triggerFromDate, 'Timestamp'];
 
     $this->activityDAO = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Activity_DAO_Activity');
 
@@ -185,7 +195,7 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDate extends CRM_CivirulesCronTr
       4 => $intervalUnitLabel,
       5 => $options[$this->triggerParams['record_type']],
       6 => $caseActivity,
-    ]);
+    ]) . ' <br/><em>' . $this->getTriggerFromDateDescription() . '</em>';
   }
 
   /**

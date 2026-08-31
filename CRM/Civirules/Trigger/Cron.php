@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
 
   /**
@@ -72,6 +74,24 @@ abstract class CRM_Civirules_Trigger_Cron extends CRM_Civirules_Trigger {
     }
     $timestamp = empty($date) ? FALSE : strtotime($date);
     return $timestamp ? date('YmdHis', $timestamp) : NULL;
+  }
+
+  /**
+   * A note for getTriggerDescription() naming the rule's earliest trigger date.
+   *
+   * Reads the configured value directly rather than through
+   * getTriggerFromDate(): the rules list renders descriptions without a rule
+   * id, so the created-date fallback cannot be resolved here.
+   *
+   * @return string
+   */
+  protected function getTriggerFromDateDescription(): string {
+    if (!empty($this->triggerParams['trigger_from_date'])) {
+      return E::ts('This rule will not trigger for dates before %1.', [
+        1 => CRM_Utils_Date::customFormat($this->triggerParams['trigger_from_date']),
+      ]);
+    }
+    return E::ts('This rule will not trigger for dates before the date the rule was created.');
   }
 
   /**
