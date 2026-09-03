@@ -13,6 +13,11 @@ class CRM_Civirules_Job_PurgeRuleLog {
   const DEFAULT_RETENTION_DAYS = 90;
 
   /**
+   * Smallest retention window the job will accept.
+   */
+  const MIN_RETENTION_DAYS = 1;
+
+  /**
    * Maximum rows removed in a single run when no parameter is supplied.
    */
   const DEFAULT_MAX_ROWS = 500000;
@@ -27,80 +32,89 @@ class CRM_Civirules_Job_PurgeRuleLog {
    *
    * @param array<string,mixed> $params
    *
-   * @return bool
+   * @return array{deleted:int,retention_days:int,max_rows:int,ceiling_reached:bool,message:string}|null
    */
-  public function run(array $params): bool {
-    $retentionDays = $this->readNonNegativeInt($params, 'retention_days', self::DEFAULT_RETENTION_DAYS);
-    $maxRows = $this->readNonNegativeInt($params, 'max_rows', self::DEFAULT_MAX_ROWS);
+  public function run(array $params): ?array {
+    $retentionDays = $this->readIntAtLeast($params, 'retention_days', self::DEFAULT_RETENTION_DAYS, self::MIN_RETENTION_DAYS);
+    $maxRows = $this->readIntAtLeast($params, 'max_rows', self::DEFAULT_MAX_ROWS, 0);
 
     if ($retentionDays === NULL || $maxRows === NULL) {
-      return FALSE;
+      return NULL;
     }
 
     $effectiveMaxRows = $maxRows > 0 ? $maxRows : PHP_INT_MAX;
-    $thresholdDate = date('Y-m-d H:i:s', strtotime("-{$retentionDays} days"));
 
     try {
-      $deleted = $this->deleteOlderThan($thresholdDate, $effectiveMaxRows);
-      $message = E::ts('CiviRules rule log purge: %1 log(s) deleted (older than %2 days, before %3).', [
-        1 => $deleted,
-        2 => $retentionDays,
-        3 => $thresholdDate,
-      ]);
-
-      if ($deleted >= $effectiveMaxRows) {
-        $message .= ' ' . E::ts('The per run ceiling of %1 row(s) was reached; the remainder will be removed on the next run.', [
-          1 => $maxRows,
-        ]);
-      }
-
-      Civi::log()->info($message);
+      $deleted = $this->deleteOlderThan($retentionDays, $effectiveMaxRows);
     }
     catch (Throwable $e) {
       Civi::log()->error(E::ts('Error purging CiviRules rule log: %1', [1 => $e->getMessage()]));
 
-      return FALSE;
+      return NULL;
     }
 
+    $ceilingReached = $deleted >= $effectiveMaxRows;
+    $message = E::ts('CiviRules rule log purge: %1 log(s) deleted (older than %2 days).', [
+      1 => $deleted,
+      2 => $retentionDays,
+    ]);
+
+    if ($ceilingReached) {
+      $message .= ' ' . E::ts('The per run ceiling of %1 row(s) was reached; the remainder will be removed across the next runs.', [
+        1 => $maxRows,
+      ]);
+    }
+
+    Civi::log()->info($message);
     CRM_Core_Session::setStatus($message, E::ts('Success'), 'success');
 
-    return TRUE;
+    return [
+      'deleted' => $deleted,
+      'retention_days' => $retentionDays,
+      'max_rows' => $maxRows,
+      'ceiling_reached' => $ceilingReached,
+      'message' => $message,
+    ];
   }
 
   /**
-   * Reads and validates a non negative integer parameter.
+   * Reads a parameter that must be a whole number at or above $min.
    *
    * @param array<string,mixed> $params
    * @param string $name
    * @param int $default
+   * @param int $min
    *
    * @return int|null
+   *   NULL when the supplied value is unusable, having logged the reason.
    */
-  private function readNonNegativeInt(array $params, string $name, int $default): ?int {
+  private function readIntAtLeast(array $params, string $name, int $default, int $min): ?int {
     $value = $params[$name] ?? $default;
+    $parsed = filter_var($value, FILTER_VALIDATE_INT);
 
-    if (!is_numeric($value) || (int) $value < 0) {
-      Civi::log()->error(E::ts('CiviRules rule log purge: invalid %1 "%2", expected a non negative number.', [
+    if ($parsed === FALSE || $parsed < $min) {
+      Civi::log()->error(E::ts('CiviRules rule log purge: invalid %1 "%2", expected a whole number of %3 or more.', [
         1 => $name,
         2 => is_scalar($value) ? (string) $value : gettype($value),
+        3 => $min,
       ]));
 
       return NULL;
     }
 
-    return (int) $value;
+    return $parsed;
   }
 
   /**
-   * Deletes, in batches, rule log rows logged before the given date.
+   * Deletes, in batches, rule log rows older than the retention period.
    *
-   * @param string $thresholdDate
+   * @param int $retentionDays
    * @param int $maxRows
    *
    * @return int
    *   Total number of deleted rows.
    */
-  private function deleteOlderThan(string $thresholdDate, int $maxRows): int {
+  private function deleteOlderThan(int $retentionDays, int $maxRows): int {
     $previousLoggingFlag = $this->disableLogging();
     $total = 0;
 
@@ -108,9 +122,9 @@ class CRM_Civirules_Job_PurgeRuleLog {
       do {
         $limit = min(self::BATCH_SIZE, $maxRows - $total);
         $dao = CRM_Core_DAO::executeQuery(
-          'DELETE FROM civirule_rule_log WHERE log_date < %1 LIMIT %2',
+          'DELETE FROM civirule_rule_log WHERE log_date < NOW() - INTERVAL %1 DAY order by id LIMIT %2',
           [
-            1 => [$thresholdDate, 'String'],
+            1 => [$retentionDays, 'Integer'],
             2 => [$limit, 'Integer'],
           ]
         );
