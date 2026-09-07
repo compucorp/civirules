@@ -17,7 +17,7 @@ class CRM_CivirulesConditions_GroupContact_InGroupSince extends CRM_Civirules_Co
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contactId = (int) $triggerData->getContactId();

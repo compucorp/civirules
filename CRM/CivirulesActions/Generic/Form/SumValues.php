@@ -43,8 +43,6 @@ class CRM_CivirulesActions_Generic_Form_SumValues extends CRM_CivirulesActions_F
     ]);
   }
 
-  
-
   /**
    * Overridden parent method to process form data after submitting
    *
@@ -79,7 +77,7 @@ class CRM_CivirulesActions_Generic_Form_SumValues extends CRM_CivirulesActions_F
           $entity = ['Contact', 'Individual', 'Organization', 'Household'];
         }
         $fields = civicrm_api3($entityDef->entity, 'getfields', ['action' => $action]);
-        foreach($fields['values'] as $field) {
+        foreach ($fields['values'] as $field) {
           if (str_starts_with($field['name'], 'custom_')) {
             continue;
           }
@@ -91,7 +89,6 @@ class CRM_CivirulesActions_Generic_Form_SumValues extends CRM_CivirulesActions_F
             'label' => $entityDef->entity . '.' . $field['title'],
           ];
         }
-
 
         $eligible_group_ids = [];
         $group_query = civicrm_api3('CustomGroup', 'get', [

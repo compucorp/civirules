@@ -250,8 +250,7 @@ class CRM_CivirulesConditions_Utils_Period {
   /**
    * Returns the start date of the selected period
    *
-   * @param $period
-   * @param array $replaceParameters
+   * @param array $condition_params
    * @return bool|\DateTime
    */
   public static function convertPeriodToStartDate($condition_params) {
@@ -326,8 +325,7 @@ class CRM_CivirulesConditions_Utils_Period {
   /**
    * Returns the end date of the selected period
    *
-   * @param $period
-   * @param array $replaceParameters
+   * @param array $condition_params
    * @return bool|\DateTime
    */
   public static function convertPeriodToEndDate($condition_params) {

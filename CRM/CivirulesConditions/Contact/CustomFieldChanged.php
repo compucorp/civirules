@@ -31,8 +31,8 @@ class CRM_CivirulesConditions_Contact_CustomFieldChanged extends CRM_Civirules_C
   /**
    * Method to determine if one of the condition fields has changed
    *
-   * @param $originalData
-   * @param $caseData
+   * @param array $originalData
+   * @param array $contactData
    * @return bool
    */
   private function hasFieldChanged($originalData, $contactData) {

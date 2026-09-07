@@ -12,7 +12,7 @@ class CRM_CivirulesConditions_Activity_ActivityIsPast extends CRM_Civirules_Cond
    *
    * Return false if you do not need extra data input
    *
-   * @param int $ruleConditionId
+   * @param int $ruleActionId
    * @return bool|string
    * @access public
    * @abstract

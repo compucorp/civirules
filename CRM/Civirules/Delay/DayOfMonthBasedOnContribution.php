@@ -8,7 +8,7 @@ class CRM_Civirules_Delay_DayOfMonthBasedOnContribution extends CRM_Civirules_De
    * Returns the DateTime to which an action is delayed to
    *
    * @param DateTime $date
-   * @param CRM_Civirules_TriggerData_TriggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return DateTime
    */
   public function delayTo(DateTime $date, CRM_Civirules_TriggerData_TriggerData $triggerData) {

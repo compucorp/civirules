@@ -19,7 +19,7 @@ class CRM_CivirulesConditions_Case_OnlyOnce extends CRM_Civirules_Condition {
    * the action is only done once for a case. This will prevent the action happening for each
    * of the contacts involved in the case!
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

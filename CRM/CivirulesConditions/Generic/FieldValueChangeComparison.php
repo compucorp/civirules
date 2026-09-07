@@ -203,7 +203,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
   /**
    * Mandatory method to return if the condition is valid
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

@@ -6,7 +6,7 @@
 /**
  * Trigger when a Contribution is changed or added.
  */
- class CRM_CivirulesPostTrigger_Contribution extends CRM_Civirules_Trigger_Post {
+class CRM_CivirulesPostTrigger_Contribution extends CRM_Civirules_Trigger_Post {
 
   /**
    * Override alter trigger data.

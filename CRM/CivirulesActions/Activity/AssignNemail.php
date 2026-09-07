@@ -29,7 +29,7 @@ class CRM_CivirulesActions_Activity_AssignNemail extends CRM_CivirulesActions_Ac
   /**
    * Returns an array with parameters used for processing an action
    *
-   * @param array $parameters
+   * @param array $params
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return array
    * @access protected

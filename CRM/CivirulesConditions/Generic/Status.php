@@ -27,6 +27,8 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
 
   /**
    * Returns an array of statuses as [ id => label ]
+   *
+   * @param string $groupName
    * @param bool $active
    * @param bool $inactive
    *

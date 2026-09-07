@@ -155,7 +155,7 @@ class CRM_Civirules_Utils {
    *
    * @return array $campaignTypeList
    * @access public
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public static function getCampaignTypeList() {
     $campaignTypeList = [];
@@ -177,7 +177,7 @@ class CRM_Civirules_Utils {
    *
    * @return array $campaignStatusList
    * @access public
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public static function getCampaignStatusList() {
     $campaignStatusList = [];
@@ -539,7 +539,8 @@ class CRM_Civirules_Utils {
    * other rules. Used to determine of both rules are clones of each other,
    * rules with the same actions
    *
-   * @param $ruleId
+   * @param int $ruleId
+   * @param int|null $triggerId
    *
    * @return array
    */

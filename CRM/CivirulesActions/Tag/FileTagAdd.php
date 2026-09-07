@@ -7,7 +7,7 @@ class CRM_CivirulesActions_Tag_FileTagAdd extends CRM_Civirules_Action {
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @access public
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $entityId = $triggerData->getEntityId();
@@ -39,7 +39,7 @@ class CRM_CivirulesActions_Tag_FileTagAdd extends CRM_Civirules_Action {
    *
    * @return string
    * @access public
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public function userFriendlyConditionParams() {
     $actionParams = $this->getActionParameters();

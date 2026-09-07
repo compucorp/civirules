@@ -24,12 +24,12 @@ use CRM_Civirules_ExtensionUtil as E;
 class Definition extends EntityDefinition {
 
   /**
-   * @return \Civi\ConfigItems\Entity\CiviRules\Exporter
+   * @var \Civi\ConfigItems\Entity\CiviRules\Exporter
    */
   protected $exporter;
 
   /**
-   * @return \Civi\ConfigItems\Entity\CiviRules\Importer
+   * @var \Civi\ConfigItems\Entity\CiviRules\Importer
    */
   protected $importer;
 

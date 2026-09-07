@@ -221,7 +221,8 @@ class CRM_CivirulesConditions_Form_Generic_Date extends CRM_CivirulesConditions_
   /**
    * Get a list of all numeric contact custom fields
    *
-   * @param bool also include fields that are not updatable
+   * @param bool $include_readonly_fields
+   *   Also include fields that are not updatable.
    * @return array list of field IDs
    */
   protected function getEligibleCustomFields($include_readonly_fields = FALSE) {

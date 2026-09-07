@@ -9,16 +9,22 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
 
   /**
    * Store a list of api params passed to action
+   *
+   * @var array
    */
   protected $apiParams = [];
 
   /**
    * Store the triggering activity id
+   *
+   * @var int
    */
   protected $activityId;
 
   /**
    * Store a list of new assigned contacts
+   *
+   * @var array
    */
   protected $asignedContacts = [];
 
@@ -26,7 +32,7 @@ class CRM_CivirulesActions_Activity_CreateActivityFromEvent extends CRM_Civirule
    * Returns an array with parameters used for processing an action
    *
    * @param array $params
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return array $params
    * @access protected
    */

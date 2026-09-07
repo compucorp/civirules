@@ -10,7 +10,7 @@ class CRM_CivirulesConditions_Contribution_Amount extends CRM_CivirulesCondition
   /**
    * Returns value of the field
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed
    * @access protected
    */

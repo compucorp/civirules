@@ -52,7 +52,7 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
 }
 
 /**
- * Implementation of hook_civicrm_config
+ * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
@@ -61,7 +61,7 @@ function civirules_civicrm_config(&$config) {
 }
 
 /**
- * Implementation of hook_civicrm_install
+ * Implements hook_civicrm_install().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
@@ -70,7 +70,7 @@ function civirules_civicrm_install() {
 }
 
 /**
- * Implementation of hook_civicrm_enable
+ * Implements hook_civicrm_enable().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
@@ -386,7 +386,7 @@ function civirules_civirules_alter_trigger_data(CRM_Civirules_TriggerData_Trigge
 }
 
 /**
- * Implements hook_civicrm_apiWrappers()
+ * Implements hook_civicrm_apiWrappers().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_apiWrappers/
  */

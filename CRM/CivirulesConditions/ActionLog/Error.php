@@ -20,7 +20,7 @@ class CRM_CivirulesConditions_ActionLog_Error extends CRM_Civirules_Condition {
    * Method to check if the condition is valid, will check if the actionlog
    * recorded an error
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

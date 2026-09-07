@@ -13,7 +13,7 @@ class CRM_CivirulesConditions_Contact_AgeComparison extends CRM_CivirulesConditi
   /**
    * Returns value of the field
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed
    * @access protected
    */
