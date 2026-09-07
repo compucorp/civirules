@@ -9,7 +9,7 @@ class CRM_CivirulesConditions_Activity_Subject extends CRM_Civirules_Condition {
   /**
    * Method to check if the condition is valid
    *
-   * @param object $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {

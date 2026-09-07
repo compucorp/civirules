@@ -27,6 +27,7 @@ class CRM_CivirulesPostTrigger_ActionLog extends CRM_Civirules_Trigger_Post {
    * @param $objectName
    * @param $objectId
    * @param $objectRef
+   * @param int|null $eventID
    * @return CRM_Civirules_TriggerData_Edit|CRM_Civirules_TriggerData_Post
    */
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {

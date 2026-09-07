@@ -24,7 +24,7 @@ class CRM_CivirulesConditions_Activity_OnlyOnce extends CRM_Civirules_Condition 
    * it will only execute if the activity contact record type id = 2 OR if there are no activity
    * contacts
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

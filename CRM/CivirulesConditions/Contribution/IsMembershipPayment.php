@@ -1,5 +1,6 @@
 <?php
 use CRM_Civirules_ExtensionUtil as E;
+
 /**
  * Class CRM_CivirulesConditions_Contribution_IsMembershipPayment
  *

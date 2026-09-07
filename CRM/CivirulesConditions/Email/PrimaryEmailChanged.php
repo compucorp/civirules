@@ -30,7 +30,7 @@ class CRM_CivirulesConditions_Email_PrimaryEmailChanged extends CRM_CivirulesCon
   /**
    * Method to check if the condition is valid
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

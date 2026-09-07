@@ -29,7 +29,7 @@ class CRM_CivirulesCronTrigger_MonthlyGroupMembership extends CRM_Civirules_Trig
    * @throws \Civi\Core\Exception\DBQueryException
    */
   protected function getNextEntityTriggerData() {
-    if (((int)$this->triggerParams['day']) != ((int) date('j'))) {
+    if (((int) $this->triggerParams['day']) != ((int) date('j'))) {
       return FALSE;
     }
     $currentTime = explode(':', date('H:i'));

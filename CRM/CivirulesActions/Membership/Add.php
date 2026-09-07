@@ -111,6 +111,7 @@ class CRM_CivirulesActions_Membership_Add extends CRM_CivirulesActions_Generic_A
   protected function getApiAction() {
     return 'create';
   }
+
   /**
    * Validates whether this action works with the selected trigger.
    *

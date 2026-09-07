@@ -15,7 +15,7 @@ class CRM_CivirulesActions_Membership_CancelLatestMembership extends CRM_Civirul
    *
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return void
-   * @throws
+   * @throws \CRM_Core_Exception
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData): void {
     $contactId = $triggerData->getContactId();

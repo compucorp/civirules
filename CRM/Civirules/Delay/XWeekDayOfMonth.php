@@ -96,7 +96,9 @@ class CRM_Civirules_Delay_XWeekDayOfMonth extends CRM_Civirules_Delay_Delay {
   /**
    * Set default values
    *
-   * @param $values
+   * @param array $values
+   * @param string $prefix The prefix for the form field name
+   * @param CRM_Civirules_BAO_CiviRulesRule $rule
    */
   public function setDefaultValues(&$values, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {
     $values[$prefix . 'XWeekDayOfMonth_time_hour'] = '9';

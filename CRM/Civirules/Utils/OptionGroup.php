@@ -10,7 +10,7 @@ class CRM_Civirules_Utils_OptionGroup {
    *
    * @param string $name
    * @param string $title
-   * @params string $description
+   * @param string $description
    * @return array|bool
    */
   public static function create($name, $title = "", $description = "") {

@@ -1,11 +1,24 @@
-# Publishes tags to Composer Packages of the current project
-# @see https://lab.civicrm.org/infra/gitlab/-/issues/45
-publish:
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: on_success
-    - when: never
-  image: curlimages/curl:latest
-  stage: build
-  script:
-    - 'curl --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data "tag=$CI_COMMIT_TAG" "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+# Pipeline for this extension.
+#
+#   lint.yml      coding standards (civilint) and PHP version compatibility
+#   composer.yml  publishes a tag to the Composer Packages registry
+#
+# Both live in infra/extension-ci and are extension-agnostic, so there is
+# nothing to configure here beyond the exclude below. See
+# https://lab.civicrm.org/infra/gitlab/-/issues/50
+#
+# PHPUnit is not run from here: it runs in CiviCARROT, dispatched from the merge
+# request. These scans need no CiviCRM, CMS or database, so they run natively on
+# lab.civicrm.org's runners in well under a minute and give a merge request real
+# red/green status rather than only the CARROT bot comment.
+variables:
+  # psr/log is a verbatim copy of the upstream PSR-3 interface, so it follows
+  # PSR-12 rather than the Drupal-derived CiviCRM standard.
+  LINT_EXCLUDE: '^(vendor|node_modules|psr)/'
+
+include:
+  - project: 'infra/extension-ci'
+    ref: main
+    file:
+      - '/lint.yml'
+      - '/composer.yml'

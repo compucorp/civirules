@@ -7,19 +7,24 @@
  */
 class CRM_Civirules_Config {
   /**
+   * Singleton pattern.
    *
-   * singleton pattern
-   *
+   * @var \CRM_Civirules_Config
    */
-
   private static $_singleton = NULL;
-  /**
-   *
-   * properties to hold the valid entities and actions for civirule trigger
-   *
-   */
 
+  /**
+   * Valid entities for a civirule trigger.
+   *
+   * @var array
+   */
   protected $validTriggerObjectNames = NULL;
+
+  /**
+   * Valid operations for a civirule trigger.
+   *
+   * @var array
+   */
   protected $validTriggerOperations = NULL;
 
   /**

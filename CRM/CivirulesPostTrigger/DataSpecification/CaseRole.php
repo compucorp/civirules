@@ -11,13 +11,13 @@ class CRM_CivirulesPostTrigger_DataSpecification_CaseRole {
    *
    * @var array
    */
-  static $_fields = NULL;
+  public static $_fields = NULL;
   /**
    * static instance to hold the keys used in $_fields for each field.
    *
    * @var array
    */
-  static $_fieldKeys = NULL;
+  public static $_fieldKeys = NULL;
 
   /**
    * Returns all the column names of this table

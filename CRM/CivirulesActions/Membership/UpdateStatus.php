@@ -12,7 +12,7 @@ class CRM_CivirulesActions_Membership_UpdateStatus extends CRM_CivirulesActions_
    * Returns an array with parameters used for processing an action
    *
    * @param array $params
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return array $params
    * @access protected
    */

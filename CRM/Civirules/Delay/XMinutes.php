@@ -33,10 +33,10 @@ class CRM_Civirules_Delay_XMinutes extends CRM_Civirules_Delay_Delay {
 
   /**
    * @param \CRM_Core_Form $form
-   * @param $prefix
+   * @param string $prefix The prefix for the form field name
    * @param \CRM_Civirules_BAO_CiviRulesRule $rule
    *
-   * @return mixed|void
+   * @return void
    * @throws \CRM_Core_Exception
    */
   public function addElements(CRM_Core_Form &$form, $prefix, CRM_Civirules_BAO_CiviRulesRule $rule) {

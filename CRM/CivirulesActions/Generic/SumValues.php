@@ -27,7 +27,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
       return;
     }
     $newValue = 0;
-    foreach(explode(",",$action_params['source_fields']) as $source_field) {
+    foreach (explode(",", $action_params['source_fields']) as $source_field) {
       try {
         list($source_entity, $source_field_id) = $this->parseRawFieldId($source_field);
         $entity = $triggerData->getEntityData($source_entity);
@@ -83,8 +83,8 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
    * Set the value to the given field
    *
    * @param string $entity_type entity type of primary object trigger; Only Contact is supported
-   * @param int $entity_id      entity ID of primary object trigger
    * @param string $field_id    field ID or special fields like 'contact_id'
+   * @param int $entity_id      entity ID of primary object trigger
    * @param string $new_value   new value to set
    * @return void
    * @throws Exception when unable to set value
@@ -100,8 +100,9 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
    * Get the value of the given field for the given contact
    *
    * @param string $entity_type entity type of primary object trigger
-   * @param int $entity_id      entity ID of primary object trigger
    * @param string $field_id    field ID or special fields like 'contact_id'
+   * @param int $entity_id      entity ID of primary object trigger
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed              current value
    * @throws Exception when unable to retrieve value
    */
@@ -109,7 +110,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
     $entityData = $triggerData->getEntityData($entity_type);
     if (isset($entityData[$field_id])) {
       return $entityData[$field_id];
-    }        
+    }
     return civicrm_api3($entity_type, 'getvalue', [
       'id' => $entity_id,
       'return' => $field_id,
@@ -132,7 +133,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
    *
-   * @return string
+   * @return string|null
    * @access public
    * @throws \CRM_Core_Exception
    */
@@ -150,7 +151,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
     }
 
     $source_fields = [];
-    foreach(explode(",",$action_params['source_fields']) as $source_field) {
+    foreach (explode(",", $action_params['source_fields']) as $source_field) {
       try {
         list($source_entity, $source_field_id) = $this->parseRawFieldId($source_field);
         $source_fields[] = '"' . $this->getHumanReadableFieldLabel($source_field_id, $source_entity, 'get') . '" (' . $source_entity . ')';
@@ -160,7 +161,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
         return;
       }
     }
-    return E::ts('Sum fields: %1 and store it into %2', [1=>implode(', ', $source_fields), 2=>$target_field]);
+    return E::ts('Sum fields: %1 and store it into %2', [1 => implode(', ', $source_fields), 2 => $target_field]);
   }
 
   /**
@@ -168,6 +169,7 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
    *
    * @param string $field_identifier
    * @param string $entity
+   * @param string $action
    * @access protected
    * @return string
    * @throws \CRM_Core_Exception
@@ -175,13 +177,14 @@ class CRM_CivirulesActions_Generic_SumValues extends CRM_Civirules_Action {
   protected function getHumanReadableFieldLabel($field_identifier, $entity, $action = 'get') {
     if (str_starts_with($field_identifier, 'custom_')) {
       // Custom fields
-      if (is_numeric(substr($field_identifier,7))) {
+      if (is_numeric(substr($field_identifier, 7))) {
         $custom_field = civicrm_api3('CustomField', 'getsingle', [
           'id' => substr($field_identifier, 7),
         ]);
         return $custom_field['label'];
       }
-    } else {
+    }
+    else {
       $fields = civicrm_api3($entity, 'getfields', ['action' => $action, 'name' => $field_identifier]);
       $field = reset($fields['values']);
       if (isset($field['title'])) {

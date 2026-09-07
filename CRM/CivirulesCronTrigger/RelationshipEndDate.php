@@ -81,7 +81,7 @@ class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger
                 WHERE `rule_log`.`rule_id` = %1 AND `rule_log`.`log_date` >= CURDATE()
               );";
     }
-    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_BAO_Relationship');
+    $this->dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_BAO_Relationship');
   }
 
   /**
@@ -94,7 +94,7 @@ class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger
    */
   private function getIntervalSql(&$params) {
     if (empty($this->triggerParams['interval']) || empty($this->triggerParams['interval_unit'])) {
-      return false;
+      return FALSE;
     }
 
     $units = [
@@ -104,7 +104,7 @@ class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger
       'years' => 'YEAR',
     ];
     if (!isset($units[$this->triggerParams['interval_unit']])) {
-      return false;
+      return FALSE;
     }
     $params[2] = [$this->triggerParams['interval'], 'Integer'];
 

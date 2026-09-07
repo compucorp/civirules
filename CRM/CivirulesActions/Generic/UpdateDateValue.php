@@ -175,8 +175,8 @@ class CRM_CivirulesActions_Generic_UpdateDateValue extends CRM_Civirules_Action 
    * Set the value to the given field
    *
    * @param string $entity_type entity type of primary object trigger; Only Contact is supported
-   * @param int $entity_id      entity ID of primary object trigger
    * @param string $field_id    field ID or special fields like 'contact_id'
+   * @param int $entity_id      entity ID of primary object trigger
    * @param string $new_value   new value to set
    * @return void
    * @throws Exception when unable to set value
@@ -203,8 +203,8 @@ class CRM_CivirulesActions_Generic_UpdateDateValue extends CRM_Civirules_Action 
    * Get the value of the given field for the given contact
    *
    * @param string $entity_type entity type of primary object trigger
-   * @param int $entity_id      entity ID of primary object trigger
    * @param string $field_id    field ID or special fields like 'contact_id'
+   * @param int $entity_id      entity ID of primary object trigger
    * @param string $mode        string can be 'value', 'min' or 'max'
    * @return mixed              current value
    * @throws Exception when unable to retrieve value
@@ -279,7 +279,7 @@ class CRM_CivirulesActions_Generic_UpdateDateValue extends CRM_Civirules_Action 
    * Returns a user friendly text explaining the condition params
    * e.g. 'Older than 65'
    *
-   * @return string
+   * @return string|null
    * @access public
    * @throws \CRM_Core_Exception
    */

@@ -151,6 +151,7 @@ class CRM_Civirules_Utils_PreData {
    * @param string $entity
    * @param int $entityId
    * @param array $data
+   * @param int $eventID
    * @access protected
    * @static
    */
@@ -163,6 +164,7 @@ class CRM_Civirules_Utils_PreData {
    *
    * @param string $entity
    * @param int $entityId
+   * @param int $eventID
    * @return array
    * @access protected
    * @static

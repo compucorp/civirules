@@ -19,7 +19,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * Returns the DateTime to which an action is delayed to
    *
    * @param DateTime $date
-   * @param CRM_Civirules_TriggerData_TriggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return DateTime
    */
   public function delayTo(DateTime $date, CRM_Civirules_TriggerData_TriggerData $triggerData) {
@@ -113,7 +113,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    *
    * @param array $values
    * @param array $errors
-   * @param prefix - The prefix for the form field name
+   * @param string $prefix The prefix for the form field name
    * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return void
    */
@@ -139,7 +139,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
    * Set the values
    *
    * @param array $values
-   * @param prefix - The prefix for the form field name
+   * @param string $prefix The prefix for the form field name
    * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return void
    */
@@ -154,7 +154,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
   /**
    * Get the values
    *
-   * @param prefix - The prefix for the form field name
+   * @param string $prefix The prefix for the form field name
    * @param CRM_Civirules_BAO_CiviRulesRule $rule
    * @return array
    */

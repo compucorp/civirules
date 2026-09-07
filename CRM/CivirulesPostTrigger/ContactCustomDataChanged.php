@@ -172,6 +172,7 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
 
   /**
    * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param array|null $triggers
    *
    * @return void
    */

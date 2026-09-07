@@ -28,7 +28,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
   /**
    * Method to check if the condition is valid
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */
@@ -96,7 +96,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
   /**
    * Method to get the field data
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed|null
    * @access protected
    */
@@ -120,7 +120,7 @@ abstract class CRM_CivirulesConditions_Generic_FieldChanged extends CRM_Civirule
   /**
    * Method to get the original field data
    *
-   * @param object CRM_Civirules_TriggerData_Interface_OriginalData $triggerData
+   * @param CRM_Civirules_TriggerData_Interface_OriginalData $triggerData
    * @return mixed|null
    * @access protected
    */

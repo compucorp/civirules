@@ -15,7 +15,7 @@ class CRM_CivirulesConditions_Activity_RecordType extends CRM_Civirules_Conditio
    * Method to check if the condition is valid, will check if the contact
    * has an activity of the selected type
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */

@@ -11,7 +11,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
    * Returns the value of the field for the condition
    * For example: I want to check if age > 50, this function would return the 50
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed
    * @access protected
    */
@@ -30,7 +30,7 @@ class CRM_CivirulesConditions_Contact_SubtypesChanged extends CRM_CivirulesCondi
    * Returns the value of the field for the condition
    * For example: I want to check if age > 50, this function would return the 50
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return mixed
    * @access protected
    */

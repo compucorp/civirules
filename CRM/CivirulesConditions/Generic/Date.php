@@ -39,7 +39,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * Method to check if the condition is valid, will check if the contact
    * has an activity of the selected type
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */
@@ -265,9 +265,8 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
    * Get the value of the given field for the given contact
    *
    * @param string $entity_type entity type of primary object trigger
-   * @param int $entity_id      entity ID of primary object trigger
    * @param string $field_id    field ID or special fields like 'contact_id'
-   * @param string $mode        string can be 'value', 'min' or 'max'
+   * @param int $entity_id      entity ID of primary object trigger
    * @return mixed              current value
    * @throws Exception when unable to retrieve value
    */

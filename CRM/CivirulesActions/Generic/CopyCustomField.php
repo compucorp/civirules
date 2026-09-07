@@ -247,13 +247,13 @@ class CRM_CivirulesActions_Generic_CopyCustomField extends CRM_Civirules_Action 
   }
 
   /**
-   * @param mixed $from_entity
-   * @param mixed $fromEntityId
-   * @param mixed $copy_from_field_id
+   * @param string $from_entity
+   * @param int $fromEntityId
+   * @param string $copy_from_field_id
    *
    * @return mixed|string
    */
-  public function getCustomValue(mixed $from_entity, mixed $fromEntityId, mixed $copy_from_field_id): mixed {
+  public function getCustomValue($from_entity, $fromEntityId, $copy_from_field_id) {
     $new_value = "";
     try {
       $result = civicrm_api3($from_entity, 'getsingle', [

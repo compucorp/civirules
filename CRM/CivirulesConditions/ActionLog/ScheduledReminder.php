@@ -20,7 +20,7 @@ class CRM_CivirulesConditions_ActionLog_ScheduledReminder extends CRM_Civirules_
    * Method to check if the condition is valid, will check if the actionlog
    * has an email error
    *
-   * @param object CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    * @access public
    */
