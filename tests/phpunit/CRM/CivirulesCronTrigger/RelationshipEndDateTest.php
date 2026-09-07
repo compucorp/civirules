@@ -170,15 +170,40 @@ class CRM_CivirulesCronTrigger_RelationshipEndDateTest extends \PHPUnit\Framewor
   }
 
   /**
+   * Every interval unit offered by the configuration form must actually
+   * produce a window: an unknown unit silently falls back to the legacy query,
+   * which has no lower bound on the end date.
+   */
+  public function testEveryOfferedIntervalUnitProducesAWindow(): void {
+    $this->createEndedRelationship($this->createContact('LongPast'), 400);
+
+    foreach (array_keys(CRM_CivirulesCronTrigger_RelationshipEndDate::intervals()) as $unit) {
+      $ids = $this->getTriggeredRelationshipIds(['interval' => 1, 'interval_unit' => $unit]);
+      $this->assertEquals([], $ids, "Interval unit '{$unit}' did not apply a window");
+    }
+  }
+
+  /**
+   * The description renders in both hydration modes: with a rule id, as on the
+   * rule edit screen, and without one, as on the rules list.
+   */
+  public function testTriggerDescription(): void {
+    $configured = $this->buildTrigger(['interval' => 3, 'interval_unit' => 'weeks'], $this->ruleId);
+    $this->assertStringContainsString('within the last 3', $configured->getTriggerDescription());
+    $this->assertStringContainsString('Week(s)', $configured->getTriggerDescription());
+
+    $unconfigured = $this->buildTrigger([], NULL);
+    $this->assertStringContainsString('any end date in the past', $unconfigured->getTriggerDescription());
+  }
+
+  /**
    * Runs the trigger and collects the relationship ids it yields.
    *
    * @param array $triggerParams
    * @return array
    */
   private function getTriggeredRelationshipIds(array $triggerParams): array {
-    $trigger = new CRM_CivirulesCronTrigger_RelationshipEndDate();
-    $trigger->setRuleId($this->ruleId);
-    $trigger->setTriggerParams(serialize($triggerParams));
+    $trigger = $this->buildTrigger($triggerParams, $this->ruleId);
 
     $method = new ReflectionMethod(CRM_CivirulesCronTrigger_RelationshipEndDate::class, 'getNextEntityTriggerData');
     $method->setAccessible(TRUE);
@@ -188,6 +213,20 @@ class CRM_CivirulesCronTrigger_RelationshipEndDateTest extends \PHPUnit\Framewor
       $ids[] = (int) $triggerData->getEntityData('Relationship')['id'];
     }
     return $ids;
+  }
+
+  /**
+   * @param array $triggerParams
+   * @param int|null $ruleId
+   * @return \CRM_CivirulesCronTrigger_RelationshipEndDate
+   */
+  private function buildTrigger(array $triggerParams, ?int $ruleId): CRM_CivirulesCronTrigger_RelationshipEndDate {
+    $trigger = new CRM_CivirulesCronTrigger_RelationshipEndDate();
+    if ($ruleId !== NULL) {
+      $trigger->setRuleId($ruleId);
+    }
+    $trigger->setTriggerParams(serialize($triggerParams));
+    return $trigger;
   }
 
   /**

@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civirules_ExtensionUtil as E;
+
 class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger_Cron {
 
   /**
@@ -9,6 +11,23 @@ class CRM_CivirulesCronTrigger_RelationshipEndDate extends CRM_Civirules_Trigger
 
   public function getEntityName(): ?string {
     return 'Relationship';
+  }
+
+  /**
+   * The interval units offered by this trigger's configuration form.
+   *
+   * The keys are the values stored in trigger_params; getIntervalSql() maps
+   * them to MySQL interval keywords.
+   *
+   * @return array
+   */
+  public static function intervals() {
+    return [
+      'days' => E::ts('Day(s)'),
+      'weeks' => E::ts('Week(s)'),
+      'months' => E::ts('Month(s)'),
+      'years' => E::ts('Year(s)'),
+    ];
   }
 
   /**
