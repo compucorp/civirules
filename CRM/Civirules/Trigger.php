@@ -43,6 +43,11 @@ abstract class CRM_Civirules_Trigger {
   protected bool $ruleDebugEnabled;
 
   /**
+   * @var string
+   */
+  protected string $ruleCreatedDate;
+
+  /**
    * The Rule Conditions
    * Conditions are cached in this variable
    *
@@ -184,6 +189,30 @@ abstract class CRM_Civirules_Trigger {
       }
     }
     return $this->ruleDebugEnabled ?? FALSE;
+  }
+
+  /**
+   * @return string
+   */
+  public function getRuleCreatedDate(): string {
+    if (!isset($this->ruleCreatedDate) && !empty($this->ruleId)) {
+      $rule = new CRM_Civirules_BAO_CiviRulesRule();
+      $rule->id = $this->ruleId;
+      if ($rule->find(TRUE)) {
+        $this->ruleCreatedDate = $rule->created_date;
+      }
+    }
+    return $this->ruleCreatedDate ?? '';
+  }
+
+  /**
+   * Does this trigger act on a backlog of existing entities, and therefore
+   * offer a configurable date before which it will not act?
+   *
+   * @return bool
+   */
+  public function supportsTriggerFromDate(): bool {
+    return FALSE;
   }
 
   /**

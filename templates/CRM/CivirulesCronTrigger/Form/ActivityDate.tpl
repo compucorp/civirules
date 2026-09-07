@@ -21,6 +21,16 @@
     <div class="content">{$form.case_activity.html}</div>
     <div class="clear"></div>
   </div>
+  {if isset($form.trigger_from_date)}
+    <div class="crm-section">
+      <div class="label">{$form.trigger_from_date.label}</div>
+      <div class="content">
+        {$form.trigger_from_date.html}
+        <div class="description">{ts}Leave empty to use the date this rule was created. Set this when enabling a rule that was created some time ago, to stop it acting on entities that predate it.{/ts}</div>
+      </div>
+      <div class="clear"></div>
+    </div>
+  {/if}
   <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}
   </div>

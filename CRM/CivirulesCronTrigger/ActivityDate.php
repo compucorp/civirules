@@ -8,6 +8,10 @@ use CRM_Civirules_ExtensionUtil as E;
 
 class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Activity {
 
+  public function supportsTriggerFromDate(): bool {
+    return TRUE;
+  }
+
   /**
    * Method to query trigger entities
    */
@@ -16,6 +20,10 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
       return FALSE;
     }
     if (empty($this->triggerParams['activity_status_id'])) {
+      return FALSE;
+    }
+    $triggerFromDate = $this->getTriggerFromDate();
+    if (empty($triggerFromDate)) {
       return FALSE;
     }
 
@@ -36,6 +44,7 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
             LEFT JOIN `civicrm_case_activity` ca ON a.id = ca.activity_id
             LEFT JOIN `civirule_rule_log` `rule_log` ON `rule_log`.entity_table = 'civicrm_activity' AND `rule_log`.entity_id = a.id AND `rule_log`.`contact_id` = `ac`.`contact_id` AND `rule_log`.`rule_id` = %3
             WHERE `a`.`activity_type_id` = %1 AND a.status_id = %2 AND a.activity_date_time <= NOW()
+            AND `a`.`activity_date_time` > %4
             AND `a`.`is_deleted` = 0
             AND `rule_log`.`id` IS NULL
             {$activityContactWhereClause}
@@ -48,6 +57,7 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
     $params[1] = [$this->triggerParams['activity_type_id'], 'Integer'];
     $params[2] = [$this->triggerParams['activity_status_id'], 'Integer'];
     $params[3] = [$this->ruleId, 'Integer'];
+    $params[4] = [$triggerFromDate, 'Timestamp'];
     $this->activityDAO = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Activity_DAO_Activity');
 
     return TRUE;
@@ -91,7 +101,7 @@ class CRM_CivirulesCronTrigger_ActivityDate extends CRM_CivirulesCronTrigger_Act
       2 => $activityStatusLabel,
       3 => $options[$this->triggerParams['record_type']],
       4 => $caseActivity,
-    ]);
+    ]) . ' <br/><em>' . $this->getTriggerFromDateDescription() . '</em>';
   }
 
   /**
