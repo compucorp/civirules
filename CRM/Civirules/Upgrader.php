@@ -614,5 +614,19 @@ WHERE contact_id NOT IN (select id from civicrm_contact c where c.id=rl.contact_
     return TRUE;
   }
 
+  /**
+   * Change civirule_rule_log.rule_id FK from ON DELETE SET NULL to ON DELETE CASCADE.
+   */
+  public function upgrade_3002() {
+    $this->ctx->log->info('Applying update 3002 - change civirule_rule_log.rule_id FK to ON DELETE CASCADE');
+    // Remove rows already orphaned by the previous SET NULL behaviour.
+    CRM_Core_DAO::executeQuery("DELETE FROM civirule_rule_log WHERE rule_id IS NULL");
+    if (CRM_Core_BAO_SchemaHandler::checkFKExists('civirule_rule_log', 'FK_civirule_rule_log_rule_id')) {
+      CRM_Core_BAO_SchemaHandler::safeRemoveFK('civirule_rule_log', 'FK_civirule_rule_log_rule_id');
+    }
+    CRM_Core_DAO::executeQuery("ALTER TABLE civirule_rule_log ADD CONSTRAINT FK_civirule_rule_log_rule_id FOREIGN KEY (`rule_id`) REFERENCES `civirule_rule`(`id`) ON DELETE CASCADE");
+    return TRUE;
+  }
+
 }
 
