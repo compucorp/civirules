@@ -47,7 +47,7 @@ return [
       'entity_reference' => [
         'entity' => 'CiviRulesRule',
         'key' => 'id',
-        'on_delete' => 'SET NULL',
+        'on_delete' => 'CASCADE',
       ],
     ],
     'contact_id' => [
