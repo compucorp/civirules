@@ -452,7 +452,10 @@ class CRM_Civirules_Engine {
     $trigger = $triggerData->getTrigger();
     $reactOnEntity = $trigger->getReactOnEntity();
     $daoClass = $reactOnEntity->daoClass;
-    if (!empty($daoClass)) {
+    // A trigger may name a DAO class that no longer exists (e.g. an extension
+    // dropped it). Losing the entity_table on the log row is preferable to
+    // throwing, which would abort the rule before any action runs.
+    if (!empty($daoClass) && class_exists($daoClass)) {
       $table = $daoClass::getTableName();
     }
 
