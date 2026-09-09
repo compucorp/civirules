@@ -19,7 +19,7 @@ class CRM_CivirulesConditions_Contact_HasType extends CRM_Civirules_Condition {
         break;
 
       case 'is not one of':
-        $isConditionValid = !in_array($contact['contact_type'], $this->conditionParams['type_names']);;
+        $isConditionValid = !in_array($contact['contact_type'], $this->conditionParams['type_names']);
         break;
     }
     return $isConditionValid;
