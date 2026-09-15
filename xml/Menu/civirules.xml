@@ -355,6 +355,12 @@
     <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/trigger/relationshipenddate</path>
+    <page_callback>CRM_CivirulesCronTrigger_Form_RelationshipEndDate</page_callback>
+    <title>Relationship end date reached</title>
+    <access_arguments>administer CiviCRM; administer CiviRules</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/action/tag</path>
     <page_callback>CRM_CivirulesActions_Tag_Form_TagId</page_callback>
     <title>Tag</title>
