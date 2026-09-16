@@ -52,13 +52,15 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
       return $data;
     }
     try {
-      $customField = Civi\Api4\CustomField::get(FALSE)
-        ->addSelect('custom_group_id:name', 'name')
-        ->addWhere('id', '=', $customFieldId)
-        ->setLimit(1)
-        ->execute()->first();
-      if (!empty($customField['custom_group_id:name']) && !empty($customField['name'])) {
-        $customFieldName = $customField['custom_group_id:name'] . '.' . $customField['name'];
+      // Read the field metadata from CiviCRM's cached custom group metadata
+      // rather than through APIv4. Delayed actions are evaluated from inside
+      // CRM_Core_Transaction::__destruct(), and on PHP < 8.4 any Drupal
+      // permission check made from a destructor throws a FiberError under
+      // Drupal 11. An APIv4 call dispatches civi.api.authorize, where a
+      // listener may perform such a check even when checkPermissions is FALSE.
+      $customField = CRM_Core_BAO_CustomField::getField($customFieldId);
+      if (is_array($customField) && !empty($customField['name']) && !empty($customField['custom_group']['name'])) {
+        $customFieldName = $customField['custom_group']['name'] . '.' . $customField['name'];
         $customData = civicrm_api4(ucfirst($entity), 'get', [
           'select' => [$customFieldName],
           'where' => [['id', '=', $data['id']]],
