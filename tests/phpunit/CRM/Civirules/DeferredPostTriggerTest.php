@@ -53,9 +53,39 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
   }
 
   /**
-   * Runs $fn inside an object destructor.
+   * Runs $fn inside an object destructor that is itself inside a fiber.
+   *
+   * Both halves matter. A CMS only starts the nested fiber that fails when one
+   * is already running, and PHP only refuses to start it inside a destructor.
    */
-  private function inDestructor(callable $fn) {
+  private function inDestructorInsideFiber(callable $fn) {
+    $result = NULL;
+    $fiber = new Fiber(function () use ($fn, &$result) {
+      $probe = new class($fn, $result) {
+
+        private $fn;
+        private $result;
+
+        public function __construct(callable $fn, &$result) {
+          $this->fn = $fn;
+          $this->result = &$result;
+        }
+
+        public function __destruct() {
+          $this->result = ($this->fn)();
+        }
+
+      };
+      unset($probe);
+    });
+    $fiber->start();
+    return $result;
+  }
+
+  /**
+   * Runs $fn inside an object destructor with no fiber running.
+   */
+  private function inDestructorOnly(callable $fn) {
     $result = NULL;
     $probe = new class($fn, $result) {
 
@@ -91,7 +121,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     $this->requireFiberRestriction();
 
     $this->assertTrue(
-      $this->inDestructor('civirules_defer_post_triggers'),
+      $this->inDestructorInsideFiber('civirules_defer_post_triggers'),
       'A destructor anywhere on the stack must be detected.'
     );
   }
@@ -104,11 +134,25 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
   public function testDefersWhenTheDestructorIsDeepInTheStack(): void {
     $this->requireFiberRestriction();
 
-    $seen = $this->inDestructor(function () {
+    $seen = $this->inDestructorInsideFiber(function () {
       return $this->recurse(40, 'civirules_defer_post_triggers');
     });
 
     $this->assertTrue($seen, 'Detection must survive a deep stack.');
+  }
+
+  /**
+   * A destructor with no fiber running is the CLI and cron shape. Deferring
+   * there would queue triggers until the process ended, which for a long
+   * running command means they never fire and the queue grows unbounded.
+   */
+  public function testDoesNotDeferWhenNoFiberIsRunning(): void {
+    $this->requireFiberRestriction();
+
+    $this->assertFalse(
+      $this->inDestructorOnly('civirules_defer_post_triggers'),
+      'With no fiber running there is no nested fiber to avoid.'
+    );
   }
 
   public function testRunsInlineOutsideADestructor(): void {
@@ -122,7 +166,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
   public function testQueuesInsideADestructor(): void {
     $this->requireFiberRestriction();
 
-    $this->inDestructor(function () {
+    $this->inDestructorInsideFiber(function () {
       civirules_call_post_trigger_on_commit('create', 'Contact', 7, NULL, NULL);
       return NULL;
     });
