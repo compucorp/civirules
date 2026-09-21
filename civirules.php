@@ -377,10 +377,18 @@ function civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $obj
  * PHP 8.4 allows fibers in destructors, so above it nothing needs deferring.
  *
  * @return bool
- *   TRUE when a destructor is on the stack and this PHP forbids fibers there.
+ *   TRUE when a fiber is running, a destructor is on the stack, and this PHP
+ *   forbids starting a fiber there.
  */
 function civirules_defer_post_triggers() {
   if (PHP_VERSION_ID >= 80400) {
+    return FALSE;
+  }
+  // A CMS only starts the nested fiber that fails when one is already running,
+  // so outside a fiber there is nothing to avoid. This also keeps long running
+  // CLI processes firing triggers inline rather than queueing them until the
+  // process ends.
+  if (\Fiber::getCurrent() === NULL) {
     return FALSE;
   }
   foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $frame) {
@@ -411,8 +419,14 @@ function civirules_drain_post_triggers() {
       civirules_call_post_trigger($args[0], $args[1], $args[2], $args[3], $args[4]);
     }
     catch (\Throwable $e) {
-      if (class_exists('Civi')) {
-        Civi::log()->error('CiviRules: deferred post trigger failed: ' . $e->getMessage(), ['exception' => $e]);
+      // The logger itself can fail at shutdown, and Civi may not even be
+      // loaded. Either way that must not abandon the rest of the queue.
+      $message = 'CiviRules: deferred post trigger failed: ' . $e->getMessage();
+      try {
+        Civi::log()->error($message, ['exception' => $e]);
+      }
+      catch (\Throwable $loggerFailure) {
+        error_log($message);
       }
     }
   }
