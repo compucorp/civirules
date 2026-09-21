@@ -114,7 +114,6 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     $this->add('select', 'field', ts('Field'), $this->getFields(), TRUE, ['class' => 'crm-select2 huge']);
     $this->add('checkbox', 'original_data', ts('Compare with original value (before the change)?'));
     $this->assign('entities', $this->getEntities());
-    $this->assign('custom_field_multi_select_html_types', CRM_Civirules_Utils_CustomField::getMultiselectTypes());
   }
 
   /**

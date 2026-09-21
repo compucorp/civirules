@@ -6,29 +6,16 @@
 class CRM_Civirules_Utils_CustomField {
 
   /**
-   * Returns which custom field html_type is a multiselect
-   *
-   * @return array
-   */
-  public static function getMultiselectTypes() {
-    return ['CheckBox', 'Multi-Select', 'AdvMulti-Select'];
-  }
-
-  /**
    * Returns whether a custom field is multi select field.
    * @param $customfield_id
    * @return bool
    * @throws CRM_Core_Exception
    */
-  public static function isCustomFieldMultiselect($customfield_id) {
-    //var_dump($customfield_id); exit();
-    $multi_select_types = self::getMultiselectTypes();
-
-    $custom_field = civicrm_api3('CustomField', 'getsingle', ['id' => $customfield_id]);
-    if (in_array($custom_field['html_type'], $multi_select_types)) {
-      return TRUE;
-    }
-    return FALSE;
+  public static function isCustomFieldMultiselect($customfield_id): bool {
+    return (bool) \Civi\Api4\CustomField::get(FALSE)
+      ->addWhere('id', '=', $customfield_id)
+      ->addWhere('serialize', '=', TRUE)
+      ->execute()->count();
   }
 
 }

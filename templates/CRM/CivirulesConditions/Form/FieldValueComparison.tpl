@@ -94,19 +94,8 @@
               var custom_field_id = field.replace('custom_', '');
               CRM.api3('CustomField', 'getsingle', {'sequential': 1, 'id': custom_field_id}, true)
                 .done(function(data) {
-                  switch(data.html_type) {
-                  {/literal}
-                  {foreach from=$custom_field_multi_select_html_types item=custom_field_multi_select_html_type}
-                    case '{$custom_field_multi_select_html_type}':
-                    {/foreach}
-                    {literal}
-                      multiple = true;
-                      CRM_civirules_conidtion_form_updateOptionValues(options, multiple);
-                      break;
-                    default:
-                      CRM_civirules_conidtion_form_updateOptionValues(options, multiple);
-                      break;
-                  }
+                  multiple = data.serialize;
+                  CRM_civirules_conidtion_form_updateOptionValues(options, multiple);
                 });
             } else {
               CRM_civirules_conidtion_form_updateOptionValues(options, multiple);
