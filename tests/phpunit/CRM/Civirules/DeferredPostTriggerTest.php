@@ -1,17 +1,41 @@
 <?php
 
+use Civi\Api4\CiviRulesRule;
+use Civi\Api4\CiviRulesTrigger;
+use Civi\Test\CiviEnvBuilder;
+use Civi\Test\HeadlessInterface;
+use Civi\Test\TransactionalInterface;
+
 /**
  * Tests deferring post triggers out of the transaction destructor.
  *
+ * CiviCRM fires PHASE_POST_COMMIT callbacks from
+ * CRM_Core_Transaction::__destruct(). Below PHP 8.4 a Fiber cannot be started
+ * there, and a CMS permission check can start one, so a rule whose condition
+ * or action reaches the CMS throws FiberError. Deferring the work to shutdown,
+ * which is ordinary execution context, avoids it.
+ *
  * @group headless
  */
-class CRM_Civirules_DeferredPostTriggerTest extends BaseHeadlessTest {
+class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase implements HeadlessInterface, TransactionalInterface {
+
+  public function setUpHeadless(): CiviEnvBuilder {
+    return \Civi\Test::headless()
+      ->installMe(__DIR__)
+      ->apply();
+  }
 
   public function setUp(): void {
     parent::setUp();
+
+    // Required lazily, not at the top of this file: the fixture extends a
+    // CiviCRM class, and PHPUnit's suite loader parses test files before
+    // CiviCRM has booted.
+    require_once __DIR__ . '/DeferredPostTriggerTestFixtures.php';
+
+    CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
     $GLOBALS['civirules_deferred_post_triggers'] = [];
     $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
-    CRM_Civirules_ThrowingTestTrigger::$calls = [];
   }
 
   public function tearDown(): void {
@@ -20,103 +44,120 @@ class CRM_Civirules_DeferredPostTriggerTest extends BaseHeadlessTest {
   }
 
   /**
-   * Skips the destructor-detection tests where the restriction does not exist.
+   * Skips where the restriction being worked around does not exist.
    */
-  private function requireFiberRestriction() {
+  private function requireFiberRestriction(): void {
     if (PHP_VERSION_ID >= 80400) {
-      $this->markTestSkipped('PHP 8.4+ allows fibers in destructors, so nothing defers.');
+      $this->markTestSkipped('PHP 8.4+ allows switching fibers in destructors, so nothing defers.');
     }
   }
 
-  public function testDoesNotDeferOutsideADestructor() {
+  /**
+   * Runs $fn inside an object destructor.
+   */
+  private function inDestructor(callable $fn) {
+    $result = NULL;
+    $probe = new class($fn, $result) {
+
+      private $fn;
+      private $result;
+
+      public function __construct(callable $fn, &$result) {
+        $this->fn = $fn;
+        $this->result = &$result;
+      }
+
+      public function __destruct() {
+        $this->result = ($this->fn)();
+      }
+
+    };
+    unset($probe);
+    return $result;
+  }
+
+  /**
+   * Calls $fn $depth frames further down the stack.
+   */
+  private function recurse(int $depth, callable $fn) {
+    return $depth <= 0 ? $fn() : $this->recurse($depth - 1, $fn);
+  }
+
+  public function testDoesNotDeferOutsideADestructor(): void {
     $this->assertFalse(civirules_defer_post_triggers());
   }
 
-  /**
-   * The reason this code exists: a destructor anywhere on the stack must be
-   * detected, however deep. A real failure had the destructor at frame 30.
-   */
-  public function testDefersInsideADestructor() {
+  public function testDefersInsideADestructor(): void {
     $this->requireFiberRestriction();
 
-    $seen = NULL;
-    $probe = new CRM_Civirules_DestructorProbe(function () use (&$seen) {
-      $seen = civirules_defer_post_triggers();
-    });
-    unset($probe);
-
-    $this->assertTrue($seen, 'A destructor on the stack must be detected.');
+    $this->assertTrue(
+      $this->inDestructor('civirules_defer_post_triggers'),
+      'A destructor anywhere on the stack must be detected.'
+    );
   }
 
   /**
-   * Detection must survive the destructor being far down the stack, not just
-   * the immediate caller. A depth-limited backtrace would fail this.
+   * Detection must not depend on how deep the destructor sits. A real failure
+   * had CRM_Core_Transaction::__destruct() at frame 30, so a depth-limited
+   * backtrace would miss it and silently stop deferring.
    */
-  public function testDefersWhenTheDestructorIsDeepInTheStack() {
+  public function testDefersWhenTheDestructorIsDeepInTheStack(): void {
     $this->requireFiberRestriction();
 
-    $seen = NULL;
-    $probe = new CRM_Civirules_DestructorProbe(function () use (&$seen) {
-      $seen = $this->recurse(40, function () {
-        return civirules_defer_post_triggers();
-      });
+    $seen = $this->inDestructor(function () {
+      return $this->recurse(40, 'civirules_defer_post_triggers');
     });
-    unset($probe);
 
-    $this->assertTrue($seen, 'Detection must not depend on how deep the destructor sits.');
+    $this->assertTrue($seen, 'Detection must survive a deep stack.');
   }
 
-  public function testRunsInlineOutsideADestructor() {
-    civirules_call_post_trigger_on_commit('create', '', 1, NULL, 1);
+  public function testRunsInlineOutsideADestructor(): void {
+    civirules_call_post_trigger_on_commit('create', '', 1, NULL, NULL);
 
     $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers'],
-      'Ordinary context must not queue anything.');
+      'Ordinary context must run inline, not queue.');
     $this->assertFalse($GLOBALS['civirules_deferred_drain_registered']);
   }
 
-  public function testQueuesInsideADestructor() {
+  public function testQueuesInsideADestructor(): void {
     $this->requireFiberRestriction();
 
-    $probe = new CRM_Civirules_DestructorProbe(function () {
-      civirules_call_post_trigger_on_commit('create', 'TestDeferEntity', 7, NULL, 1);
+    $this->inDestructor(function () {
+      civirules_call_post_trigger_on_commit('create', 'Contact', 7, NULL, NULL);
+      return NULL;
     });
-    unset($probe);
 
-    $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers']);
     $this->assertSame(
-      ['create', 'TestDeferEntity', 7, NULL, 1],
-      $GLOBALS['civirules_deferred_post_triggers'][0]
+      [['create', 'Contact', 7, NULL, NULL]],
+      $GLOBALS['civirules_deferred_post_triggers']
     );
     $this->assertTrue($GLOBALS['civirules_deferred_drain_registered']);
   }
 
   /**
    * An Error from one trigger must not abandon the ones queued behind it.
-   *
-   * civirules_call_post_trigger() catches Exception, so only an Error gets
-   * this far, which is exactly the class of failure this feature exists for.
    */
-  public function testDrainRunsRemainingTriggersAfterOneThrows() {
-    $this->registerThrowingTrigger();
+  public function testDrainRunsRemainingTriggersAfterOneThrows(): void {
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::class);
 
     $GLOBALS['civirules_deferred_post_triggers'] = [
-      ['create', 'TestDeferEntity', 1, NULL, 1],
-      ['create', 'TestDeferEntity', 2, NULL, 1],
+      ['create', 'Contact', 1, NULL, NULL],
+      ['create', 'Contact', 2, NULL, NULL],
     ];
 
     civirules_drain_post_triggers();
 
-    $this->assertSame([1, 2], CRM_Civirules_ThrowingTestTrigger::$calls,
+    $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen,
       'The second trigger must still run after the first throws.');
     $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers'],
       'The queue must be fully consumed.');
   }
 
   /**
-   * Cleared so a shutdown function registered after this one can queue more
+   * Cleared so a shutdown function registered after this one can queue further
    * triggers and have them drained rather than silently dropped.
    */
-  public function testDrainClearsTheRegisteredFlag() {
+  public function testDrainClearsTheRegisteredFlag(): void {
     $GLOBALS['civirules_deferred_drain_registered'] = TRUE;
 
     civirules_drain_post_triggers();
@@ -125,72 +166,29 @@ class CRM_Civirules_DeferredPostTriggerTest extends BaseHeadlessTest {
   }
 
   /**
-   * Installs a rule whose trigger throws on its first invocation.
+   * Installs an active rule whose trigger is the given class.
    */
-  private function registerThrowingTrigger() {
-    CRM_Core_DAO::executeQuery(
-      "INSERT INTO civirule_trigger (name, label, object_name, op, cron, class_name, is_active)
-       VALUES ('test_defer_trigger', 'Test defer trigger', 'TestDeferEntity', 'create', 0, %1, 1)",
-      [1 => [CRM_Civirules_ThrowingTestTrigger::class, 'String']]
-    );
-    $triggerId = CRM_Core_DAO::singleValueQuery('SELECT LAST_INSERT_ID()');
+  private function createRuleFor(string $triggerClass): int {
+    $triggerId = CiviRulesTrigger::create(FALSE)
+      ->setValues([
+        'name' => 'phpunit_deferred_' . md5($triggerClass),
+        'label' => 'PHPUnit deferred trigger',
+        'object_name' => 'Contact',
+        'op' => 'create',
+        'class_name' => $triggerClass,
+        'cron' => FALSE,
+        'is_active' => TRUE,
+      ])
+      ->execute()->first()['id'];
 
-    CRM_Core_DAO::executeQuery(
-      "INSERT INTO civirule_rule (name, label, trigger_id, is_active)
-       VALUES ('test_defer_rule', 'Test defer rule', %1, 1)",
-      [1 => [$triggerId, 'Integer']]
-    );
-  }
-
-  /**
-   * Calls $fn $depth frames down.
-   */
-  private function recurse($depth, callable $fn) {
-    if ($depth <= 0) {
-      return $fn();
-    }
-    return $this->recurse($depth - 1, $fn);
-  }
-
-}
-
-/**
- * Runs a callback from inside a destructor.
- */
-class CRM_Civirules_DestructorProbe {
-
-  /**
-   * @var callable
-   */
-  private $fn;
-
-  public function __construct(callable $fn) {
-    $this->fn = $fn;
-  }
-
-  public function __destruct() {
-    ($this->fn)();
-  }
-
-}
-
-/**
- * A post trigger that throws an Error the first time it runs.
- */
-class CRM_Civirules_ThrowingTestTrigger extends CRM_Civirules_Trigger_Post {
-
-  /**
-   * Object ids this trigger was invoked for, in order.
-   *
-   * @var array
-   */
-  public static $calls = [];
-
-  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
-    self::$calls[] = $objectId;
-    if (count(self::$calls) === 1) {
-      throw new Error('Deliberate Error from a deferred trigger.');
-    }
+    return CiviRulesRule::create(FALSE)
+      ->setValues([
+        'name' => 'phpunit_deferred_rule_' . md5($triggerClass),
+        'label' => 'PHPUnit deferred rule',
+        'trigger_id' => $triggerId,
+        'is_active' => TRUE,
+      ])
+      ->execute()->first()['id'];
   }
 
 }
