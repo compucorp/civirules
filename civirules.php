@@ -396,12 +396,27 @@ function civirules_defer_post_triggers() {
  *
  * Drains in a loop rather than a foreach because an action can commit its own
  * transaction and queue further triggers while this is running.
+ *
+ * Catches Throwable rather than Exception. civirules_call_post_trigger()
+ * already swallows Exception, so only an Error can reach here, and letting one
+ * escape would abandon every trigger still queued behind it.
+ *
+ * Clears the flag at the end so that a shutdown function registered after this
+ * one can queue further triggers and have them drained.
  */
 function civirules_drain_post_triggers() {
   while (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
     $args = array_shift($GLOBALS['civirules_deferred_post_triggers']);
-    civirules_call_post_trigger($args[0], $args[1], $args[2], $args[3], $args[4]);
+    try {
+      civirules_call_post_trigger($args[0], $args[1], $args[2], $args[3], $args[4]);
+    }
+    catch (\Throwable $e) {
+      if (class_exists('Civi')) {
+        Civi::log()->error('CiviRules: deferred post trigger failed: ' . $e->getMessage(), ['exception' => $e]);
+      }
+    }
   }
+  $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
 }
 
 /**
