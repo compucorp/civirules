@@ -41,12 +41,12 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
       if ($periodStartDate) {
         $this->_index++;
         $this->_query .= ' AND DATE(act.activity_date_time) >= %' . $this->_index;
-        $this->_queryParams[$this->_index] = array($periodStartDate->format('Y-m-d'), 'String');
+        $this->_queryParams[$this->_index] = [$periodStartDate->format('Y-m-d'), 'String'];
       }
       if ($periodEndDate) {
         $this->_index++;
         $this->_query .= ' AND DATE(act.activity_date_time) <= %' . $this->_index;
-        $this->_queryParams[$this->_index] = array($periodEndDate->format('Y-m-d'), 'String');
+        $this->_queryParams[$this->_index] = [$periodEndDate->format('Y-m-d'), 'String'];
       }
       // only check if there are actually activity types and campaigns in the condition parameters
       if ($this->_index > 3) {
