@@ -276,7 +276,7 @@ function civirules_trigger_postdelete($event) {
 function civirules_instanciate_post_trigger($op, $objectName, $objectId, $objectRef, $eventId) {
   try {
     if (CRM_Core_Transaction::isActive()) {
-      CRM_Core_Transaction::addCallback(CRM_Core_Transaction::PHASE_POST_COMMIT, 'civirules_call_post_trigger', [
+      CRM_Core_Transaction::addCallback(CRM_Core_Transaction::PHASE_POST_COMMIT, 'civirules_call_post_trigger_on_commit', [
         $op,
         $objectName,
         $objectId,
@@ -290,6 +290,100 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
   } catch (\Exception $ex) {
     // Do nothing.
   }
+}
+
+/**
+ * Runs a post trigger once its transaction has committed.
+ *
+ * CiviCRM fires PHASE_POST_COMMIT callbacks from
+ * CRM_Core_Transaction::__destruct(). Below PHP 8.4 a Fiber cannot be started
+ * from a destructor, and a Drupal 11 permission check starts one, so a rule
+ * whose condition or action reaches Drupal permissions throws FiberError there
+ * and is lost without a trace. Queue those and run them at shutdown, which is
+ * ordinary context.
+ *
+ * Only the destructor path defers, so every caller already running in ordinary
+ * context keeps firing inline and in order.
+ *
+ * @param $op
+ * @param $objectName
+ * @param $objectId
+ * @param $objectRef
+ * @param $eventID
+ */
+function civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $objectRef, $eventID) {
+  if (!civirules_defer_post_triggers()) {
+    civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventID);
+    return;
+  }
+
+  $GLOBALS['civirules_deferred_post_triggers'][] = [$op, $objectName, $objectId, $objectRef, $eventID];
+  if (empty($GLOBALS['civirules_deferred_drain_registered'])) {
+    $GLOBALS['civirules_deferred_drain_registered'] = TRUE;
+    register_shutdown_function('civirules_drain_post_triggers');
+  }
+}
+
+/**
+ * Whether the trigger has to be moved out of the current execution context.
+ *
+ * PHP 8.4 allows fibers in destructors, so above it nothing needs deferring.
+ *
+ * @return bool
+ *   TRUE when a fiber is running, a destructor is on the stack, and this PHP
+ *   forbids starting a fiber there.
+ */
+function civirules_defer_post_triggers() {
+  if (PHP_VERSION_ID >= 80400) {
+    return FALSE;
+  }
+  // A CMS only starts the nested fiber that fails when one is already running,
+  // so outside a fiber there is nothing to avoid. This also keeps long running
+  // CLI processes firing triggers inline rather than queueing them until the
+  // process ends.
+  if (\Fiber::getCurrent() === NULL) {
+    return FALSE;
+  }
+  foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $frame) {
+    if (isset($frame['function']) && $frame['function'] === '__destruct') {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Runs the post triggers that were deferred out of a transaction destructor.
+ *
+ * Drains in a loop rather than a foreach because an action can commit its own
+ * transaction and queue further triggers while this is running.
+ *
+ * Catches Throwable rather than Exception. civirules_call_post_trigger()
+ * already swallows Exception, so only an Error can reach here, and letting one
+ * escape would abandon every trigger still queued behind it.
+ *
+ * Clears the flag at the end so that a shutdown function registered after this
+ * one can queue further triggers and have them drained.
+ */
+function civirules_drain_post_triggers() {
+  while (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
+    $args = array_shift($GLOBALS['civirules_deferred_post_triggers']);
+    try {
+      civirules_call_post_trigger($args[0], $args[1], $args[2], $args[3], $args[4]);
+    }
+    catch (\Throwable $e) {
+      // The logger itself can fail at shutdown, and Civi may not even be
+      // loaded. Either way that must not abandon the rest of the queue.
+      $message = 'CiviRules: deferred post trigger failed: ' . $e->getMessage();
+      try {
+        Civi::log()->error($message, ['exception' => $e]);
+      }
+      catch (\Throwable $loggerFailure) {
+        error_log($message);
+      }
+    }
+  }
+  $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
 }
 
 /**
