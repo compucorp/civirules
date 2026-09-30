@@ -132,7 +132,7 @@ class CRM_Civirules_Trigger_Post extends CRM_Civirules_Trigger {
       // getDAONameForEntity added in 5.72
       return CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->objectName);
     }
-    return CRM_Core_DAO_AllCoreTables::getFullName($this->objectName);
+    return CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->objectName);
   }
 
   /**
