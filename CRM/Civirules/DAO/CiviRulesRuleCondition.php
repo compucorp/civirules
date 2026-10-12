@@ -9,14 +9,14 @@
  * This stub provides compatibility. It is not intended to be modified in a
  * substantive way. Property annotations may be added, but are not required.
  * @property string $id
- * @property string $rule_id
- * @property string $condition_link
- * @property string $condition_id
- * @property string $condition_params
+ * @property string|null $rule_id
+ * @property string|null $condition_link
+ * @property string|null $condition_id
+ * @property string|null $condition_params
  * @property bool|string $is_active
  * @property int $weight
  * @property string $created_date
- * @property string|null $modified_date
+ * @property string $modified_date
  */
 class CRM_Civirules_DAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_Base {
 
