@@ -99,8 +99,7 @@ class CRM_CivirulesActions_ContributionRecur_ChangeNextScheduleDate extends CRM_
     $date = new \DateTime($date_raw);
     $return .= E::ts("Change Next Scheduled Date for Recurring Contribution (%1 gives %2)", [
       1 => $date_type,
-      2 => $date->format('Y-m-d H:m
-:s'),
+      2 => $date->format('Y-m-d H:i:s'),
     ]);
     return $return;
   }

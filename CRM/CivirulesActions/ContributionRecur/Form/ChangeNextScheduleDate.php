@@ -67,8 +67,10 @@ class CRM_CivirulesActions_ContributionRecur_Form_ChangeNextScheduleDate extends
    * @return array|bool
    */
   public static function validateInputFields($fields) {
+    $errors = [];
+
     // Make sure that they didn't choose both options
-    if (isset($fields['schedule_option']) && isset($fields['schedule_date'])) {
+    if (!empty($fields['schedule_option']) && !empty($fields['schedule_date'])) {
       $errors['schedule_option'] = E::ts('You cannot have a relative option and a custom date/format');
     }
 
