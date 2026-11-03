@@ -1,5 +1,27 @@
 # CHANGELOG
 
+# Version 3.45.0 (2026-11-03)
+
+**Requires CiviCRM 6.16 or later.**
+
+* [!416](https://lab.civicrm.org/extensions/civirules/-/merge_requests/416) Raise minimum CiviCRM version to 6.16, civix upgrade, fix PHP 8.5 test deprecation
+* [!415](https://lab.civicrm.org/extensions/civirules/-/merge_requests/415) Run PHPUnit and security scans in GitLab CI instead of CiviCARROT
+* [!414](https://lab.civicrm.org/extensions/civirules/-/merge_requests/414) ChangeNextScheduleDate: fix formatting and output
+* [!408](https://lab.civicrm.org/extensions/civirules/-/merge_requests/408) Update fetching serialization for custom fields
+* [!409](https://lab.civicrm.org/extensions/civirules/-/merge_requests/409) Convert to PHP short array syntax
+* [!412](https://lab.civicrm.org/extensions/civirules/-/merge_requests/412) Remove redundant require_once/include_once for CRM classes
+* [!413](https://lab.civicrm.org/extensions/civirules/-/merge_requests/413) Mark nullable columns as nullable in the DAO property annotations
+* [!411](https://lab.civicrm.org/extensions/civirules/-/merge_requests/411) Replace call to deprecated function
+* [!404](https://lab.civicrm.org/extensions/civirules/-/merge_requests/404) Fix duplicate semicolons
+* [!403](https://lab.civicrm.org/extensions/civirules/-/merge_requests/403) Don't abort a rule when its trigger names a missing DAO class
+* [!402](https://lab.civicrm.org/extensions/civirules/-/merge_requests/402) Add a configurable Trigger From Date for date-based cron triggers
+* [!400](https://lab.civicrm.org/extensions/civirules/-/merge_requests/400) Fix fatal error in the Relationship End Date trigger
+* [!401](https://lab.civicrm.org/extensions/civirules/-/merge_requests/401) Fix the coding-standard violations civilint reports; run lint and PHP compatibility scans in CI
+* [!394](https://lab.civicrm.org/extensions/civirules/-/merge_requests/394) Number rule action/condition weights within each rule
+* [!392](https://lab.civicrm.org/extensions/civirules/-/merge_requests/392) Don't let one unusable rule action/condition break the whole rule edit screen
+* [!390](https://lab.civicrm.org/extensions/civirules/-/merge_requests/390) Skip the CustomDataChanged triggers when no rules listen to them
+* [!389](https://lab.civicrm.org/extensions/civirules/-/merge_requests/389) Share the contact lookup within one hook_civicrm_custom invocation
+
 # Version 3.44.0 (2026-08-14)
 
 * [!387](https://lab.civicrm.org/extensions/civirules/-/merge_requests/387) Unserializebug

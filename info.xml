@@ -9,6 +9,7 @@
     <url desc="Documentation">https://docs.civicrm.org/civirules/en/latest</url>
     <url desc="Support">http://www.civicoop.org</url>
     <url desc="Licensing">http://civicrm.org/licensing</url>
+    <url desc="Release Notes">https://lab.civicrm.org/extensions/civirules/-/blob/master/CHANGELOG.md</url>
   </urls>
   <authors>
     <author>
@@ -22,8 +23,8 @@
       <role>Maintainer</role>
     </author>
   </authors>
-  <releaseDate>2026-08-14</releaseDate>
-  <version>3.44.0</version>
+  <releaseDate>2026-11-03</releaseDate>
+  <version>3.45.0</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>6.16</ver>
