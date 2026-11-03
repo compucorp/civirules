@@ -2,15 +2,11 @@
 #
 #   lint.yml      coding standards (civilint) and PHP version compatibility
 #   composer.yml  publishes a tag to the Composer Packages registry
+#   phpunit.yml   PHPUnit on the oldest and newest supported PHP/CiviCRM
+#   security.yml  dependency audits, secret scanning (gitleaks) and semgrep
 #
-# Both live in infra/extension-ci and are extension-agnostic, so there is
-# nothing to configure here beyond the exclude below. See
-# https://lab.civicrm.org/infra/gitlab/-/issues/50
-#
-# PHPUnit is not run from here: it runs in CiviCARROT, dispatched from the merge
-# request. These scans need no CiviCRM, CMS or database, so they run natively on
-# lab.civicrm.org's runners in well under a minute and give a merge request real
-# red/green status rather than only the CARROT bot comment.
+# All live in infra/extension-ci and are extension-agnostic; see
+# https://lab.civicrm.org/infra/extension-ci for what each job does.
 variables:
   # psr/log is a verbatim copy of the upstream PSR-3 interface, so it follows
   # PSR-12 rather than the Drupal-derived CiviCRM standard.
@@ -22,3 +18,15 @@ include:
     file:
       - '/lint.yml'
       - '/composer.yml'
+      - '/phpunit.yml'
+      - '/security.yml'
+
+# Oldest supported stack: PHP and CiviCRM minimums from extension-ci, raised to
+# info.xml's <compatibility> floor.
+phpunit:min:
+  extends: .phpunit-min
+
+# Early warning of core drift; never blocks a merge request.
+phpunit:max:
+  extends: .phpunit-max
+  allow_failure: true
