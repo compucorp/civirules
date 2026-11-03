@@ -30,7 +30,7 @@
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
-    <format>25.10.2</format>
+    <format>26.10.3</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
