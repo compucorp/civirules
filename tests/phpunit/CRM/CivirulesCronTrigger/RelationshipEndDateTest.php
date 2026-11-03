@@ -206,7 +206,6 @@ class CRM_CivirulesCronTrigger_RelationshipEndDateTest extends \PHPUnit\Framewor
     $trigger = $this->buildTrigger($triggerParams, $this->ruleId);
 
     $method = new ReflectionMethod(CRM_CivirulesCronTrigger_RelationshipEndDate::class, 'getNextEntityTriggerData');
-    $method->setAccessible(TRUE);
 
     $ids = [];
     while ($triggerData = $method->invoke($trigger)) {

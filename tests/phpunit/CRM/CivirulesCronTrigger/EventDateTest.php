@@ -173,7 +173,6 @@ class CRM_CivirulesCronTrigger_EventDateTest extends \PHPUnit\Framework\TestCase
     $trigger = $this->buildTrigger($triggerParams, $ruleId ?? $this->ruleId);
 
     $method = new ReflectionMethod(CRM_CivirulesCronTrigger_EventDate::class, 'getNextEntityTriggerData');
-    $method->setAccessible(TRUE);
 
     $ids = [];
     while ($triggerData = $method->invoke($trigger)) {

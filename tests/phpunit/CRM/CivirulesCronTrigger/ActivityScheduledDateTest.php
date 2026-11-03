@@ -85,7 +85,6 @@ class CRM_CivirulesCronTrigger_ActivityScheduledDateTest extends \PHPUnit\Framew
     ]));
 
     $method = new ReflectionMethod(CRM_CivirulesCronTrigger_ActivityScheduledDate::class, 'getNextEntityTriggerData');
-    $method->setAccessible(TRUE);
 
     $ids = [];
     while ($triggerData = $method->invoke($trigger)) {

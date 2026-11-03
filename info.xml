@@ -26,11 +26,11 @@
   <version>3.44.0</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>6.12</ver>
+    <ver>6.16</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Civirules</namespace>
-    <format>25.10.2</format>
+    <format>26.10.3</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
