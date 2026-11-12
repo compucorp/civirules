@@ -24,7 +24,7 @@ class CRM_CivirulesConditions_Contact_HasActivityInCampaign extends CRM_Civirule
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
   }
 

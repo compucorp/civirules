@@ -25,7 +25,7 @@ class CRM_CivirulesConditions_Generic_Date extends CRM_Civirules_Condition {
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
       // convert from old format
       if (empty($data['compare_type'])) {
         if (!empty($data['use_trigger_date'])) { // old verion of way trigger date was saved

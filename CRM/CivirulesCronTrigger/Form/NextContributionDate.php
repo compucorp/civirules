@@ -29,7 +29,7 @@ class CRM_CivirulesCronTrigger_Form_NextContributionDate extends CRM_CivirulesTr
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    $data = unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
     if (!empty($data['interval_unit'])) {
       $defaultValues['interval_unit'] = $data['interval_unit'];
     }
