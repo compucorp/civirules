@@ -14,7 +14,7 @@ class CRM_CivirulesConditions_ContributionRecur_xthContribution extends CRM_Civi
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
   }
 

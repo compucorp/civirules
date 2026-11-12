@@ -70,7 +70,7 @@ abstract class CRM_Civirules_Condition {
    */
   public function exportConditionParameters() {
     if (!empty($this->ruleCondition['condition_params'])) {
-      return unserialize($this->ruleCondition['condition_params']);
+      return unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
     return [];
   }

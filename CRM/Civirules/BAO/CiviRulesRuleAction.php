@@ -14,7 +14,7 @@ class CRM_Civirules_BAO_CiviRulesRuleAction extends CRM_Civirules_DAO_CiviRulesR
    */
   public function unserializeParams(): array {
     if (!empty($this->action_params) && !is_array($this->action_params)) {
-      return unserialize($this->action_params);
+      return unserialize($this->action_params, ['allowed_classes' => FALSE]);
     }
     return [];
   }

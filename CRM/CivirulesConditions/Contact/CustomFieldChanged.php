@@ -14,7 +14,7 @@ class CRM_CivirulesConditions_Contact_CustomFieldChanged extends CRM_Civirules_C
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
   }
 

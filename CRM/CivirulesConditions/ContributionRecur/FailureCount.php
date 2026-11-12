@@ -22,7 +22,7 @@ class CRM_CivirulesConditions_ContributionRecur_FailureCount extends CRM_Civirul
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
   }
 

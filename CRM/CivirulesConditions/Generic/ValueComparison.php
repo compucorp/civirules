@@ -19,7 +19,7 @@ abstract class CRM_CivirulesConditions_Generic_ValueComparison extends CRM_Civir
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
   }
 
