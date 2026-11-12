@@ -30,7 +30,7 @@ abstract class CRM_Civirules_Condition {
     $params = [];
     if (!empty($this->ruleCondition['condition_params'])) {
       // Deprecated compatibility check - remove once all data migrated to array storage
-      $params = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
+      $params = is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
     return $params;
   }
@@ -84,7 +84,7 @@ abstract class CRM_Civirules_Condition {
   public function exportConditionParameters() {
     if (!empty($this->ruleCondition['condition_params'])) {
       // Deprecated compatibility check - remove once all data migrated to array storage
-      return is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params']);
+      return is_array($this->ruleCondition['condition_params']) ? $this->ruleCondition['condition_params'] : unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
     }
     return [];
   }

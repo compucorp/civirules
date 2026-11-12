@@ -67,7 +67,7 @@ class CRM_CivirulesCronTrigger_Form_MembershipEndDate extends CRM_CivirulesTrigg
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     // Deprecated compatibility check - remove once all data migrated to array storage
-    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params);
+    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
     if (!empty($data['membership_type_id'])) {
       $defaultValues['membership_type_id'] = $data['membership_type_id'];
     }

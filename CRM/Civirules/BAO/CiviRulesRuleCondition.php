@@ -136,7 +136,7 @@ class CRM_Civirules_BAO_CiviRulesRuleCondition extends CRM_Civirules_DAO_RuleCon
   public function unserializeParams(): array {
     if (!empty($this->condition_params)) {
       // Deprecated compatibility check - remove once all data migrated to array storage
-      return is_array($this->condition_params) ? $this->condition_params : unserialize($this->condition_params);
+      return is_array($this->condition_params) ? $this->condition_params : unserialize($this->condition_params, ['allowed_classes' => FALSE]);
     }
     return [];
   }

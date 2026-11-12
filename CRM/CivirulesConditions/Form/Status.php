@@ -75,7 +75,7 @@ class CRM_CivirulesConditions_Form_Status extends CRM_CivirulesConditions_Form_F
     $defaultValues = parent::setDefaultValues();
     $defaultValues['entity'] = $this->ruleConditionEntity;
     // Deprecated compatibility check - remove once all data migrated to array storage
-    $data = !empty($this->ruleCondition->condition_params) ? (is_array($this->ruleCondition->condition_params) ? $this->ruleCondition->condition_params : unserialize($this->ruleCondition->condition_params)) : [];
+    $data = !empty($this->ruleCondition->condition_params) ? (is_array($this->ruleCondition->condition_params) ? $this->ruleCondition->condition_params : unserialize($this->ruleCondition->condition_params, ['allowed_classes' => FALSE])) : [];
 
     // Old versions may have stored the condition param as eg membership_status_id instead of the generic status_id.
     // Also may not have been array but a single value, so convert here.
