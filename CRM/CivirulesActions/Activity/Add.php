@@ -145,8 +145,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
     }
     else {
       if (!empty($action_params['activity_date_time'])) {
-        // Deprecated compatibility check - remove once all data migrated to array storage
-        $delayClass = is_array($action_params['activity_date_time']) ? $action_params['activity_date_time'] : unserialize($action_params['activity_date_time']);
+        $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($action_params['activity_date_time']);
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
           $activityDate = $delayClass->delayTo(new DateTime(), $triggerData);
           if ($activityDate instanceof DateTime) {
@@ -328,7 +327,7 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
 
     if (!empty($params['activity_date_time'])) {
       if ($params['activity_date_time'] != 'null') {
-        $delayClass = unserialize(($params['activity_date_time']));
+        $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($params['activity_date_time']);
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
           $return .= '<br>' . ts('Activity date time') . ': ' . $delayClass->getDelayExplanation();
         }

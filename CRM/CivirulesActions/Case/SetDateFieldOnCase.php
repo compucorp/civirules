@@ -21,7 +21,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
     $date = new DateTime();
     $params = [];
     if (!empty($actionParameters['date'])) {
-      $delayClass = unserialize(($actionParameters['date']));
+      $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($actionParameters['date']);
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
         $date = $delayClass->delayTo($date, $triggerData);
       }
@@ -134,7 +134,7 @@ class CRM_CivirulesActions_Case_SetDateFieldOnCase extends CRM_Civirules_Action 
     $field = $actionParameters['field'];
     $label = 'Set ' . $fields[$field] . ' to ';
     if (!empty($actionParameters['date'])) {
-      $delayClass = unserialize(($actionParameters['date']));
+      $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($actionParameters['date']);
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
         $label .= $delayClass->getDelayExplanation();
       }

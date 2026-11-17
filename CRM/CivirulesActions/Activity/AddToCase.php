@@ -250,7 +250,7 @@ class CRM_CivirulesActions_Activity_AddToCase extends CRM_CivirulesActions_Activ
 
     if (!empty($params['activity_date_time'])) {
       if ($params['activity_date_time'] != 'null') {
-        $delayClass = unserialize(($params['activity_date_time']));
+        $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($params['activity_date_time']);
         if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
           $return .= '<br>' . E::ts('Activity date time') . ': ' . $delayClass->getDelayExplanation();
         }

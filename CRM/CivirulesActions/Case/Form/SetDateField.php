@@ -43,8 +43,7 @@ class CRM_CivirulesActions_Case_Form_SetDateField extends CRM_CivirulesActions_F
     foreach (CRM_Civirules_Delay_Factory::getAllDelayClasses() as $delay_class) {
       $delay_class->setDefaultValues($defaultValues, 'date', $this->rule);
     }
-    // Deprecated compatibility check - remove once all data migrated to array storage
-    $activityDateClass = is_array($data['date']) ? $data['date'] : unserialize($data['date']);
+    $activityDateClass = CRM_Civirules_Delay_Factory::unserializeDelay($data['date']);
     if ($activityDateClass) {
       $defaultValues['date'] = get_class($activityDateClass);
       foreach ($activityDateClass->getValues('date', $this->rule) as $key => $val) {

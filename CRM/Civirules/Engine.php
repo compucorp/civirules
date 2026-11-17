@@ -323,7 +323,7 @@ class CRM_Civirules_Engine {
     $delayedTo = new DateTime();
     $now = new DateTime();
     if (!empty($ruleAction['delay'])) {
-      $delayClass = unserialize(($ruleAction['delay']));
+      $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($ruleAction['delay']);
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
         $delayedTo = $delayClass->delayTo($delayedTo, $actionEngine->getTriggerData());
       }
