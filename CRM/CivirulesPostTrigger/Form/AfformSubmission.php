@@ -43,7 +43,7 @@ class CRM_CivirulesPostTrigger_Form_AfformSubmission extends CRM_CivirulesTrigge
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     if (isset($this->rule->trigger_params)) {
-      $data = unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
+      $data = CRM_Core_DAO::unSerializeField($this->rule->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
       // Default to all record types. This creates backwards compatibility.
       $defaultValues['rule_afform_select'] = $data['rule_afform_select'] ?? 0;
     }

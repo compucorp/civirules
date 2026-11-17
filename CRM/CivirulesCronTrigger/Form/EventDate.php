@@ -56,7 +56,7 @@ class CRM_CivirulesCronTrigger_Form_EventDate extends CRM_CivirulesTrigger_Form_
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
+    $data = CRM_Core_DAO::unSerializeField($this->rule->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
     if (!empty($data['event_type_id'])) {
       $defaultValues['event_type_id'] = $data['event_type_id'];
     }

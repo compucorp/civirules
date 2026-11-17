@@ -96,7 +96,7 @@ abstract class CRM_Civirules_Action {
   protected function getActionParameters() {
     $params = [];
     if (!empty($this->ruleAction['action_params'])) {
-      $params = unserialize($this->ruleAction['action_params'], ['allowed_classes' => FALSE]);
+      $params = CRM_Core_DAO::unSerializeField($this->ruleAction['action_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
     return $params;
   }

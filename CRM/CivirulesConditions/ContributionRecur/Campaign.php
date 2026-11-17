@@ -21,7 +21,7 @@ class CRM_CivirulesConditions_ContributionRecur_Campaign extends CRM_Civirules_C
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params'], ['allowed_classes' => FALSE]);
+      $this->conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
   }
 

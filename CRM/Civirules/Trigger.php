@@ -75,7 +75,7 @@ abstract class CRM_Civirules_Trigger {
    */
   public function setTriggerParams(string $triggerParams) {
     try {
-      $triggerParams = unserialize($triggerParams, ['allowed_classes' => FALSE]);
+      $triggerParams = CRM_Core_DAO::unSerializeField($triggerParams, CRM_Core_DAO::SERIALIZE_PHP);
       // If unserialize fails, FALSE is returned. We need an array
       $this->triggerParams = $triggerParams ?: [];
     }
