@@ -98,7 +98,7 @@ abstract class CRM_Civirules_Action {
     $params = [];
     if (!empty($this->ruleAction['action_params'])) {
       // Deprecated compatibility check - remove once all data migrated to array storage
-      $params = is_array($this->ruleAction['action_params']) ? $this->ruleAction['action_params'] : unserialize($this->ruleAction['action_params'], ['allowed_classes' => FALSE]);
+      $params = CRM_Core_DAO::unSerializeField($this->ruleAction['action_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
     return $params;
   }

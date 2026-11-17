@@ -38,7 +38,7 @@ class CRM_CivirulesCronTrigger_Form_WeeklyGroupMembership extends CRM_CivirulesT
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
+    $data = CRM_Core_DAO::unSerializeField($this->rule->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
     if (!empty($data['group_id'])) {
       if (!is_array($data['group_id'])) {
         $data['group_id'] = [$data['group_id']];

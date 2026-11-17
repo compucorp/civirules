@@ -76,7 +76,7 @@ class CRM_CivirulesCronTrigger_Form_NoCaseActivitySince extends CRM_CivirulesTri
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
     // Deprecated compatibility check - remove once all data migrated to array storage
-    $data = is_array($this->rule->trigger_params) ? $this->rule->trigger_params : unserialize($this->rule->trigger_params, ['allowed_classes' => FALSE]);
+    $data = CRM_Core_DAO::unSerializeField($this->rule->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
     if (!empty($data['case_type'])) {
       $defaultValues['case_type'] = $data['case_type'];
     }

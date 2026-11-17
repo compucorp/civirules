@@ -239,7 +239,7 @@ class CRM_Civirules_BAO_CiviRulesRule extends CRM_Civirules_DAO_Rule implements 
   public function unserializeParams(): array {
     if (!empty($this->trigger_params)) {
       // Deprecated compatibility check - remove once all data migrated to array storage
-      return is_array($this->trigger_params) ? $this->trigger_params : unserialize($this->trigger_params, ['allowed_classes' => FALSE]);
+      return CRM_Core_DAO::unSerializeField($this->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
     }
     return [];
   }
