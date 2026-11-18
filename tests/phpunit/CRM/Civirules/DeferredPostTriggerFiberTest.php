@@ -121,9 +121,10 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
   }
 
   /**
-   * A save with no transaction open can still run in a destructor inside a
-   * fiber: a POST_COMMIT callback runs there after the frame has closed. The
-   * trigger must be queued, and the callbacks after it must still run.
+   * A save with no transaction open, from a destructor in a fiber, is queued.
+   *
+   * A POST_COMMIT callback runs in the destructor after the frame has closed.
+   * The callbacks after it must still run.
    */
   public function testSaveWithNoTransactionFromADestructorInsideAFiberIsQueued(): void {
     $activeInCallback = NULL;
