@@ -291,8 +291,9 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
       ]);
     }
     else {
-      civirules_flush_deferred_post_triggers();
-      civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventId);
+      // This can still be a destructor inside a fiber, such as a save made by
+      // a POST_COMMIT callback, so it may have to be queued too.
+      civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $objectRef, $eventId);
     }
   } catch (\Exception $ex) {
     // Do nothing.
@@ -300,7 +301,8 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
 }
 
 /**
- * Runs a post trigger once its transaction has committed.
+ * Runs a post trigger once its transaction has committed, or now if none is
+ * open.
  *
  * CiviCRM fires PHASE_POST_COMMIT callbacks from
  * CRM_Core_Transaction::__destruct(). Below PHP 8.4 a Fiber cannot be started
