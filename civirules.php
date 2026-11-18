@@ -49,7 +49,8 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
       'civi.dao.postDelete',
       'civirules_trigger_postdelete',
     ])
-    // After the API layer has committed its transaction.
+    // After the API call has committed. APIv3 ends its own transaction at
+    // W_MIDDLE. APIv4 opens none, but this event fires for it too.
     ->addMethodCall('addListener', [
       'civi.api.respond',
       'civirules_flush_deferred_post_triggers',
