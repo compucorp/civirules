@@ -150,4 +150,22 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
     $this->assertSame([[1, 'suspended']], CRM_Civirules_DeferredPostTriggerTest_FiberFixture::$seen);
   }
 
+  /**
+   * APIv4 opens no transaction of its own, but the trigger must still have
+   * run by the time the API call returns.
+   */
+  public function testTriggerRunsBeforeTheApiv4CallReturns(): void {
+    $seenWhenReturned = NULL;
+    $error = $this->inFiber(function () use (&$seenWhenReturned) {
+      \Civi\Api4\Tag::create(FALSE)
+        ->addValue('name', 'phpunit_deferred_' . uniqid())
+        ->execute();
+      $seenWhenReturned = count(CRM_Civirules_DeferredPostTriggerTest_FiberFixture::$seen);
+    });
+
+    $this->assertNull($error, 'No FiberError: ' . ($error ? get_class($error) . ': ' . $error->getMessage() : ''));
+    $this->assertSame(1, $seenWhenReturned, 'The trigger must run before the API call returns, not at shutdown.');
+    $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
+  }
+
 }
