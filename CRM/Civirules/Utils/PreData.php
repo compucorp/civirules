@@ -162,6 +162,47 @@ class CRM_Civirules_Utils_PreData {
   }
 
   /**
+   * Returns the pre data held for an entity id and event, for every entity.
+   *
+   * @param int $entityId
+   * @param int $eventID
+   *
+   * @return array
+   *   The data keyed by entity name.
+   */
+  public static function snapshot($entityId, $eventID) {
+    $snapshot = [];
+    foreach (self::$preData as $entity => $byId) {
+      if (isset($byId[$entityId][$eventID])) {
+        $snapshot[$entity] = $byId[$entityId][$eventID];
+      }
+    }
+    return $snapshot;
+  }
+
+  /**
+   * Replaces the pre data held for an entity id and event with a snapshot.
+   *
+   * @param int $entityId
+   * @param int $eventID
+   * @param array $snapshot
+   *   As returned by snapshot().
+   *
+   * @return array
+   *   The data held before, so the caller can put it back.
+   */
+  public static function restore($entityId, $eventID, array $snapshot) {
+    $previous = self::snapshot($entityId, $eventID);
+    foreach (array_keys($previous) as $entity) {
+      unset(self::$preData[$entity][$entityId][$eventID]);
+    }
+    foreach ($snapshot as $entity => $data) {
+      self::$preData[$entity][$entityId][$eventID] = $data;
+    }
+    return $previous;
+  }
+
+  /**
    * Method to get the pre operation data
    *
    * @param string $entity
