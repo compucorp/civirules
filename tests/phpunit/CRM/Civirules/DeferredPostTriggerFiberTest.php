@@ -60,8 +60,8 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
   public function tearDown(): void {
     unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered'], $GLOBALS['civirules_deferred_running']);
     CRM_Core_DAO::executeQuery("DELETE FROM civicrm_tag WHERE name LIKE 'phpunit_deferred_%'");
-    CRM_Core_DAO::executeQuery("DELETE FROM civirule_rule WHERE name = 'phpunit_deferred_fiber_rule'");
-    CRM_Core_DAO::executeQuery("DELETE FROM civirule_trigger WHERE name = 'phpunit_deferred_fiber'");
+    CRM_Core_DAO::executeQuery("DELETE FROM civirule_rule WHERE name LIKE 'phpunit_deferred_fiber%'");
+    CRM_Core_DAO::executeQuery("DELETE FROM civirule_trigger WHERE name LIKE 'phpunit_deferred_fiber%'");
     parent::tearDown();
   }
 
@@ -168,6 +168,52 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
 
     $this->assertNull($error, 'No FiberError: ' . ($error ? get_class($error) . ': ' . $error->getMessage() : ''));
     $this->assertSame(1, $seenWhenReturned, 'The queued trigger must run before the API call returns.');
+    $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
+  }
+
+  /**
+   * The shutdown drain runs what a cut short drain left in the queue.
+   *
+   * An exit or fatal error during a drain skips its finally block, which
+   * leaves the drain marked as running.
+   */
+  public function testShutdownDrainRunsWhatACutShortDrainLeft(): void {
+    $triggerId = CiviRulesTrigger::create(FALSE)
+      ->setValues([
+        'name' => 'phpunit_deferred_fiber_suspending',
+        'label' => 'PHPUnit deferred suspending trigger',
+        'object_name' => 'Contact',
+        'op' => 'create',
+        'class_name' => CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::class,
+        'cron' => FALSE,
+        'is_active' => TRUE,
+      ])
+      ->execute()->first()['id'];
+    CiviRulesRule::create(FALSE)
+      ->setValues([
+        'name' => 'phpunit_deferred_fiber_suspending_rule',
+        'label' => 'PHPUnit deferred suspending rule',
+        'trigger_id' => $triggerId,
+        'is_active' => TRUE,
+      ])
+      ->execute();
+    CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen = [];
+    $GLOBALS['civirules_deferred_post_triggers'] = [
+      ['create', 'Contact', 1, NULL, NULL],
+      ['create', 'Contact', 2, NULL, NULL],
+    ];
+
+    // Left suspended, this drain stops at the first trigger and stays marked
+    // as running, as one cut short by an exit or fatal error does.
+    $cutShort = new Fiber('civirules_run_deferred_post_triggers');
+    $cutShort->start();
+    $this->assertTrue($cutShort->isSuspended());
+    $this->assertFalse(CRM_Core_Transaction::isActive());
+
+    civirules_drain_post_triggers();
+
+    $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen,
+      'The shutdown drain must run the rest of the queue.');
     $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
   }
 
