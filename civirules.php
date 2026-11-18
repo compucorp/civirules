@@ -470,16 +470,33 @@ function civirules_flush_deferred_post_triggers($event = NULL) {
 /**
  * Runs the post triggers that were deferred out of a transaction destructor.
  *
- * Registered as a shutdown function, the last resort when no earlier safe
- * point came.
+ * Only for register_shutdown_function(), the last resort when no earlier
+ * safe point came.
  *
- * Clears the flag at the end so that a shutdown function registered after this
- * one can queue further triggers and have them drained.
+ * Clears the registered flag at the end so that a shutdown function
+ * registered after this one can queue further triggers and have them
+ * drained.
  */
 function civirules_drain_post_triggers() {
-  // Nothing else is on the stack at shutdown, so a set flag is left over from
-  // a drain that an exit or fatal error cut short before its finally ran.
+  // A drain still marked as running here was cut short by an exit or fatal
+  // error, or sits in a suspended fiber, and is not going to finish.
   $GLOBALS['civirules_deferred_running'] = FALSE;
+  if (CRM_Core_Transaction::isActive()) {
+    // A fatal error inside a transaction leaves it open, so it will not
+    // commit. Actions run now would roll back while their emails still go
+    // out. Leave the queue as the flush does; clearing it gains nothing.
+    if (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
+      $message = sprintf('CiviRules: %d deferred post triggers not run, a transaction is still open at shutdown.', count($GLOBALS['civirules_deferred_post_triggers']));
+      try {
+        Civi::log()->warning($message);
+      }
+      catch (\Throwable $loggerFailure) {
+        error_log($message);
+      }
+    }
+    $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+    return;
+  }
   civirules_run_deferred_post_triggers();
   $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
 }
