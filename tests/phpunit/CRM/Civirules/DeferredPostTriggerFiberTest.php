@@ -2,6 +2,7 @@
 
 use Civi\Api4\CiviRulesRule;
 use Civi\Api4\CiviRulesTrigger;
+use Civi\Api4\Tag;
 use Civi\Test\CiviEnvBuilder;
 use Civi\Test\HeadlessInterface;
 
@@ -152,20 +153,21 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
   }
 
   /**
-   * APIv4 opens no transaction of its own, but the trigger must still have
-   * run by the time the API call returns.
+   * The respond listener runs the queue at the end of an APIv4 call too.
+   *
+   * APIv4 opens no transaction, so a write would run its own trigger inline
+   * and prove nothing. A read leaves the queued trigger to the listener.
    */
-  public function testTriggerRunsBeforeTheApiv4CallReturns(): void {
+  public function testQueuedTriggerRunsBeforeAnApiv4CallReturns(): void {
+    $GLOBALS['civirules_deferred_post_triggers'] = [['create', 'Tag', 1, NULL, 1, []]];
     $seenWhenReturned = NULL;
     $error = $this->inFiber(function () use (&$seenWhenReturned) {
-      \Civi\Api4\Tag::create(FALSE)
-        ->addValue('name', 'phpunit_deferred_' . uniqid())
-        ->execute();
+      Tag::get(FALSE)->setLimit(1)->execute();
       $seenWhenReturned = count(CRM_Civirules_DeferredPostTriggerTest_FiberFixture::$seen);
     });
 
     $this->assertNull($error, 'No FiberError: ' . ($error ? get_class($error) . ': ' . $error->getMessage() : ''));
-    $this->assertSame(1, $seenWhenReturned, 'The trigger must run before the API call returns, not at shutdown.');
+    $this->assertSame(1, $seenWhenReturned, 'The queued trigger must run before the API call returns.');
     $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
   }
 
