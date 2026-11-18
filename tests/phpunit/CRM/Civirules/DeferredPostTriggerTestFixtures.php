@@ -111,3 +111,27 @@ class CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture extends CRM_Civi
   }
 
 }
+
+/**
+ * A post trigger that suspends its fiber at object 1.
+ *
+ * Left suspended, it stands in for an exit or fatal error during a drain: the
+ * drain never returns, so its finally block never runs.
+ */
+class CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture extends CRM_Civirules_Trigger_Post {
+
+  /**
+   * Object ids this trigger was invoked for, in order.
+   *
+   * @var array
+   */
+  public static $seen = [];
+
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    self::$seen[] = $objectId;
+    if ($objectId === 1 && Fiber::getCurrent() !== NULL) {
+      Fiber::suspend();
+    }
+  }
+
+}
