@@ -118,4 +118,36 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
     $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
   }
 
+  /**
+   * A save with no transaction open can still run in a destructor inside a
+   * fiber: a POST_COMMIT callback runs there after the frame has closed. The
+   * trigger must be queued, and the callbacks after it must still run.
+   */
+  public function testSaveWithNoTransactionFromADestructorInsideAFiberIsQueued(): void {
+    $activeInCallback = NULL;
+    $queuedAfterCommit = NULL;
+    $laterCallbackRan = FALSE;
+    $error = $this->inFiber(function () use (&$activeInCallback, &$queuedAfterCommit, &$laterCallbackRan) {
+      $tx = new CRM_Core_Transaction();
+      CRM_Core_Transaction::addCallback(CRM_Core_Transaction::PHASE_POST_COMMIT, function () use (&$activeInCallback) {
+        $activeInCallback = CRM_Core_Transaction::isActive();
+        civirules_instanciate_post_trigger('create', 'Tag', 1, NULL, 1);
+      }, []);
+      CRM_Core_Transaction::addCallback(CRM_Core_Transaction::PHASE_POST_COMMIT, function () use (&$laterCallbackRan) {
+        $laterCallbackRan = TRUE;
+      }, []);
+      // Commits from CRM_Core_Transaction::__destruct().
+      unset($tx);
+
+      $queuedAfterCommit = count($GLOBALS['civirules_deferred_post_triggers']);
+      civirules_flush_deferred_post_triggers();
+    });
+
+    $this->assertNull($error, 'No FiberError: ' . ($error ? get_class($error) . ': ' . $error->getMessage() : ''));
+    $this->assertFalse($activeInCallback, 'No transaction is open in a POST_COMMIT callback.');
+    $this->assertSame(1, $queuedAfterCommit, 'The trigger must be queued, not run inside the destructor.');
+    $this->assertTrue($laterCallbackRan, 'Later POST_COMMIT callbacks must still run.');
+    $this->assertSame([[1, 'suspended']], CRM_Civirules_DeferredPostTriggerTest_FiberFixture::$seen);
+  }
+
 }
