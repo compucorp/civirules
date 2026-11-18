@@ -47,7 +47,15 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
     ])
     ->addMethodCall('addListener', [
       'civi.dao.postDelete',
-      'civirules_trigger_postdelete'
+      'civirules_trigger_postdelete',
+    ])
+    // Runs at the end of every API call. APIv3 create, delete and submit
+    // commit their own transaction at W_MIDDLE, before this. The flush checks
+    // that no transaction is still open.
+    ->addMethodCall('addListener', [
+      'civi.api.respond',
+      'civirules_flush_deferred_post_triggers',
+      \Civi\API\Events::W_LATE,
     ]);
 }
 
@@ -332,7 +340,9 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
       ]);
     }
     else {
-      civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventId);
+      // This can still be a destructor inside a fiber, such as a save made by
+      // a POST_COMMIT callback, so it may have to be queued too.
+      civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $objectRef, $eventId);
     }
   } catch (\Exception $ex) {
     // Do nothing.
@@ -340,14 +350,19 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
 }
 
 /**
- * Runs a post trigger once its transaction has committed.
+ * Runs a post trigger, or queues it from a destructor inside a fiber.
  *
  * CiviCRM fires PHASE_POST_COMMIT callbacks from
  * CRM_Core_Transaction::__destruct(). Below PHP 8.4 a Fiber cannot be started
- * from a destructor, and a Drupal 11 permission check starts one, so a rule
- * whose condition or action reaches Drupal permissions throws FiberError there
- * and is lost without a trace. Queue those and run them at shutdown, which is
- * ordinary context.
+ * from a destructor, and a CMS permission check can start one, so a rule whose
+ * condition or action reaches the CMS throws FiberError. That extends Error
+ * rather than Exception, so the catch below never sees it and the request dies
+ * after the data has already committed. Queue those and run them at the first
+ * safe point: once the API call has committed, before the next trigger runs,
+ * or at shutdown as the last resort.
+ *
+ * The queued trigger keeps a copy of the object and of the data it reads, as
+ * they are now, so a later save in the same request cannot change what it sees.
  *
  * Only the destructor path defers, so every caller already running in ordinary
  * context keeps firing inline and in order.
@@ -360,15 +375,51 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
  */
 function civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $objectRef, $eventID) {
   if (!civirules_defer_post_triggers()) {
+    // Anything queued earlier runs first, so triggers keep their order.
+    civirules_run_deferred_post_triggers();
     civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventID);
     return;
   }
 
-  $GLOBALS['civirules_deferred_post_triggers'][] = [$op, $objectName, $objectId, $objectRef, $eventID];
+  $GLOBALS['civirules_deferred_post_triggers'][] = [
+    $op,
+    $objectName,
+    $objectId,
+    is_object($objectRef) ? clone $objectRef : $objectRef,
+    $eventID,
+    civirules_snapshot_post_trigger($op, $objectName, $objectId, $objectRef, $eventID),
+  ];
   if (empty($GLOBALS['civirules_deferred_drain_registered'])) {
     $GLOBALS['civirules_deferred_drain_registered'] = TRUE;
     register_shutdown_function('civirules_drain_post_triggers');
   }
+}
+
+/**
+ * Captures the data a deferred trigger reads, as it is when queued.
+ *
+ * Pre data from hook_civicrm_pre is always stored under event 1, so a later
+ * save of the same record (trashing or restoring a contact, say) replaces it.
+ * The GroupContact trigger reads its rows from the database when it runs.
+ * Only the pre data of the entities the trigger reads is captured.
+ *
+ * @param $op
+ * @param $objectName
+ * @param $objectId
+ * @param $objectRef
+ * @param $eventID
+ *
+ * @return array
+ */
+function civirules_snapshot_post_trigger($op, $objectName, $objectId, $objectRef, $eventID) {
+  $preDataEntities = CRM_Civirules_Utils_PreData::entitiesReadBy($objectName);
+  $snapshot = [
+    'preData' => CRM_Civirules_Utils_PreData::snapshot($objectId, $eventID, $preDataEntities),
+  ];
+  if ($objectName === 'GroupContact' && is_array($objectRef) && CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op)) {
+    $snapshot['groupContacts'] = CRM_CivirulesPostTrigger_GroupContact::findGroupContacts((int) $objectId, $objectRef);
+  }
+  return $snapshot;
 }
 
 /**
@@ -400,37 +451,123 @@ function civirules_defer_post_triggers() {
 }
 
 /**
+ * Runs the deferred post triggers if this is a safe point to do so.
+ *
+ * Not inside an open transaction, where a rollback would undo the actions of
+ * a trigger whose data has already committed, and not where deferring is
+ * still needed.
+ *
+ * @param object|null $event
+ *   The API respond event when called as a listener. Not used.
+ */
+function civirules_flush_deferred_post_triggers($event = NULL) {
+  if (empty($GLOBALS['civirules_deferred_post_triggers'])
+    || CRM_Core_Transaction::isActive()
+    || civirules_defer_post_triggers()) {
+    return;
+  }
+  civirules_run_deferred_post_triggers();
+}
+
+/**
  * Runs the post triggers that were deferred out of a transaction destructor.
  *
- * Drains in a loop rather than a foreach because an action can commit its own
- * transaction and queue further triggers while this is running.
+ * Only for register_shutdown_function(), the last resort when no earlier
+ * safe point came.
  *
- * Catches Throwable rather than Exception. civirules_call_post_trigger()
- * already swallows Exception, so only an Error can reach here, and letting one
- * escape would abandon every trigger still queued behind it.
- *
- * Clears the flag at the end so that a shutdown function registered after this
- * one can queue further triggers and have them drained.
+ * Clears the registered flag at the end so that a shutdown function
+ * registered after this one can queue further triggers and have them
+ * drained.
  */
 function civirules_drain_post_triggers() {
-  while (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
-    $args = array_shift($GLOBALS['civirules_deferred_post_triggers']);
-    try {
-      civirules_call_post_trigger($args[0], $args[1], $args[2], $args[3], $args[4]);
-    }
-    catch (\Throwable $e) {
-      // The logger itself can fail at shutdown, and Civi may not even be
-      // loaded. Either way that must not abandon the rest of the queue.
-      $message = 'CiviRules: deferred post trigger failed: ' . $e->getMessage();
+  // A drain still marked as running here was cut short by an exit or fatal
+  // error, or sits in a suspended fiber, and is not going to finish.
+  $GLOBALS['civirules_deferred_running'] = FALSE;
+  if (CRM_Core_Transaction::isActive()) {
+    // A fatal error inside a transaction leaves it open, so it will not
+    // commit. Actions run now would roll back while their emails still go
+    // out. Leave the queue as the flush does; clearing it gains nothing.
+    if (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
+      $message = sprintf('CiviRules: %d deferred post triggers not run, a transaction is still open at shutdown.', count($GLOBALS['civirules_deferred_post_triggers']));
       try {
-        Civi::log()->error($message, ['exception' => $e]);
+        Civi::log()->warning($message);
       }
       catch (\Throwable $loggerFailure) {
         error_log($message);
       }
     }
+    $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+    return;
   }
+  civirules_run_deferred_post_triggers();
   $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+}
+
+/**
+ * Runs the queued triggers in order until the queue is empty.
+ *
+ * Drains in a loop rather than a foreach because an action can commit its own
+ * transaction and queue further triggers while this is running. A nested call
+ * returns at once and leaves those to the outer loop, so the order holds.
+ * That guard is a global, not a static, so the shutdown drain can reset it.
+ *
+ * Catches Throwable rather than Exception. civirules_call_post_trigger()
+ * already swallows Exception, so only an Error can reach here, and letting one
+ * escape would abandon every trigger still queued behind it.
+ */
+function civirules_run_deferred_post_triggers() {
+  if (!empty($GLOBALS['civirules_deferred_running'])) {
+    return;
+  }
+  $GLOBALS['civirules_deferred_running'] = TRUE;
+  try {
+    while (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
+      $args = array_shift($GLOBALS['civirules_deferred_post_triggers']);
+      try {
+        civirules_run_deferred_post_trigger($args);
+      }
+      catch (\Throwable $e) {
+        // The logger itself can fail at shutdown, and Civi may not even be
+        // loaded. Either way that must not abandon the rest of the queue.
+        $message = 'CiviRules: deferred post trigger failed: ' . $e->getMessage();
+        try {
+          Civi::log()->error($message, ['exception' => $e]);
+        }
+        catch (\Throwable $loggerFailure) {
+          error_log($message);
+        }
+      }
+    }
+  }
+  finally {
+    $GLOBALS['civirules_deferred_running'] = FALSE;
+  }
+}
+
+/**
+ * Runs one queued trigger against the data captured when it was queued.
+ *
+ * @param array $args
+ *   The queued op, object name, object id, object, event id and snapshot.
+ */
+function civirules_run_deferred_post_trigger(array $args) {
+  [$op, $objectName, $objectId, $objectRef, $eventID] = $args;
+  $snapshot = $args[5] ?? [];
+
+  $preDataEntities = CRM_Civirules_Utils_PreData::entitiesReadBy($objectName);
+  $laterPreData = CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $preDataEntities, $snapshot['preData'] ?? []);
+  $laterGroupContacts = CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued;
+  if (isset($snapshot['groupContacts'])) {
+    CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued[$objectId] = $snapshot['groupContacts'];
+  }
+  try {
+    civirules_call_post_trigger($op, $objectName, $objectId, $objectRef, $eventID);
+  }
+  finally {
+    // Put back what later saves stored, for their own triggers.
+    CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $preDataEntities, $laterPreData);
+    CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued = $laterGroupContacts;
+  }
 }
 
 /**
