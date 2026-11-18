@@ -89,6 +89,12 @@ class CRM_Civirules_TriggerData_Edit extends CRM_Civirules_TriggerData_Post impl
       }
     }
     catch (\Throwable $e) {
+      // The rule then does not match. Log why, so a real error is not hidden.
+      CRM_Civirules_Utils_LoggerFactory::log(
+        sprintf('CiviRules: could not look up the contact of %s %s: %s', $this->entity_name, $this->entity_id, $e->getMessage()),
+        ['entity' => $this->entity_name, 'entity_id' => $this->entity_id, 'exception' => $e],
+        \Psr\Log\LogLevel::WARNING
+      );
       return NULL;
     }
     // The record is gone (a delete) or has no contact_id field.
