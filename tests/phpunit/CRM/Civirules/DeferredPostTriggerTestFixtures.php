@@ -31,3 +31,134 @@ class CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture extends CRM_Civirule
   }
 
 }
+
+/**
+ * A post trigger that records the pre data it sees for its object.
+ */
+class CRM_Civirules_DeferredPostTriggerTest_RecordingFixture extends CRM_Civirules_Trigger_Post {
+
+  /**
+   * Object id and pre data per run, in order.
+   *
+   * @var array
+   */
+  public static $seen = [];
+
+  /**
+   * Email pre data for the same id and event, per run, in order.
+   *
+   * @var array
+   */
+  public static $emailSeen = [];
+
+  /**
+   * Run once during the next run, as an action of the rule would be.
+   *
+   * @var callable|null
+   */
+  public static $onRun = NULL;
+
+  /**
+   * Records the pre data it sees, then runs the action if one is set.
+   */
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    self::$seen[] = [$objectId, CRM_Civirules_Utils_PreData::getPreData('Contact', $objectId, $eventID)];
+    self::$emailSeen[] = CRM_Civirules_Utils_PreData::getPreData('Email', $objectId, $eventID);
+    if (self::$onRun) {
+      $action = self::$onRun;
+      self::$onRun = NULL;
+      $action();
+    }
+  }
+
+}
+
+/**
+ * A post trigger that starts a nested fiber, as a CMS renderer does.
+ *
+ * Below PHP 8.4 that throws FiberError when run from a destructor.
+ */
+class CRM_Civirules_DeferredPostTriggerTest_FiberFixture extends CRM_Civirules_Trigger_Post {
+
+  /**
+   * Object id and the value the nested fiber suspended with, per run.
+   *
+   * @var array
+   */
+  public static $seen = [];
+
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    $fiber = new Fiber(function () {
+      Fiber::suspend('suspended');
+    });
+    self::$seen[] = [$objectId, $fiber->start()];
+  }
+
+}
+
+/**
+ * The GroupContact trigger, recording the status of each row it sees.
+ */
+class CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture extends CRM_CivirulesPostTrigger_GroupContact {
+
+  /**
+   * Group contact statuses seen, in order.
+   *
+   * @var array
+   */
+  public static $statuses = [];
+
+  /**
+   * Contact ids of the group contact rows seen, in order.
+   *
+   * @var array
+   */
+  public static $contactIds = [];
+
+  /**
+   * Run once at the first row, as an action of the rule would be.
+   *
+   * @var callable|null
+   */
+  public static $onFirstRow = NULL;
+
+  protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
+    self::$statuses[] = is_array($objectRef) ? $objectRef['status'] : $objectRef->status;
+    self::$contactIds[] = (int) (is_array($objectRef) ? $objectRef['contact_id'] : $objectRef->contact_id);
+    if (self::$onFirstRow) {
+      $action = self::$onFirstRow;
+      self::$onFirstRow = NULL;
+      $action();
+    }
+    return parent::getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
+  }
+
+}
+
+/**
+ * A post trigger that suspends its fiber at object 1.
+ *
+ * While suspended it stands in for a drain cut short by an exit or fatal
+ * error: the drain does not return, and its finally block only runs once
+ * the fiber is destroyed.
+ */
+class CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture extends CRM_Civirules_Trigger_Post {
+
+  /**
+   * Object ids this trigger was invoked for, in order.
+   *
+   * @var array
+   */
+  public static $seen = [];
+
+  /**
+   * Records the object id, and suspends the fiber at object 1.
+   */
+  public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
+    self::$seen[] = $objectId;
+    if ($objectId === 1 && Fiber::getCurrent() !== NULL) {
+      Fiber::suspend();
+    }
+  }
+
+}

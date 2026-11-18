@@ -34,12 +34,19 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     require_once __DIR__ . '/DeferredPostTriggerTestFixtures.php';
 
     CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen = [];
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$emailSeen = [];
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$onRun = NULL;
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses = [];
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds = [];
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = NULL;
     $GLOBALS['civirules_deferred_post_triggers'] = [];
     $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+    $GLOBALS['civirules_deferred_running'] = FALSE;
   }
 
   public function tearDown(): void {
-    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered']);
+    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered'], $GLOBALS['civirules_deferred_running']);
     parent::tearDown();
   }
 
@@ -171,11 +178,99 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
       return NULL;
     });
 
+    $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers']);
     $this->assertSame(
-      [['create', 'Contact', 7, NULL, NULL]],
-      $GLOBALS['civirules_deferred_post_triggers']
+      ['create', 'Contact', 7, NULL, NULL],
+      array_slice($GLOBALS['civirules_deferred_post_triggers'][0], 0, 5)
     );
     $this->assertTrue($GLOBALS['civirules_deferred_drain_registered']);
+  }
+
+  /**
+   * A trigger that runs inline must not overtake one queued before it.
+   */
+  public function testQueuedTriggersRunBeforeTheNextTrigger(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class);
+
+    $this->inDestructorInsideFiber(function () {
+      civirules_call_post_trigger_on_commit('create', 'Contact', 1, NULL, 1);
+      return NULL;
+    });
+    civirules_call_post_trigger_on_commit('create', 'Contact', 2, NULL, 1);
+
+    $this->assertSame([1, 2], array_column(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen, 0));
+    $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
+  }
+
+  /**
+   * Running inside an open transaction would let a rollback undo the actions
+   * of a trigger whose data has already committed.
+   */
+  public function testFlushWaitsWhileATransactionIsOpen(): void {
+    $this->assertTrue(CRM_Core_Transaction::isActive(), 'The test runs inside a transaction.');
+    $GLOBALS['civirules_deferred_post_triggers'] = [['create', 'Contact', 1, NULL, 1, []]];
+
+    civirules_flush_deferred_post_triggers();
+
+    $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers']);
+  }
+
+  /**
+   * Pre data from hook_civicrm_pre is always stored under event 1. Trashing a
+   * contact and then restoring it in the same request replaces it before the
+   * deferred trash trigger runs.
+   */
+  public function testDeferredTriggerSeesThePreDataFromWhenItWasQueued(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class, 'Contact', 'edit');
+
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 0]);
+    $this->inDestructorInsideFiber(function () {
+      civirules_call_post_trigger_on_commit('edit', 'Contact', 7, NULL, 1);
+      return NULL;
+    });
+    // A later save of the same contact, here the restore.
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 1]);
+
+    civirules_run_deferred_post_triggers();
+
+    $this->assertSame(
+      [[7, ['id' => 7, 'is_deleted' => 0]]],
+      CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen,
+      'The deferred trigger must see the pre data from when it was queued.'
+    );
+    $this->assertSame(['id' => 7, 'is_deleted' => 1], CRM_Civirules_Utils_PreData::getPreData('Contact', 7, 1),
+      'The later save keeps its own pre data for its own trigger.');
+  }
+
+  /**
+   * The GroupContact trigger reads its rows from the database, so a removal
+   * later in the same request would show the added contact as removed.
+   */
+  public function testDeferredGroupContactTriggerSeesTheRowsFromWhenItWasQueued(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::class, 'GroupContact', 'create');
+
+    $contactId = civicrm_api3('Contact', 'create', ['contact_type' => 'Individual', 'first_name' => 'Deferred'])['id'];
+    $groupId = civicrm_api3('Group', 'create', ['title' => 'PHPUnit deferred ' . uniqid()])['id'];
+    CRM_Contact_BAO_GroupContact::addContactsToGroup([$contactId], $groupId);
+
+    $this->inDestructorInsideFiber(function () use ($groupId, $contactId) {
+      civirules_call_post_trigger_on_commit('create', 'GroupContact', $groupId, [$contactId], 1);
+      return NULL;
+    });
+    // A later save of the same membership.
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_group_contact SET status = 'Removed' WHERE group_id = %1 AND contact_id = %2", [
+      1 => [$groupId, 'Integer'],
+      2 => [$contactId, 'Integer'],
+    ]);
+
+    civirules_run_deferred_post_triggers();
+
+    $this->assertSame(['Added'], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses);
+    $this->assertSame([], CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued,
+      'The rows apply to the deferred run only.');
   }
 
   /**
@@ -189,7 +284,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
       ['create', 'Contact', 2, NULL, NULL],
     ];
 
-    civirules_drain_post_triggers();
+    civirules_run_deferred_post_triggers();
 
     $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen,
       'The second trigger must still run after the first throws.');
@@ -210,15 +305,117 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
   }
 
   /**
+   * A nested GroupContact trigger for the same group reads its own rows.
+   *
+   * Fired by an action of the deferred trigger, it must not read the rows
+   * queued for the outer trigger.
+   */
+  public function testNestedGroupContactTriggerReadsItsOwnRows(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::class, 'GroupContact', 'create');
+
+    $queuedContactId = (int) civicrm_api3('Contact', 'create', [
+      'contact_type' => 'Individual',
+      'first_name' => 'Queued',
+    ])['id'];
+    $nestedContactId = (int) civicrm_api3('Contact', 'create', [
+      'contact_type' => 'Individual',
+      'first_name' => 'Nested',
+    ])['id'];
+    $groupId = civicrm_api3('Group', 'create', ['title' => 'PHPUnit deferred ' . uniqid()])['id'];
+    CRM_Contact_BAO_GroupContact::addContactsToGroup([$queuedContactId], $groupId);
+
+    $this->inDestructorInsideFiber(function () use ($groupId, $queuedContactId) {
+      civirules_call_post_trigger_on_commit('create', 'GroupContact', $groupId, [$queuedContactId], 1);
+      return NULL;
+    });
+    // An action of the deferred trigger adds another contact to the same group.
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = function () use ($groupId, $nestedContactId) {
+      CRM_Contact_BAO_GroupContact::addContactsToGroup([$nestedContactId], $groupId);
+      civirules_call_post_trigger('create', 'GroupContact', $groupId, [$nestedContactId], 1);
+    };
+
+    civirules_run_deferred_post_triggers();
+
+    $this->assertSame(
+      [$queuedContactId, $nestedContactId],
+      CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds
+    );
+  }
+
+  /**
+   * The shutdown drain does not run triggers inside an open transaction.
+   *
+   * A transaction still open at shutdown will not commit, so their actions
+   * would roll back while their emails still go out.
+   */
+  public function testShutdownDrainDoesNotRunInsideAnOpenTransaction(): void {
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class);
+    $this->assertTrue(CRM_Core_Transaction::isActive(), 'The test runs inside a transaction.');
+    $GLOBALS['civirules_deferred_post_triggers'] = [['create', 'Contact', 1, NULL, 1, []]];
+
+    civirules_drain_post_triggers();
+
+    $this->assertSame([], CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen);
+    $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers'], 'The queue is left as it is.');
+  }
+
+  /**
+   * A deferred trigger only swaps the pre data of the entities it reads.
+   *
+   * Email 7 shares the id and event of Contact 7, but its pre data belongs to
+   * its own trigger, and a save made while the Contact trigger runs must keep
+   * what it stored.
+   */
+  public function testDeferredTriggerLeavesThePreDataOfOtherEntitiesAlone(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class, 'Contact', 'edit');
+
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 0]);
+    $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'before@example.org']);
+    $this->inDestructorInsideFiber(function () {
+      civirules_call_post_trigger_on_commit('edit', 'Contact', 7, NULL, 1);
+      return NULL;
+    });
+    // A later save of Email 7 stores its own pre data.
+    $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'later@example.org']);
+    // An action of the Contact trigger saves Email 7 again.
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$onRun = function () {
+      $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'nested@example.org']);
+    };
+
+    civirules_run_deferred_post_triggers();
+
+    $this->assertSame(
+      [['id' => 7, 'email' => 'later@example.org']],
+      CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$emailSeen,
+      'The Email pre data must not be swapped while the Contact trigger runs.'
+    );
+    $this->assertSame(
+      ['id' => 7, 'email' => 'nested@example.org'],
+      CRM_Civirules_Utils_PreData::getPreData('Email', 7, 1),
+      'What the nested save stored must not be rewritten afterwards.'
+    );
+  }
+
+  /**
+   * Stores pre data for an entity, as hook_civicrm_pre does.
+   */
+  private function setPreData(string $entity, int $entityId, int $eventID, array $data): void {
+    $method = new ReflectionMethod(CRM_Civirules_Utils_PreData::class, 'setPreData');
+    $method->invoke(NULL, $entity, $entityId, $data, $eventID);
+  }
+
+  /**
    * Installs an active rule whose trigger is the given class.
    */
-  private function createRuleFor(string $triggerClass): int {
+  private function createRuleFor(string $triggerClass, string $objectName = 'Contact', string $op = 'create'): int {
     $triggerId = CiviRulesTrigger::create(FALSE)
       ->setValues([
         'name' => 'phpunit_deferred_' . md5($triggerClass),
         'label' => 'PHPUnit deferred trigger',
-        'object_name' => 'Contact',
-        'op' => 'create',
+        'object_name' => $objectName,
+        'op' => $op,
         'class_name' => $triggerClass,
         'cron' => FALSE,
         'is_active' => TRUE,
