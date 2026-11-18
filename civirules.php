@@ -477,6 +477,9 @@ function civirules_flush_deferred_post_triggers($event = NULL) {
  * one can queue further triggers and have them drained.
  */
 function civirules_drain_post_triggers() {
+  // Nothing else is on the stack at shutdown, so a set flag is left over from
+  // a drain that an exit or fatal error cut short before its finally ran.
+  $GLOBALS['civirules_deferred_running'] = FALSE;
   civirules_run_deferred_post_triggers();
   $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
 }
@@ -487,17 +490,17 @@ function civirules_drain_post_triggers() {
  * Drains in a loop rather than a foreach because an action can commit its own
  * transaction and queue further triggers while this is running. A nested call
  * returns at once and leaves those to the outer loop, so the order holds.
+ * That guard is a global, not a static, so the shutdown drain can reset it.
  *
  * Catches Throwable rather than Exception. civirules_call_post_trigger()
  * already swallows Exception, so only an Error can reach here, and letting one
  * escape would abandon every trigger still queued behind it.
  */
 function civirules_run_deferred_post_triggers() {
-  static $running = FALSE;
-  if ($running) {
+  if (!empty($GLOBALS['civirules_deferred_running'])) {
     return;
   }
-  $running = TRUE;
+  $GLOBALS['civirules_deferred_running'] = TRUE;
   try {
     while (!empty($GLOBALS['civirules_deferred_post_triggers'])) {
       $args = array_shift($GLOBALS['civirules_deferred_post_triggers']);
@@ -518,7 +521,7 @@ function civirules_run_deferred_post_triggers() {
     }
   }
   finally {
-    $running = FALSE;
+    $GLOBALS['civirules_deferred_running'] = FALSE;
   }
 }
 
