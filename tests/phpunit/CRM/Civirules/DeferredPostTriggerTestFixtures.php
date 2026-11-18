@@ -85,8 +85,28 @@ class CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture extends CRM_Civi
    */
   public static $statuses = [];
 
+  /**
+   * Contact ids of the group contact rows seen, in order.
+   *
+   * @var array
+   */
+  public static $contactIds = [];
+
+  /**
+   * Run once at the first row, as an action of the rule would be.
+   *
+   * @var callable|null
+   */
+  public static $onFirstRow = NULL;
+
   protected function getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID = NULL) {
     self::$statuses[] = is_array($objectRef) ? $objectRef['status'] : $objectRef->status;
+    self::$contactIds[] = (int) (is_array($objectRef) ? $objectRef['contact_id'] : $objectRef->contact_id);
+    if (self::$onFirstRow) {
+      $action = self::$onFirstRow;
+      self::$onFirstRow = NULL;
+      $action();
+    }
     return parent::getTriggerDataFromPost($op, $objectName, $objectId, $objectRef, $eventID);
   }
 

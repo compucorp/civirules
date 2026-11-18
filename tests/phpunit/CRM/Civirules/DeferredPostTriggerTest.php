@@ -36,6 +36,8 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses = [];
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds = [];
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = NULL;
     $GLOBALS['civirules_deferred_post_triggers'] = [];
     $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
   }
@@ -297,6 +299,35 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     civirules_drain_post_triggers();
 
     $this->assertFalse($GLOBALS['civirules_deferred_drain_registered']);
+  }
+
+  /**
+   * A GroupContact post for the same group, fired by an action of the deferred
+   * trigger, must read its own rows rather than the ones queued for the outer
+   * trigger.
+   */
+  public function testNestedGroupContactTriggerReadsItsOwnRows(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::class, 'GroupContact', 'create');
+
+    $queuedContactId = (int) civicrm_api3('Contact', 'create', ['contact_type' => 'Individual', 'first_name' => 'Queued'])['id'];
+    $nestedContactId = (int) civicrm_api3('Contact', 'create', ['contact_type' => 'Individual', 'first_name' => 'Nested'])['id'];
+    $groupId = civicrm_api3('Group', 'create', ['title' => 'PHPUnit deferred ' . uniqid()])['id'];
+    CRM_Contact_BAO_GroupContact::addContactsToGroup([$queuedContactId], $groupId);
+
+    $this->inDestructorInsideFiber(function () use ($groupId, $queuedContactId) {
+      civirules_call_post_trigger_on_commit('create', 'GroupContact', $groupId, [$queuedContactId], 1);
+      return NULL;
+    });
+    // An action of the deferred trigger adds another contact to the same group.
+    CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = function () use ($groupId, $nestedContactId) {
+      CRM_Contact_BAO_GroupContact::addContactsToGroup([$nestedContactId], $groupId);
+      civirules_call_post_trigger('create', 'GroupContact', $groupId, [$nestedContactId], 1);
+    };
+
+    civirules_drain_post_triggers();
+
+    $this->assertSame([$queuedContactId, $nestedContactId], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds);
   }
 
   /**
