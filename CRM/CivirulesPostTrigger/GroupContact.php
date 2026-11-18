@@ -70,18 +70,22 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       // run, so a GroupContact post fired by an action reads its own rows.
       $queued = self::$groupContactsAsQueued;
       self::$groupContactsAsQueued = [];
-      foreach ($rows as $row) {
-        $dao = new CRM_Contact_DAO_GroupContact();
-        foreach ($row as $field => $value) {
-          $dao->$field = $value;
+      try {
+        foreach ($rows as $row) {
+          $dao = new CRM_Contact_DAO_GroupContact();
+          foreach ($row as $field => $value) {
+            $dao->$field = $value;
+          }
+          $data = [];
+          CRM_Core_DAO::storeValues($dao, $data);
+          $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $data, $eventID);
+          $triggerData->setEntityData('Group', $group);
+          CRM_Civirules_Engine::triggerRule($this, $triggerData);
         }
-        $data = [];
-        CRM_Core_DAO::storeValues($dao, $data);
-        $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $data, $eventID);
-        $triggerData->setEntityData('Group', $group);
-        CRM_Civirules_Engine::triggerRule($this, $triggerData);
       }
-      self::$groupContactsAsQueued = $queued;
+      finally {
+        self::$groupContactsAsQueued = $queued;
+      }
     }
   }
 

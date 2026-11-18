@@ -49,8 +49,9 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
       'civi.dao.postDelete',
       'civirules_trigger_postdelete',
     ])
-    // After the API call has committed. APIv3 ends its own transaction at
-    // W_MIDDLE. APIv4 opens none, but this event fires for it too.
+    // Runs at the end of every API call. APIv3 create, delete and submit
+    // commit their own transaction at W_MIDDLE, before this. The flush checks
+    // that no transaction is still open.
     ->addMethodCall('addListener', [
       'civi.api.respond',
       'civirules_flush_deferred_post_triggers',
@@ -349,8 +350,7 @@ function civirules_instanciate_post_trigger($op, $objectName, $objectId, $object
 }
 
 /**
- * Runs a post trigger once its transaction has committed, or now if none is
- * open.
+ * Runs a post trigger, or queues it from a destructor inside a fiber.
  *
  * CiviCRM fires PHASE_POST_COMMIT callbacks from
  * CRM_Core_Transaction::__destruct(). Below PHP 8.4 a Fiber cannot be started

@@ -303,16 +303,23 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
   }
 
   /**
-   * A GroupContact post for the same group, fired by an action of the deferred
-   * trigger, must read its own rows rather than the ones queued for the outer
-   * trigger.
+   * A nested GroupContact trigger for the same group reads its own rows.
+   *
+   * Fired by an action of the deferred trigger, it must not read the rows
+   * queued for the outer trigger.
    */
   public function testNestedGroupContactTriggerReadsItsOwnRows(): void {
     $this->requireFiberRestriction();
     $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::class, 'GroupContact', 'create');
 
-    $queuedContactId = (int) civicrm_api3('Contact', 'create', ['contact_type' => 'Individual', 'first_name' => 'Queued'])['id'];
-    $nestedContactId = (int) civicrm_api3('Contact', 'create', ['contact_type' => 'Individual', 'first_name' => 'Nested'])['id'];
+    $queuedContactId = (int) civicrm_api3('Contact', 'create', [
+      'contact_type' => 'Individual',
+      'first_name' => 'Queued',
+    ])['id'];
+    $nestedContactId = (int) civicrm_api3('Contact', 'create', [
+      'contact_type' => 'Individual',
+      'first_name' => 'Nested',
+    ])['id'];
     $groupId = civicrm_api3('Group', 'create', ['title' => 'PHPUnit deferred ' . uniqid()])['id'];
     CRM_Contact_BAO_GroupContact::addContactsToGroup([$queuedContactId], $groupId);
 
@@ -328,7 +335,10 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
 
     civirules_run_deferred_post_triggers();
 
-    $this->assertSame([$queuedContactId, $nestedContactId], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds);
+    $this->assertSame(
+      [$queuedContactId, $nestedContactId],
+      CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds
+    );
   }
 
   /**
