@@ -44,8 +44,31 @@ class CRM_Civirules_DeferredPostTriggerTest_RecordingFixture extends CRM_Civirul
    */
   public static $seen = [];
 
+  /**
+   * Email pre data for the same id and event, per run, in order.
+   *
+   * @var array
+   */
+  public static $emailSeen = [];
+
+  /**
+   * Run once during the next run, as an action of the rule would be.
+   *
+   * @var callable|null
+   */
+  public static $onRun = NULL;
+
+  /**
+   * Records the pre data it sees, then runs the action if one is set.
+   */
   public function triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID) {
     self::$seen[] = [$objectId, CRM_Civirules_Utils_PreData::getPreData('Contact', $objectId, $eventID)];
+    self::$emailSeen[] = CRM_Civirules_Utils_PreData::getPreData('Email', $objectId, $eventID);
+    if (self::$onRun) {
+      $action = self::$onRun;
+      self::$onRun = NULL;
+      $action();
+    }
   }
 
 }

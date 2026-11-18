@@ -35,6 +35,8 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
 
     CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen = [];
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$emailSeen = [];
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$onRun = NULL;
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = NULL;
@@ -223,13 +225,13 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     $this->requireFiberRestriction();
     $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class, 'Contact', 'edit');
 
-    CRM_Civirules_Utils_PreData::restore(7, 1, ['Contact' => ['id' => 7, 'is_deleted' => 0]]);
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 0]);
     $this->inDestructorInsideFiber(function () {
       civirules_call_post_trigger_on_commit('edit', 'Contact', 7, NULL, 1);
       return NULL;
     });
     // A later save of the same contact, here the restore.
-    CRM_Civirules_Utils_PreData::restore(7, 1, ['Contact' => ['id' => 7, 'is_deleted' => 1]]);
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 1]);
 
     civirules_run_deferred_post_triggers();
 
@@ -356,6 +358,52 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
 
     $this->assertSame([], CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen);
     $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers'], 'The queue is left as it is.');
+  }
+
+  /**
+   * A deferred trigger only swaps the pre data of the entities it reads.
+   *
+   * Email 7 shares the id and event of Contact 7, but its pre data belongs to
+   * its own trigger, and a save made while the Contact trigger runs must keep
+   * what it stored.
+   */
+  public function testDeferredTriggerLeavesThePreDataOfOtherEntitiesAlone(): void {
+    $this->requireFiberRestriction();
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class, 'Contact', 'edit');
+
+    $this->setPreData('Contact', 7, 1, ['id' => 7, 'is_deleted' => 0]);
+    $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'before@example.org']);
+    $this->inDestructorInsideFiber(function () {
+      civirules_call_post_trigger_on_commit('edit', 'Contact', 7, NULL, 1);
+      return NULL;
+    });
+    // A later save of Email 7 stores its own pre data.
+    $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'later@example.org']);
+    // An action of the Contact trigger saves Email 7 again.
+    CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$onRun = function () {
+      $this->setPreData('Email', 7, 1, ['id' => 7, 'email' => 'nested@example.org']);
+    };
+
+    civirules_run_deferred_post_triggers();
+
+    $this->assertSame(
+      [['id' => 7, 'email' => 'later@example.org']],
+      CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$emailSeen,
+      'The Email pre data must not be swapped while the Contact trigger runs.'
+    );
+    $this->assertSame(
+      ['id' => 7, 'email' => 'nested@example.org'],
+      CRM_Civirules_Utils_PreData::getPreData('Email', 7, 1),
+      'What the nested save stored must not be rewritten afterwards.'
+    );
+  }
+
+  /**
+   * Stores pre data for an entity, as hook_civicrm_pre does.
+   */
+  private function setPreData(string $entity, int $entityId, int $eventID, array $data): void {
+    $method = new ReflectionMethod(CRM_Civirules_Utils_PreData::class, 'setPreData');
+    $method->invoke(NULL, $entity, $entityId, $data, $eventID);
   }
 
   /**

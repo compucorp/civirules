@@ -401,6 +401,7 @@ function civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $obj
  * Pre data from hook_civicrm_pre is always stored under event 1, so a later
  * save of the same record (trashing or restoring a contact, say) replaces it.
  * The GroupContact trigger reads its rows from the database when it runs.
+ * Only the pre data of the entities the trigger reads is captured.
  *
  * @param $op
  * @param $objectName
@@ -411,8 +412,9 @@ function civirules_call_post_trigger_on_commit($op, $objectName, $objectId, $obj
  * @return array
  */
 function civirules_snapshot_post_trigger($op, $objectName, $objectId, $objectRef, $eventID) {
+  $preDataEntities = CRM_Civirules_Utils_PreData::entitiesReadBy($objectName);
   $snapshot = [
-    'preData' => CRM_Civirules_Utils_PreData::snapshot($objectId, $eventID),
+    'preData' => CRM_Civirules_Utils_PreData::snapshot($objectId, $eventID, $preDataEntities),
   ];
   if ($objectName === 'GroupContact' && is_array($objectRef) && CRM_Civirules_BAO_CiviRulesRule::findRulesByObjectNameAndOp($objectName, $op)) {
     $snapshot['groupContacts'] = CRM_CivirulesPostTrigger_GroupContact::findGroupContacts((int) $objectId, $objectRef);
@@ -552,7 +554,8 @@ function civirules_run_deferred_post_trigger(array $args) {
   [$op, $objectName, $objectId, $objectRef, $eventID] = $args;
   $snapshot = $args[5] ?? [];
 
-  $laterPreData = CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $snapshot['preData'] ?? []);
+  $preDataEntities = CRM_Civirules_Utils_PreData::entitiesReadBy($objectName);
+  $laterPreData = CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $preDataEntities, $snapshot['preData'] ?? []);
   $laterGroupContacts = CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued;
   if (isset($snapshot['groupContacts'])) {
     CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued[$objectId] = $snapshot['groupContacts'];
@@ -562,7 +565,7 @@ function civirules_run_deferred_post_trigger(array $args) {
   }
   finally {
     // Put back what later saves stored, for their own triggers.
-    CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $laterPreData);
+    CRM_Civirules_Utils_PreData::restore($objectId, $eventID, $preDataEntities, $laterPreData);
     CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued = $laterGroupContacts;
   }
 }
