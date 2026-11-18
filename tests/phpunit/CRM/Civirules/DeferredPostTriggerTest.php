@@ -34,7 +34,6 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     require_once __DIR__ . '/DeferredPostTriggerTestFixtures.php';
 
     CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
-    CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds = [];
@@ -232,7 +231,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     // A later save of the same contact, here the restore.
     CRM_Civirules_Utils_PreData::restore(7, 1, ['Contact' => ['id' => 7, 'is_deleted' => 1]]);
 
-    civirules_drain_post_triggers();
+    civirules_run_deferred_post_triggers();
 
     $this->assertSame(
       [[7, ['id' => 7, 'is_deleted' => 0]]],
@@ -265,7 +264,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
       2 => [$contactId, 'Integer'],
     ]);
 
-    civirules_drain_post_triggers();
+    civirules_run_deferred_post_triggers();
 
     $this->assertSame(['Added'], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses);
     $this->assertSame([], CRM_CivirulesPostTrigger_GroupContact::$groupContactsAsQueued,
@@ -283,7 +282,7 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
       ['create', 'Contact', 2, NULL, NULL],
     ];
 
-    civirules_drain_post_triggers();
+    civirules_run_deferred_post_triggers();
 
     $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen,
       'The second trigger must still run after the first throws.');
@@ -327,33 +326,26 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
       civirules_call_post_trigger('create', 'GroupContact', $groupId, [$nestedContactId], 1);
     };
 
-    civirules_drain_post_triggers();
+    civirules_run_deferred_post_triggers();
 
     $this->assertSame([$queuedContactId, $nestedContactId], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds);
   }
 
   /**
-   * An exit or fatal error during a drain skips its finally block. The
-   * shutdown drain must still run what is left in the queue.
+   * The shutdown drain does not run triggers inside an open transaction.
+   *
+   * A transaction still open at shutdown will not commit, so their actions
+   * would roll back while their emails still go out.
    */
-  public function testShutdownDrainRunsWhatACutShortDrainLeft(): void {
-    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::class);
-    $GLOBALS['civirules_deferred_post_triggers'] = [
-      ['create', 'Contact', 1, NULL, NULL],
-      ['create', 'Contact', 2, NULL, NULL],
-    ];
-
-    // Never resumed, so this drain stops at the first trigger and never
-    // reaches its finally block.
-    $cutShort = new Fiber('civirules_run_deferred_post_triggers');
-    $cutShort->start();
-    $this->assertTrue($cutShort->isSuspended());
+  public function testShutdownDrainDoesNotRunInsideAnOpenTransaction(): void {
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::class);
+    $this->assertTrue(CRM_Core_Transaction::isActive(), 'The test runs inside a transaction.');
+    $GLOBALS['civirules_deferred_post_triggers'] = [['create', 'Contact', 1, NULL, 1, []]];
 
     civirules_drain_post_triggers();
 
-    $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen,
-      'The shutdown drain must run the rest of the queue.');
-    $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
+    $this->assertSame([], CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen);
+    $this->assertCount(1, $GLOBALS['civirules_deferred_post_triggers'], 'The queue is left as it is.');
   }
 
   /**
