@@ -6,6 +6,8 @@ use Civi\Api4\Group;
 use Civi\Test\CiviEnvBuilder;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\TransactionalInterface;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
 
 /**
  * Tests the contact id that edit trigger data hands to conditions.
@@ -162,6 +164,68 @@ class CRM_Civirules_TriggerData_EditTest extends \PHPUnit\Framework\TestCase imp
     $triggerData->setContactId(99);
 
     $this->assertEquals(99, $triggerData->getContactId());
+  }
+
+  /**
+   * A failed lookup logs a warning, and the rule simply does not match.
+   */
+  public function testFailedLookupIsLoggedAndGivesNoContact(): void {
+    $emailId = $this->createEmail($this->createContact());
+    $triggerData = new class('Email', $emailId, ['id' => $emailId], ['id' => $emailId]) extends CRM_Civirules_TriggerData_Edit {
+
+      /**
+       * Whether getEntityId() throws, as a failing lookup would.
+       *
+       * @var bool
+       */
+      public $failLookup = FALSE;
+
+      /**
+       * Throws when the lookup is set to fail.
+       */
+      public function getEntityId() {
+        if ($this->failLookup) {
+          throw new RuntimeException('Deliberate lookup failure.');
+        }
+        return parent::getEntityId();
+      }
+
+    };
+    $triggerData->failLookup = TRUE;
+    $logger = new class() extends AbstractLogger {
+
+      /**
+       * Level and message of each record, in order.
+       *
+       * @var array
+       */
+      public $records = [];
+
+      /**
+       * Records the level and the message.
+       */
+      public function log($level, $message, array $context = []): void {
+        $this->records[] = [$level, (string) $message];
+      }
+
+    };
+
+    $loggerProperty = new ReflectionProperty(CRM_Civirules_Utils_LoggerFactory::class, 'logger');
+    $originalLogger = $loggerProperty->getValue();
+    $loggerProperty->setValue(NULL, $logger);
+    try {
+      $contactId = $triggerData->getContactId();
+    }
+    finally {
+      $loggerProperty->setValue(NULL, $originalLogger);
+    }
+
+    $this->assertNull($contactId);
+    $this->assertCount(1, $logger->records, 'The failed lookup must log one warning.');
+    [$level, $message] = $logger->records[0];
+    $this->assertSame(LogLevel::WARNING, $level);
+    $this->assertStringContainsString('Email ' . $emailId, $message);
+    $this->assertStringContainsString('Deliberate lookup failure.', $message);
   }
 
   /**
