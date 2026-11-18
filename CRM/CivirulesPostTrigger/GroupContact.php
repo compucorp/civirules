@@ -67,6 +67,10 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       // We are dealing with an array of contact ids.
       $rows = self::$groupContactsAsQueued[$objectId] ?? self::findGroupContacts((int) $objectId, $objectRef);
       $group = civicrm_api3('Group', 'getsingle', ['id' => $objectId]);
+      // The queued rows are for this trigger only. Hide them while its rules
+      // run, so a GroupContact post fired by an action reads its own rows.
+      $queued = self::$groupContactsAsQueued;
+      self::$groupContactsAsQueued = [];
       foreach ($rows as $row) {
         $dao = new CRM_Contact_DAO_GroupContact();
         foreach ($row as $field => $value) {
@@ -76,6 +80,7 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
         $triggerData->setEntityData('Group', $group);
         CRM_Civirules_Engine::triggerRule($this, $triggerData);
       }
+      self::$groupContactsAsQueued = $queued;
     }
   }
 
