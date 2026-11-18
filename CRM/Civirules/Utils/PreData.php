@@ -170,37 +170,61 @@ class CRM_Civirules_Utils_PreData {
   }
 
   /**
-   * Returns the pre data held for an entity id and event, for every entity.
+   * Returns the entities whose pre data a post trigger on an object reads.
+   *
+   * The object and the entity it maps to. A contact also reads every contact
+   * type, as getPreData() does.
+   *
+   * @param string $objectName
+   *
+   * @return string[]
+   */
+  public static function entitiesReadBy($objectName) {
+    $entities = [$objectName, CRM_Civirules_Utils_ObjectName::convertToEntity($objectName)];
+    if (in_array('Contact', $entities, TRUE)) {
+      $entities = array_merge($entities, ['Individual', 'Organization', 'Household']);
+    }
+    return array_values(array_unique(array_filter($entities)));
+  }
+
+  /**
+   * Returns the pre data held for an entity id and event, for some entities.
    *
    * @param int $entityId
    * @param int $eventID
+   * @param string[] $entities
+   *   As returned by entitiesReadBy().
    *
    * @return array
    *   The data keyed by entity name.
    */
-  public static function snapshot($entityId, $eventID) {
+  public static function snapshot($entityId, $eventID, array $entities) {
     $snapshot = [];
-    foreach (self::$preData as $entity => $byId) {
-      if (isset($byId[$entityId][$eventID])) {
-        $snapshot[$entity] = $byId[$entityId][$eventID];
+    foreach ($entities as $entity) {
+      if (isset(self::$preData[$entity][$entityId][$eventID])) {
+        $snapshot[$entity] = self::$preData[$entity][$entityId][$eventID];
       }
     }
     return $snapshot;
   }
 
   /**
-   * Replaces the pre data held for an entity id and event with a snapshot.
+   * Replaces the pre data held for some entities with a snapshot.
+   *
+   * Pre data of any other entity with the same id and event is left alone.
    *
    * @param int $entityId
    * @param int $eventID
+   * @param string[] $entities
+   *   The entities to replace, as passed to snapshot().
    * @param array $snapshot
-   *   As returned by snapshot().
+   *   As returned by snapshot() for the same entities.
    *
    * @return array
    *   The data held before, so the caller can put it back.
    */
-  public static function restore($entityId, $eventID, array $snapshot) {
-    $previous = self::snapshot($entityId, $eventID);
+  public static function restore($entityId, $eventID, array $entities, array $snapshot) {
+    $previous = self::snapshot($entityId, $eventID, $entities);
     foreach (array_keys($previous) as $entity) {
       unset(self::$preData[$entity][$entityId][$eventID]);
     }
