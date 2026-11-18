@@ -33,6 +33,7 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
     CRM_Civirules_DeferredPostTriggerTest_FiberFixture::$seen = [];
     $GLOBALS['civirules_deferred_post_triggers'] = [];
     $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+    $GLOBALS['civirules_deferred_running'] = FALSE;
 
     $triggerId = CiviRulesTrigger::create(FALSE)
       ->setValues([
@@ -56,7 +57,7 @@ class CRM_Civirules_DeferredPostTriggerFiberTest extends \PHPUnit\Framework\Test
   }
 
   public function tearDown(): void {
-    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered']);
+    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered'], $GLOBALS['civirules_deferred_running']);
     CRM_Core_DAO::executeQuery("DELETE FROM civicrm_tag WHERE name LIKE 'phpunit_deferred_%'");
     CRM_Core_DAO::executeQuery("DELETE FROM civirule_rule WHERE name = 'phpunit_deferred_fiber_rule'");
     CRM_Core_DAO::executeQuery("DELETE FROM civirule_trigger WHERE name = 'phpunit_deferred_fiber'");

@@ -34,16 +34,18 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     require_once __DIR__ . '/DeferredPostTriggerTestFixtures.php';
 
     CRM_Civirules_DeferredPostTriggerTest_ThrowingFixture::$seen = [];
+    CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_RecordingFixture::$seen = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$statuses = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds = [];
     CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$onFirstRow = NULL;
     $GLOBALS['civirules_deferred_post_triggers'] = [];
     $GLOBALS['civirules_deferred_drain_registered'] = FALSE;
+    $GLOBALS['civirules_deferred_running'] = FALSE;
   }
 
   public function tearDown(): void {
-    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered']);
+    unset($GLOBALS['civirules_deferred_post_triggers'], $GLOBALS['civirules_deferred_drain_registered'], $GLOBALS['civirules_deferred_running']);
     parent::tearDown();
   }
 
@@ -328,6 +330,30 @@ class CRM_Civirules_DeferredPostTriggerTest extends \PHPUnit\Framework\TestCase 
     civirules_drain_post_triggers();
 
     $this->assertSame([$queuedContactId, $nestedContactId], CRM_Civirules_DeferredPostTriggerTest_GroupContactFixture::$contactIds);
+  }
+
+  /**
+   * An exit or fatal error during a drain skips its finally block. The
+   * shutdown drain must still run what is left in the queue.
+   */
+  public function testShutdownDrainRunsWhatACutShortDrainLeft(): void {
+    $this->createRuleFor(CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::class);
+    $GLOBALS['civirules_deferred_post_triggers'] = [
+      ['create', 'Contact', 1, NULL, NULL],
+      ['create', 'Contact', 2, NULL, NULL],
+    ];
+
+    // Never resumed, so this drain stops at the first trigger and never
+    // reaches its finally block.
+    $cutShort = new Fiber('civirules_run_deferred_post_triggers');
+    $cutShort->start();
+    $this->assertTrue($cutShort->isSuspended());
+
+    civirules_drain_post_triggers();
+
+    $this->assertSame([1, 2], CRM_Civirules_DeferredPostTriggerTest_SuspendingFixture::$seen,
+      'The shutdown drain must run the rest of the queue.');
+    $this->assertSame([], $GLOBALS['civirules_deferred_post_triggers']);
   }
 
   /**
