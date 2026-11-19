@@ -15,7 +15,7 @@ class CRM_CivirulesConditions_Membership_ActiveMembership extends CRM_Civirules_
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
       $this->conditionParams['membership_type_id'] = (array) $this->conditionParams['membership_type_id'];
     }
   }

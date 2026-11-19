@@ -70,7 +70,7 @@ abstract class CRM_Civirules_Condition {
    */
   public function exportConditionParameters() {
     if (!empty($this->ruleCondition['condition_params'])) {
-      return unserialize($this->ruleCondition['condition_params']);
+      return CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
     return [];
   }

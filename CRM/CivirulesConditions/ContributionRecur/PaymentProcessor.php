@@ -14,7 +14,7 @@ class CRM_CivirulesConditions_ContributionRecur_PaymentProcessor extends CRM_Civ
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
   }
 

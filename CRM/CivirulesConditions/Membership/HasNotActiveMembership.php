@@ -113,7 +113,7 @@ class CRM_CivirulesConditions_Membership_HasNotActiveMembership extends CRM_Civi
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
   }
 

@@ -41,6 +41,34 @@ class CRM_Civirules_Delay_Factory {
   }
 
   /**
+   * Unserializes a stored delay, allowing only the delay classes.
+   *
+   * A delay is stored as a serialized delay object: in the rule action
+   * delay column, and as activity_date_time or date inside action params.
+   * Only the classes returned by getAllDelayClasses() can be instantiated,
+   * so a stored value cannot load any other class.
+   *
+   * @param mixed $value
+   *   The stored value.
+   *
+   * @return CRM_Civirules_Delay_Delay|null
+   *   The delay, or NULL when the value is not a serialized delay.
+   */
+  public static function unserializeDelay($value) {
+    if (!is_string($value) || $value === '') {
+      return NULL;
+    }
+    $allowedClasses = [];
+    foreach (self::getAllDelayClasses() as $delayClass) {
+      if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
+        $allowedClasses[] = get_class($delayClass);
+      }
+    }
+    $delay = unserialize($value, ['allowed_classes' => $allowedClasses]);
+    return $delay instanceof CRM_Civirules_Delay_Delay ? $delay : NULL;
+  }
+
+  /**
    * Returns an option list of possible delays. This list
    * can be used in a select list
    *

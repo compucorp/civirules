@@ -22,7 +22,7 @@ class CRM_CivirulesConditions_Contribution_xthContribution extends CRM_Civirules
     parent::setRuleConditionData($ruleCondition);
     $this->_conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
     }
   }
 

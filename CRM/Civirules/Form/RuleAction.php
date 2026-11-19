@@ -201,7 +201,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
       }
 
       if (!empty($this->ruleAction->delay)) {
-        $delayClass = unserialize($this->ruleAction->delay);
+        $delayClass = CRM_Civirules_Delay_Factory::unserializeDelay($this->ruleAction->delay);
       }
       if (isset($delayClass)) {
         $defaults['delay_select'] = get_class($delayClass);

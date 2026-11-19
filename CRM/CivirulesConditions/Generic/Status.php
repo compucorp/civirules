@@ -66,7 +66,7 @@ abstract class CRM_CivirulesConditions_Generic_Status extends CRM_Civirules_Cond
     parent::setRuleConditionData($ruleCondition);
     $this->conditionParams = [];
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->conditionParams = CRM_Core_DAO::unSerializeField($this->ruleCondition['condition_params'], CRM_Core_DAO::SERIALIZE_PHP);
       $oldFieldName = strtolower($this->getEntity()) . '_status_id';
       if (isset($this->conditionParams[$oldFieldName]) && !isset($this->conditionParams['status_id'])) {
         // Some old conditions saved using the entity specific name (eg. membership_status_id)

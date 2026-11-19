@@ -47,7 +47,7 @@ class CRM_CivirulesCronTrigger_Form_RelationshipEndDate extends CRM_CivirulesTri
    */
   public function setDefaultValues() {
     $defaultValues = parent::setDefaultValues();
-    $data = unserialize($this->rule->trigger_params);
+    $data = CRM_Core_DAO::unSerializeField($this->rule->trigger_params, CRM_Core_DAO::SERIALIZE_PHP);
     if (!empty($data['interval'])) {
       $defaultValues['interval'] = $data['interval'];
     }
