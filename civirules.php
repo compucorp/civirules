@@ -58,6 +58,9 @@ function civirules_civicrm_container(\Symfony\Component\DependencyInjection\Cont
  */
 function civirules_civicrm_config(&$config) {
   _civirules_civix_civicrm_config($config);
+  // Load the pre-3.45 class name: other extensions still type-hint CRM_Civirules_BAO_Rule,
+  // and an alias only exists once its file has been loaded.
+  class_exists('CRM_Civirules_BAO_Rule');
 }
 
 /**
