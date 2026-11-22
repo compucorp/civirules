@@ -68,6 +68,16 @@ class CRM_Civirules_Utils_PreData {
     if (!$entity) {
       return;
     }
+    // If we already have pre-data cached for this entity, reuse it for the
+    // new eventID instead of making expensive API calls again. This is
+    // consistent with the caching in customPre() and prevents redundant
+    // queries when the same entity is saved multiple times in one request
+    // (e.g. during bulk mailing where each email triggers an Activity save).
+    if (isset(self::$preData[$entity][$id])) {
+      $existingEventID = array_key_first(self::$preData[$entity][$id]);
+      self::setPreData($entity, $id, self::$preData[$entity][$id][$existingEventID], $eventID);
+      return;
+    }
     try {
       $api4Entities = ['AfformSubmission'];
       if (in_array($entity, $api4Entities)) {
