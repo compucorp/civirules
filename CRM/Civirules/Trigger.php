@@ -58,6 +58,62 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
+   * Restores a trigger from a delayed action queue item.
+   *
+   * Items queued before the properties were typed can hold values the types
+   * reject, such as a NULL ruleTitle or a FALSE triggerParams.
+   */
+  public function __unserialize(array $data): void {
+    foreach ($data as $key => $value) {
+      $class = static::class;
+      $name = $key;
+      if (str_starts_with($key, "\0")) {
+        [, $declaringClass, $name] = explode("\0", $key, 3);
+        if ($declaringClass !== '*') {
+          $class = $declaringClass;
+        }
+      }
+      if (!property_exists($class, $name)) {
+        continue;
+      }
+      $property = new ReflectionProperty($class, $name);
+      if (!$property->isStatic()) {
+        $this->restoreProperty($property, $value);
+      }
+    }
+  }
+
+  /**
+   * Sets a restored property, converting a value its type rejects. A value
+   * that cannot be converted leaves the property unset, so its getter loads
+   * it from the rule.
+   */
+  private function restoreProperty(ReflectionProperty $property, $value): void {
+    if (PHP_VERSION_ID < 80100) {
+      $property->setAccessible(TRUE);
+    }
+    try {
+      $property->setValue($this, $value);
+      return;
+    }
+    catch (TypeError $e) {
+    }
+    $type = $property->getType();
+    if (!$type instanceof ReflectionNamedType) {
+      return;
+    }
+    if ($type->getName() === 'array') {
+      $property->setValue($this, []);
+    }
+    elseif ($type->getName() === 'int' && is_numeric($value)) {
+      $property->setValue($this, (int) $value);
+    }
+    elseif ($type->getName() === 'bool' && is_scalar($value)) {
+      $property->setValue($this, (bool) $value);
+    }
+  }
+
+  /**
    * @param int $ruleId
    *
    * @return void
