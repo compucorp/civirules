@@ -60,6 +60,7 @@ class CRM_Queue_Queue_Civirules extends CRM_Queue_Queue_Sql {
    * @param int $leaseTime
    *
    * @return \CRM_Core_DAO|\DB_Error|object|void
+   *   Nothing when the queue is empty or the item could not be loaded.
    * @throws \Civi\Core\Exception\DBQueryException
    */
   private function getItemFromQueue(string $sql, int $leaseTime = 3600) {
@@ -73,7 +74,14 @@ class CRM_Queue_Queue_Civirules extends CRM_Queue_Queue_Sql {
         '1' => [date('YmdHis', $nowEpoch + $leaseTime), 'String'],
         '2' => [$dao->id, 'Integer'],
       ]);
-      $dao->data = unserialize($dao->data);
+      try {
+        $dao->data = unserialize($dao->data);
+      }
+      catch (Throwable $e) {
+        // Leave the item leased so the runner moves on to the next one.
+        \Civi::log('civirules')->error('CiviRules: Could not load delayed action queue item ' . $dao->id . ', it will be retried after ' . $leaseTime . ' seconds: ' . $e->getMessage());
+        return NULL;
+      }
       return $dao;
     }
   }
