@@ -3,6 +3,16 @@
 class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
 
   /**
+   * Rows to use instead of reading them, keyed by group id.
+   *
+   * Set while a deferred trigger runs, so it sees the rows as they were when it
+   * was queued rather than as a later save in the same request left them.
+   *
+   * @var array
+   */
+  public static $groupContactsAsQueued = [];
+
+  /**
    * Returns an array of entities on which the trigger reacts
    *
    * @return CRM_Civirules_TriggerData_EntityDefinition
@@ -54,18 +64,60 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
       parent::triggerTrigger($op, $objectName, $objectId, $objectRef, $eventID);
     } else {
       // We are dealing with an array of contact ids.
-      $sql = "SELECT MAX(`id`) AS id, `group_id`, `contact_id`, `status`, `location_id`, `email_id`
-            FROM `civicrm_group_contact`
-            WHERE `group_id` = %1 AND `contact_id` IN (" . implode(", ", $objectRef) . ")
-            GROUP BY `contact_id`";
-      $params[1] = [$objectId, 'Integer'];
-      $dao = CRM_Core_DAO::executeQuery($sql, $params, TRUE, 'CRM_Contact_DAO_GroupContact');
+      $rows = self::$groupContactsAsQueued[$objectId] ?? self::findGroupContacts((int) $objectId, $objectRef);
       $group = civicrm_api3('Group', 'getsingle', ['id' => $objectId]);
-      while ($dao->fetch()) {
-        $triggerData = $this->getTriggerDataFromPost($op, $objectName, $dao->id, $dao, $eventID);
-        $triggerData->setEntityData('Group', $group);
-        CRM_Civirules_Engine::triggerRule($this, $triggerData);
+      // The queued rows are for this trigger only. Hide them while its rules
+      // run, so a GroupContact post fired by an action reads its own rows.
+      $queued = self::$groupContactsAsQueued;
+      self::$groupContactsAsQueued = [];
+      try {
+        foreach ($rows as $row) {
+          $dao = new CRM_Contact_DAO_GroupContact();
+          foreach ($row as $field => $value) {
+            $dao->$field = $value;
+          }
+          $triggerData = $this->getTriggerDataFromPost($op, $objectName, $dao->id, $dao, $eventID);
+          $triggerData->setEntityData('Group', $group);
+          CRM_Civirules_Engine::triggerRule($this, $triggerData);
+        }
+      }
+      finally {
+        self::$groupContactsAsQueued = $queued;
       }
     }
   }
+
+  /**
+   * Returns the latest group contact row of each contact in a group.
+   *
+   * @param int $groupId
+   * @param array $contactIds
+   *
+   * @return array
+   */
+  public static function findGroupContacts(int $groupId, array $contactIds) {
+    $contactIds = array_filter(array_map('intval', $contactIds));
+    if (empty($contactIds)) {
+      return [];
+    }
+    $sql = "SELECT MAX(`id`) AS id, `group_id`, `contact_id`, `status`, `location_id`, `email_id`
+          FROM `civicrm_group_contact`
+          WHERE `group_id` = %1 AND `contact_id` IN (" . implode(", ", $contactIds) . ")
+          GROUP BY `contact_id`";
+    $params[1] = [$groupId, 'Integer'];
+    $dao = CRM_Core_DAO::executeQuery($sql, $params);
+    $rows = [];
+    while ($dao->fetch()) {
+      $rows[] = [
+        'id' => $dao->id,
+        'group_id' => $dao->group_id,
+        'contact_id' => $dao->contact_id,
+        'status' => $dao->status,
+        'location_id' => $dao->location_id,
+        'email_id' => $dao->email_id,
+      ];
+    }
+    return $rows;
+  }
+
 }
